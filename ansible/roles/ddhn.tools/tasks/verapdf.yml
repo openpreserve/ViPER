@@ -1,0 +1,20 @@
+---
+# veraPDF installation for ddhn.tools
+
+- name: "veraPDF | Download veraPDF source from GitHub."
+  git:
+    repo: "{{ ddhn.tools.verapdf.src }}"
+    dest: /usr/local/src/veraPDF
+    version: v1.16.1
+
+- name: "veraPDF | Create target directory for install"
+  file:
+    path: /tmp/vera-installer
+    state: directory
+    mode: '0755'
+
+- name: "veraPDF | Download and upack veraPDF."
+  unarchive:
+    src: "{{ ddhn.tools.verapdf.installer }}"
+    dest: /tmp/vera-installer
+    remote_src: yes

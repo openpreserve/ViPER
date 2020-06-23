@@ -1,0 +1,5 @@
+127.0.0.1 localhost.localdomain localhost
+{{ ddhn.setup.ip.v4 }} {{ ddhn.setup.fqdn }} {{ ddhn.setup.hostname }}
+{% if ddhn.setup.ip.v6 is defined and ddhn.setup.ip.v6 != "" %}
+{{ ddhn_env_ip_v6 }} {{ ddhn.setup.fqdn }} {{ ddhn.setup.hostname }}
+{% endif %}

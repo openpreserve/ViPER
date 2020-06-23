@@ -1,0 +1,40 @@
+---
+# ddhn.setup default values
+ddhn_env_apt_defaults:
+  # Source control a
+  - "git"
+  # Debian Stretch lacks the ability to download apt over HTTPS
+  - "apt-transport-https"
+  # Install some helper network tools
+  - "psmisc"
+  - "net-tools"
+  # Zip and unzip are always handy
+  - zip
+  - unzip
+  # Open JDK 8 for Java
+  - openjdk-8-jre
+  - openjdk-8-doc
+  - openjdk-8-source
+  - task-gnome-desktop
+
+ddhn:
+  setup:
+    prereqs:
+      apt: "{{ ddhn_env_prereqs_apt | default (ddhn_env_apt_defaults) }}"
+    hostname: "{{ ddhn_env_hostname | default('localhost') }}"
+    hostdomain: "{{ ddhn_env_hostdomain | default('localdomain') }}"
+    fqdn: "{{ ddhn_env_fqdn | default('localhost.localdomain') }}"
+    timezone: "{{ ddhn_env_timezone | default('Europe/London') }}"
+    iptables:
+      interfaces: "{{ ddhn_env_http_interfaces | default([]) }}"
+    ip:
+      v4: "{{ ddhn_env_ip | default('127.0.0.1') }}"
+      v6: "{{ ddhn_env_ip_v6 | default('') }}"
+    port:
+      http: "{{ ddhn_env_port_http | default('') }}"
+      https: "{{ ddhn_env_port_https | default('') }}"
+    open_ports: "{{ ddhn_env_open_ports | default([]) }}"
+    limited_account:
+      name: "{{ ddhn_env_user_name | default('vagrant') }}"
+      password: "{{ ddhn_env_user_password | default('$6$D.o3KgyK$3k1LYzMBfQBTXfp0GMzAuKpLp1TwKGb/Q0eVc5sP7sdlb.0TIeBOMISmIidT8CFqdOwU240Bnfp8On7484UCk1') }}"
+      home: "{{ ddhn_env_user_home | default('/home/vagrant') }}"

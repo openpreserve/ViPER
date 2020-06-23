@@ -1,0 +1,7 @@
+# test file for ddhn.setup
+---
+- hosts: localhost
+  connection: local
+  become: true
+  roles:
+    - ../../

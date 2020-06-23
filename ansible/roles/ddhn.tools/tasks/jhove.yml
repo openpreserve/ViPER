@@ -1,0 +1,13 @@
+---
+# JHOVE installation for ddhn.tools
+
+- name: "JHOVE | Download JHOVE source from GitHub."
+  git:
+    repo: "{{ ddhn.tools.jhove.src }}"
+    dest: /usr/local/src/jhove/1.24
+    version: v1.24.1
+
+- name: "JHOVE | Download and installer."
+  get_url:
+    url: "{{ ddhn.tools.jhove.installer }}"
+    dest: /tmp/jhove-installer.jar

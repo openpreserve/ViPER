@@ -1,0 +1,14 @@
+---
+# Main task entry point for ddhn.tools
+
+- name: "DDHN TOOLS | Install JHOVE."
+  import_tasks: jhove.yml
+
+- name: "DDHN TOOLS | Install DROID."
+  import_tasks: droid.yml
+
+- name: "DDHN TOOLS | Install Tika."
+  import_tasks: tika.yml
+
+- name: "DDHN TOOLS | Install veraPDF."
+  import_tasks: verapdf.yml

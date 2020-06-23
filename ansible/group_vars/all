@@ -1,0 +1,7 @@
+---
+# Group variables for all OPF servers.
+
+# Set user account
+opf_server_user_name: "cfw"
+opf_server_user_password: "$6$eiThdBziQOel$jUkJMzwyG0d8lcFFH5CVwRCmMm7vA6PV7ev4j8oX7hYpk6ulRbAdVEB8McOxjEcV9MM6t8vk./Bw7/XV2rNDG."
+opf_server_user_home: "/home/cfw"

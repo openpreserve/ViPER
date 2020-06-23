@@ -1,0 +1,9 @@
+---
+
+# Define all servers children
+all:
+  vars:
+    ddhn_env_timezone: "Europe/Berlin"
+    ddhn_env_ip: "{{ ansible_ssh_host }}"
+  hosts:
+    env.ddhn.test:

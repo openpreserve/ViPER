@@ -1,0 +1,20 @@
+---
+# JHOVE installation for ddhn.tools
+
+- name: "DROID | Download DROID source from GitHub."
+  git:
+    repo: "{{ ddhn.tools.droid.src }}"
+    dest: /usr/local/src/droid
+    version: droid-6.5
+
+- name: "DROID | Create target directory for install"
+  file:
+    path: /usr/local/lib/droid/6.5
+    state: directory
+    mode: '0755'
+
+- name: "DROID | Download and upack DROID."
+  unarchive:
+    src: "{{ ddhn.tools.droid.installer }}"
+    dest: /usr/local/lib/droid/6.5
+    remote_src: yes

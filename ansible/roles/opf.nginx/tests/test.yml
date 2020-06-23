@@ -1,0 +1,7 @@
+# test file for opf.proxy
+---
+- hosts: localhost
+  connection: local
+  become: true
+  roles:
+    - ../../

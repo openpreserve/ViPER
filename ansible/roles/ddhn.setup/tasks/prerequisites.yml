@@ -1,0 +1,7 @@
+---
+# Prerequisites for ddhn.setup
+
+- name: "APT | Install apt package pre-requisites."
+  apt:
+    name: "{{ ddhn.setup.prereqs.apt }}"
+    state: "latest"

@@ -1,0 +1,12 @@
+---
+# ddhn.setup handlers
+
+- name: restart ssh
+  service:
+    name: ssh
+    state: restarted
+
+- name: restart iptables-persistent
+  service:
+    name: iptables-persistent
+    state: restarted

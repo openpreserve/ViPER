@@ -1,0 +1,17 @@
+---
+# Main task entry point for ddhn.setup
+
+- name: "DEBCONF | Prevent the iptables-peristent install dialog."
+  debconf:
+    name: iptables-persistent
+    question: "{{ item }}"
+    vtype: boolean
+    value: true
+  with_items:
+  - iptables-persistent/autosave_v4
+  - iptables-persistent/autosave_v6
+
+- name: "APT | Install IP Tables persistent."
+  apt:
+    pkg: "iptables-persistent"
+    state: present

@@ -1,0 +1,19 @@
+---
+# Main task entry point for ddhn.setup
+
+- name: "SYS | Creating user account: {{ ddhn.setup.limited_account.name }}."
+  user:
+    name: "{{ ddhn.setup.limited_account.name }}"
+    comment: "Sudo user account for server admin."
+    createhome: yes
+    home: "{{ ddhn.setup.limited_account.home }}"
+    shell: "/bin/bash"
+    groups: "sudo"
+    password: "{{ ddhn.setup.limited_account.password }}"
+    update_password: always
+
+- name: "SYS | Set authorized key for user: {{ ddhn.setup.limited_account.name }}, copied from current user"
+  authorized_key:
+    user: "{{ ddhn.setup.limited_account.name }}"
+    state: present
+    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"

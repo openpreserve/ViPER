@@ -1,0 +1,5 @@
+
+
+gsettings set org.gnome.desktop.background primary-color "#FFFFFF"
+gsettings set org.gnome.desktop.background secondary-color "#FFFFFF"
+gsettings set org.gnome.desktop.background color-shading-type "solid"

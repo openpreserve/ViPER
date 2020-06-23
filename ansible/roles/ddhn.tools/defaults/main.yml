@@ -1,0 +1,17 @@
+---
+# ddhn.tools default values
+
+ddhn:
+  tools:
+    jhove:
+      src: "https://github.com/openpreserve/jhove.git"
+      installer: "https://software.openpreservation.org/releases/jhove/1.24/jhove-xplt-installer-1.24.1.jar"
+    droid:
+      src: "https://github.com/digital-preservation/droid.git"
+      installer: "https://github.com/digital-preservation/droid/releases/download/droid-6.5/droid-binary-6.5-bin.zip"
+    tika:
+      src: "http://apache.mirror.anlx.net/tika/tika-app-1.24.1.jar"
+      installer: "http://mirror.ox.ac.uk/sites/rsync.apache.org/tika/tika-server-1.24.1-bin.zip"
+    verapdf:
+      src: "https://github.com/veraPDF/veraPDF-library.git"
+      installer: "https://software.verapdf.org/rel/1.16/verapdf-greenfield-1.16.1-installer.zip"

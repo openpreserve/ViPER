@@ -1,0 +1,28 @@
+---
+# Tika installation for ddhn.tools
+
+- name: "TIKA | Create target directory for source"
+  file:
+    path: /usr/local/src/tika
+    state: directory
+    mode: '0755'
+
+- name: "TIKA | Download and unpack Tika source."
+  unarchive:
+    src: "{{ ddhn.tools.tika.src }}"
+    dest: /usr/local/src/tika
+    remote_src: yes
+
+- name: "TIKA | Create target directory for install"
+  file:
+    path: /usr/local/lib/tika/1.24
+    state: directory
+    mode: '0755'
+
+- name: "JHOVE | Download and installer."
+  get_url:
+    url: "{{ ddhn.tools.jhove.installer }}"
+    dest: /tmp/jhove-installer.jar
+    src: "{{ ddhn.tools.tika.installer }}"
+    dest: /usr/local/lib/tika/1.24/tika-app-1.24.1.jar
+    remote_src: yes

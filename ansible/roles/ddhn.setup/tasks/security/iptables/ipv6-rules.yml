@@ -1,0 +1,67 @@
+---
+# Main task entry point for ddhn.setup
+
+- name: "IPTABLES V6 | Allow all loopback (lo0) traffic."
+  iptables:
+    ip_version: ipv6
+    chain: INPUT
+    in_interface: "lo"
+    jump: ACCEPT
+    comment: "Allow all loopback (lo0) traffic"
+
+- name: "IPTABLES V6 | Reject localhost that doesn't originate from lo0."
+  iptables:
+    ip_version: ipv6
+    chain: INPUT
+    in_interface: "lo"
+    source: "! ::1/128"
+    jump: REJECT
+    comment: "Reject localhost that doesn't originate from lo0"
+
+- name: "IPTABLES V6 | Allow ICMP."
+  iptables:
+    ip_version: ipv6
+    chain: INPUT
+    protocol: icmpv6
+    jump: ACCEPT
+    comment: "Allow ICMP"
+
+- name: "IPTABLES V6 | Allow inbound traffic from established connections."
+  iptables:
+    ip_version: ipv6
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+    comment: "Allow inbound traffic from established connections"
+
+- name: "IPTABLES V6 | Log what was incoming but denied."
+  iptables:
+    ip_version: ipv6
+    chain: INPUT
+    limit: "5/min"
+    jump: LOG
+    log_prefix: "iptables_INPUT_denied: "
+    comment: "Log what was incoming but denied (optional but useful)"
+
+- name: "IPTABLES V6 | Reject all other inbound."
+  iptables:
+    ip_version: ipv6
+    chain: INPUT
+    jump: REJECT
+    comment: "Reject all other inbound"
+
+- name: "IPTABLES V6 | Log Traffic sent for forwarding."
+  iptables:
+    ip_version: ipv6
+    chain: INPUT
+    limit: "5/min"
+    jump: LOG
+    log_prefix: "iptables_FORWARD_denied: "
+    comment: "Log Traffic sent for forwarding (optional but useful)"
+
+- name: "IPTABLES V6 | Reject all traffic forwarding."
+  iptables:
+    ip_version: ipv6
+    chain: FORWARD
+    jump: REJECT
+    comment: "Reject all traffic forwarding"
