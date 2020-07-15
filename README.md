@@ -1,6 +1,6 @@
 Overview
 --------
-This project creates the DDHN virtual digital preservation research environment. The environment is a virtual machine set up with a set of digital preservation tools installed and ready to use from the desktop. The project is still at a prototype stage with supporting documentation on the TODO list.
+This project creates the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/en/) virtual digital preservation research environment. The environment is a virtual machine set up with a set of digital preservation tools installed and ready to use from the desktop. The project is still at a prototype stage with supporting documentation on the TODO list.
 
 ### Current Tool List
 This prototype comes with four open source digital preservation tools installed. These were selected for ease of use, they all have graphical user interfaces, and homogeneity as they're all Java based.
@@ -9,6 +9,34 @@ This prototype comes with four open source digital preservation tools installed.
 - JHOVE: A format validation and characterisation tool developed by Harvard University Library and the Open Preservation Foundation
 - Apache Tika: A characterisation and text extraction tool developed and maintained by the Apache Software Foundation
 - veraPDF: A validation and characterisation tool for the PDF/A format
+
+Quick Start
+-----------
+The quickest way to try out the environment is to download the machine image.
+
+### Prerequisites
+You'll need [Virtual Box](https://www.virtualbox.org/) on your machine to act as a virtualisation platform. If you're installing VirtualBox:
+- Check that you have hardware [virtualisation enabled in your BIOS](https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html).
+- Please install the [Extension Pack](https://www.virtualbox.org/manual/ch01.html#intro-installing).
+
+### Downloading the virtual Machine
+Rather than build a vagrant machine you can download a [prebuilt OVF file](https://www.virtualbox.org/manual/ch01.html#ovf-about)
+which can be downloaded [from an OPF server](https://ddhn.openpreservation.org/ddhn-prototype.ova). The download takes some time
+as it's about 4GB. When it's finished you should have a file called `ddhn-prototype.ova`.
+
+[These instructions](https://www.virtualbox.org/manual/ch01.html#ovf) tell you how to import the OVA file into VirtualBox so you can
+start it.
+
+### Tweaking the VirtualBox Machine
+Out of the box the machine should come configured with:
+
+- 2 virtual CPUS
+- 64MB of video RAM to allow desktop scaling
+- 4GB of RAM
+
+More CPU and RAM will almost certainly improve performance. If you're setting up a vagrant box from scratch
+you can use the [Initialisation](#initialisation) instructions to change the parameters. If you've imported
+the OVA you can use the VirtualBox GUI to make the changes as [described here](https://www.virtualbox.org/manual/ch01.html#ovf).
 
 Prototyping Decisions
 ---------------------
@@ -42,9 +70,13 @@ config.vm.provider "virtualbox" do |vb|
   vb.name = "DDHN Prototype"
   # Display the VirtualBox GUI when booting the machine
   vb.gui = true
-  # Customize the CPUs and memory on the VM:
-  vb.memory = "4096"
+  # Customize the CPUs (2x) and memory (4GB) on the VM:
   vb.cpus = 2
+  vb.memory = "4096"
+  # Now set an execution cap at 50 % if required
+  # vb.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+  # We need extra Video RAM for display flexibility
+  vb.customize ["modifyvm", :id, "--vram", "64"]
 end
 ```
 We can now bring the machine up with the command `vagrant up`, this takes a while first time.
