@@ -6,9 +6,17 @@ This project creates the [Dutch Digital Heritage Network](https://www.netwerkdig
 This prototype comes with four open source digital preservation tools installed. These were selected for ease of use, they all have graphical user interfaces, and homogeneity as they're all Java based.
 
 - DROID: A file format identification tool developed and maintained by The National Archives of the UK
+  + Homepage: https://digital-preservation.github.io/droid/
+  + GitHub: https://github.com/digital-preservation/droid
 - JHOVE: A format validation and characterisation tool developed by Harvard University Library and the Open Preservation Foundation
+  + Homepage: https://jhove.openpreservation.org
+  + GitHub: https://github.com/openpreserve/jhove
 - Apache Tika: A characterisation and text extraction tool developed and maintained by the Apache Software Foundation
+  + Homepage: https://tika.apache.org/
+  + GitHub: https://github.com/apache/tika
 - veraPDF: A validation and characterisation tool for the PDF/A format
+  + Homepage: https://docs.verapdf.org
+  + GitHub: https://github.com/veraPDF/veraPDF-library
 
 Quick Start
 -----------
