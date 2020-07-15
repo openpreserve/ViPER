@@ -56,9 +56,13 @@ Vagrant.configure("2") do |config|
     vb.name = "DDHN Prototype"
     # Display the VirtualBox GUI when booting the machine
     vb.gui = true
-    # Customize the CPUs and memory on the VM:
-    vb.memory = "4096"
+    # Customize the CPUs (2x) and memory (4GB) on the VM:
     vb.cpus = 2
+    vb.memory = "4096"
+    # Now set an execution cap at 50 % if required
+    # vb.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+    # We need extra Video RAM for display flexibility
+    vb.customize ["modifyvm", :id, "--vram", "64"]
   end
 
   config.vm.provision "ansible" do |ansible|
