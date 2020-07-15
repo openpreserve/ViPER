@@ -1,28 +1,25 @@
 ---
 # Tika installation for ddhn.tools
 
-- name: "TIKA | Create target directory for source"
-  file:
-    path: /usr/local/src/tika
-    state: directory
-    mode: '0755'
+- name: "TIKA | Running Tool Setup."
+  include_tasks: tool.yml
+  vars:
+    item: "{{ ddhn.tools.tika }}"
 
-- name: "TIKA | Download and unpack Tika source."
-  unarchive:
-    src: "{{ ddhn.tools.tika.src }}"
-    dest: /usr/local/src/tika
-    remote_src: yes
-
-- name: "TIKA | Create target directory for install"
-  file:
-    path: /usr/local/lib/tika/1.24
-    state: directory
-    mode: '0755'
-
-- name: "JHOVE | Download and installer."
+- name: "TIKA | Download the application jar."
   get_url:
-    url: "{{ ddhn.tools.jhove.installer }}"
-    dest: /tmp/jhove-installer.jar
-    src: "{{ ddhn.tools.tika.installer }}"
-    dest: /usr/local/lib/tika/1.24/tika-app-1.24.1.jar
+    url: "{{ ddhn.tools.tika.installer.loc }}"
+    dest: "{{ ddhn.tools.tika.dests.lib }}/tika-app-{{ tika_version }}.jar"
     remote_src: yes
+
+- name: "TIKA | Copy the tika shell file."
+  template:
+    src: "usr/local/lib/tika/tika.sh"
+    dest: "{{ ddhn.tools.tika.dests.lib }}/tika.sh"
+    mode: a+x
+
+- name: "TIKA | Create symlink for shell file."
+  file:
+    src: "{{ ddhn.tools.tika.dests.lib }}/tika.sh"
+    dest: "{{ ddhn.tools.tika.dests.bin }}/tika-gui"
+    state: link
