@@ -15,7 +15,10 @@ ddhn_env_apt_defaults:
   - openjdk-8-jre
   - openjdk-8-doc
   - openjdk-8-source
+  # GNOME desktop
   - task-gnome-desktop
+  # Debian handbrake installation for now
+  - handbrake
 
 ddhn:
   setup:
