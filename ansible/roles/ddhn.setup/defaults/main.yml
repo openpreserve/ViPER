@@ -17,6 +17,10 @@ ddhn_env_apt_defaults:
   - openjdk-8-source
   - task-gnome-desktop
 
+virtualbox_remove_os_packages: true
+virtualbox_x11: true
+local_virtualbox_iso: "/usr/share/virtualbox/VBoxGuestAdditions.iso"
+
 ddhn:
   setup:
     prereqs:
