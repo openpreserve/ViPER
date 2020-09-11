@@ -1,5 +1,8 @@
+---
+# desktop Environment setup for DDHN tools
 
-
-gsettings set org.gnome.desktop.background primary-color "#FFFFFF"
-gsettings set org.gnome.desktop.background secondary-color "#FFFFFF"
-gsettings set org.gnome.desktop.background color-shading-type "solid"
+- name: "Desktop | Enable desktop icons"
+  become: true
+  become_user: "{{ ddhn.setup.limited_account.name }}"
+  shell: |
+    dbus-launch gsettings set org.gnome.desktop.background show-desktop-icons true

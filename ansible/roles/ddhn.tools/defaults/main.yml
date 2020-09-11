@@ -10,6 +10,9 @@ ddhn_usr_share: "/usr/share"
 ddhn_apps_share: "{{ ddhn_usr_share }}/applications"
 ddhn_icons_share: "{{ ddhn_usr_share }}/icons"
 
+# Account name
+ddhn_account_name: "{{ ddhn_env_user_name | default('vagrant') }}"
+
 # JHOVE version details, to override set jhove_major_minor and jhove_patch
 jhove_major: "1"
 jhove_minor: "24"

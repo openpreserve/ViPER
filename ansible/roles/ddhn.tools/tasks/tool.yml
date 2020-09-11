@@ -18,7 +18,16 @@
     src: "files{{ ddhn_icons_share }}/{{ item.icon }}"
     dest: "{{ ddhn_icons_share }}/{{ item.icon }}"
 
-- name: "TOOL {{ item.name }} | Create desktop from template"
+- name: "TOOL {{ item.name }} | Create shared desktop file from template"
   template:
     src: "usr/share/applications/template.desktop"
     dest: "{{ ddhn_apps_share }}/{{ item.name }}.desktop"
+    mode: a+x
+
+- name: "TOOL {{ item.name }} | Create user desktop file from template"
+  template:
+    src: "usr/share/applications/template.desktop"
+    dest: "/home/{{ ddhn_account_name }}/Desktop/{{ item.name }}.desktop"
+    owner: "{{ ddhn_account_name }}"
+    group: "{{ ddhn_account_name }}"
+    mode: a+x

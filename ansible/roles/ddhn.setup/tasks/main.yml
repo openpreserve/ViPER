@@ -12,3 +12,6 @@
 
 - name: "DDHN SETUP | Secure server."
   import_tasks: security/main.yml
+
+- name: "DDHN SETUP | Setup desktop environment."
+  import_tasks: desktop.yml
