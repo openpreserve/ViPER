@@ -16,6 +16,8 @@ ddhn_env_apt_defaults:
   - openjdk-8-doc
   - openjdk-8-source
   - task-gnome-desktop
+  # Debian package for mediainfo GUI
+  - mediainfo-gui
 
 ddhn:
   setup:
