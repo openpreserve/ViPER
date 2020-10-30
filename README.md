@@ -30,7 +30,7 @@ You'll need [Virtual Box](https://www.virtualbox.org/) on your machine to act as
 ### Downloading the virtual Machine
 Rather than build a vagrant machine you can download a [prebuilt OVF file](https://www.virtualbox.org/manual/ch01.html#ovf-about)
 which can be downloaded [from an OPF server](https://ddhn.openpreservation.org/ddhn-beta.ova). The download takes some time
-as it's about 4GB. When it's finished you should have a file called `ddhn-prototype.ova`.
+as it's about 4GB. When it's finished you should have a file called `ddhn-beta.ova`.
 
 [These instructions](https://www.virtualbox.org/manual/ch01.html#ovf) tell you how to import the OVA file into VirtualBox so you can
 start it.
