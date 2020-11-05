@@ -17,6 +17,8 @@ ddhn_env_apt_defaults:
   - openjdk-8-source
   # GNOME desktop
   - task-gnome-desktop
+  # Debian package for mediainfo GUI
+  - mediainfo-gui
   # Debian handbrake installation for now
   - handbrake
 
