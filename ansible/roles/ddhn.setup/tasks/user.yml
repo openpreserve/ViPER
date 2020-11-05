@@ -1,7 +1,7 @@
 ---
 # Main task entry point for ddhn.setup
 
-- name: "SYS | Creating user account: {{ ddhn.setup.limited_account.name }}."
+- name: "USER | Creating user account: {{ ddhn.setup.limited_account.name }}."
   user:
     name: "{{ ddhn.setup.limited_account.name }}"
     comment: "Sudo user account for server admin."
@@ -12,8 +12,23 @@
     password: "{{ ddhn.setup.limited_account.password }}"
     update_password: always
 
-- name: "SYS | Set authorized key for user: {{ ddhn.setup.limited_account.name }}, copied from current user"
+- name: "USER | Set authorized key for user: {{ ddhn.setup.limited_account.name }}, copied from current user"
   authorized_key:
     user: "{{ ddhn.setup.limited_account.name }}"
     state: present
     key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+
+- name: "USER | Create user desktop dir."
+  file:
+    path: "{{ ddhn.setup.limited_account.home }}/Desktop"
+    state: directory
+    mode: '0775'
+    owner: "{{ ddhn.setup.limited_account.name }}"
+    group: "{{ ddhn.setup.limited_account.name }}"
+    mode: a+x
+
+- name: "USER | Set up auto login via /etc/gdm3/daemon.conf"
+  template:
+    src: "etc/gdm3/daemon.j2"
+    dest: "/etc/gdm3/daemon.conf"
+    owner: "root"
