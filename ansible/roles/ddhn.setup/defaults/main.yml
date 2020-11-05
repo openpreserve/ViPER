@@ -15,9 +15,16 @@ ddhn_env_apt_defaults:
   - openjdk-8-jre
   - openjdk-8-doc
   - openjdk-8-source
+  # GNOME desktop
   - task-gnome-desktop
   # Debian package for mediainfo GUI
   - mediainfo-gui
+  # Debian handbrake installation for now
+  - handbrake
+
+virtualbox_remove_os_packages: true
+virtualbox_x11: true
+local_virtualbox_iso: "/usr/share/virtualbox/VBoxGuestAdditions.iso"
 
 ddhn:
   setup:

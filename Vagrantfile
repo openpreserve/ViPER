@@ -65,6 +65,9 @@ Vagrant.configure("2") do |config|
     # vb.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
     # We need extra Video RAM for display flexibility
     vb.customize ["modifyvm", :id, "--vram", "64"]
+    # Set up bi-directional clipboard plus drag and drop
+    vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+    vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
   end
 
   config.vm.provision "ansible" do |ansible|
