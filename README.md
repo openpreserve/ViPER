@@ -17,6 +17,9 @@ This prototype comes with four open source digital preservation tools installed.
 - veraPDF: A validation and characterisation tool for the PDF/A format
   + Homepage: https://docs.verapdf.org
   + GitHub: https://github.com/veraPDF/veraPDF-library
+- Handbrake: a tool for converting video from nearly any format to a selection of modern, widely supported codecs.
+  + Homepage: https://handbrake.fr/
+  + GitHub: https://github.com/HandBrake/HandBrake
 
 Quick Start
 -----------
@@ -32,8 +35,17 @@ Rather than build a vagrant machine you can download a [prebuilt OVF file](https
 which can be downloaded [from an OPF server](https://ddhn.openpreservation.org/ddhn-beta.ova). The download takes some time
 as it's about 4GB. When it's finished you should have a file called `ddhn-beta.ova`.
 
-[These instructions](https://www.virtualbox.org/manual/ch01.html#ovf) tell you how to import the OVA file into VirtualBox so you can
-start it.
+[These instructions](https://www.virtualbox.org/manual/ch01.html#ovf) tell you how to import the OVA file into VirtualBox so you can start it.
+
+### Logging onto the machine
+ * Username: `vagrant`
+ * Password: `vagrant`
+
+We're currently using the default `vagrant` account used to create the virtual machine
+image. The user name is configurable from the Ansible build variables. The machine should
+automatically log in with these credentials but if you need to log in then the password
+is also `vagrant`. The account also has passwordless `sudo` privileges so can be used
+to fix, or break, most things. This may change when we release a production version.
 
 ### Tweaking the VirtualBox Machine
 Out of the box the machine should come configured with:
