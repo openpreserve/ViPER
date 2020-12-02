@@ -1,6 +1,9 @@
 Overview
 --------
-This project creates the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/en/) virtual digital preservation research environment. The environment is a virtual machine set up with a set of digital preservation tools installed and ready to use from the desktop. The project is still at a prototype stage with supporting documentation on the TODO list.
+This project creates the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/en/) virtual digital preservation research environment. The environment is a virtual machine set up with a set of digital preservation tools installed and ready to use from the desktop. The supporting documentation has been broken down into 3 distinct areas:
+1. Quick Start
+2. VRE User Guide
+3. Reference links
 
 ### Current Tool List
 This prototype comes with four open source digital preservation tools installed. These were selected for ease of use, they all have graphical user interfaces, and homogeneity as they're all Java based.
@@ -152,3 +155,9 @@ The [`ddhn.tools`](ansible/roles/ddhn.tools) role installs the digital preservat
 - download the tool installation package and install to `/usr/local/lib/<tool-name>`;
 - add any required symlinks to `/usr/local/bin` so that tool executables are effectively on the path; and
 - put an icon for the tool GUI on the desktop.
+  
+User Guide
+----------
+
+Reference Sources
+-----------------
