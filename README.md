@@ -156,8 +156,49 @@ The [`ddhn.tools`](ansible/roles/ddhn.tools) role installs the digital preservat
 - add any required symlinks to `/usr/local/bin` so that tool executables are effectively on the path; and
 - put an icon for the tool GUI on the desktop.
   
-User Guide
-----------
+Guide
+-----
+# Virtual Research Environment (VRE) Guide 
+
+## About VRE
+VRE is a pre-configured virtual machine environment with an installed set of digital preservation (DP) tools for use directly from your desktop. The available DP tools are:
+
+*Jhove
+*fido
+*veraPDF
+*Jypylyzer
+*Handbrake (Ffmpeg) 
+
+## Pre reqs
+In order to use the VRE you will need to download software that will create the virtual environment, the VRE image itself and you may also need to check that your desktop has been set up to support virtualisation.  
+
+### Creating the VM environment
+
+#### Checking your desktop
+If you have a system administrator, ask them to check whether the BIOS settings on your  desktop has been set up for virtualisation. If not then this is done at startup, the BIOS setting for virtualisation needs to be enabled. The process for doing this varies so refer to the manufacturer's instructions as needed.
+Resources - Enabling virtualisation example
+
+#### Downloading Oracle Virtual Box
+VRE has been built and tested using Oracle Virtual Box.  Virtual Box can be installed across several O/S including Windows (NT 4.0, 2000, XP, Server 2003, Vista, Windows 7, Windows 8, Windows 10), DOS/Windows 3.x, Linux (2.4, 2.6, 3.x and 4.x), Solaris and OpenSolaris, OS/2, and OpenBSD. Note VRE has been baselined to work with Oracle Virtual Box v6.1.1.6
+
+The Virtual Box download links that both need to be installed can be accessed via the following links: Oracle Virtual Box download and the accompanying Virtual Box Extensions download. These links will take you to the Oracle Virtual Box Download page. From here select the relevant Virtual Box platform package, the options are:
+
+* Windows 
+* OS X
+* Linux
+* Solaris
+
+Selection will initiate the download process. When complete initiate the Virtual Box Extension pack download.
+
+Resources - Virtual Box supported O/S; / Virtual Box base installation instructions / Oracle Virtual Box download / Virtual Box Extensions download.  
+
+#### Downloading VRE
+VRE is downloaded as a single machine image as a prebuilt OVA file. The most current version can be downloaded via the following link:  OPF/ddhn-rc/VRE/V1.0. Note this is a 4GB file and is likely to take several minutes to download.
+
+## Setting up and Installation
+
+
+
 
 Reference Sources
 -----------------
