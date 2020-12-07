@@ -176,12 +176,12 @@ In order to use the VRE you will need to download software that will create the 
 
 #### Checking your desktop
 If you have a system administrator, ask them to check whether the BIOS settings on your  desktop has been set up for virtualisation. If not then this is done at startup, the BIOS setting for virtualisation needs to be enabled. The process for doing this varies so refer to the manufacturer's instructions as needed.
-Resources - [enabling virtualisation example] (https://2nwiki.2n.cz/pages/viewpage.action?pageId=75202968#:~:text=Press%20F2%20key%20at%20startup,changes%20and%20Reboot%20into%20Windows)
+Resources - [enabling virtualisation example](https://2nwiki.2n.cz/pages/viewpage.action?pageId=75202968#:~:text=Press%20F2%20key%20at%20startup,changes%20and%20Reboot%20into%20Windows)
 
 #### Downloading Oracle Virtual Box
 VRE has been built and tested using Oracle Virtual Box.  Virtual Box can be installed across several O/S including Windows (NT 4.0, 2000, XP, Server 2003, Vista, Windows 7, Windows 8, Windows 10), DOS/Windows 3.x, Linux (2.4, 2.6, 3.x and 4.x), Solaris and OpenSolaris, OS/2, and OpenBSD. Note VRE has been baselined to work with Oracle Virtual Box v6.1.1.6
 
-The Virtual Box download links that both need to be installed can be accessed via the following links: [Virtual Box download] (https://www.virtualbox.org/wiki/Downloads) download and the accompanying [Virtual Box Extention download] (https://www.virtualbox.org/wiki/Downloads). These links will take you to the Oracle Virtual Box Download page. From here select the relevant Virtual Box platform package, the options are:
+The Virtual Box download links that both need to be installed can be accessed via the following links: [Virtual Box download](https://www.virtualbox.org/wiki/Downloads) download and the accompanying [Virtual Box Extention download](https://www.virtualbox.org/wiki/Downloads). These links will take you to the Oracle Virtual Box Download page. From here select the relevant Virtual Box platform package, the options are:
 
 * Windows 
 * OS X
@@ -190,10 +190,14 @@ The Virtual Box download links that both need to be installed can be accessed vi
 
 Selection will initiate the download process. When complete initiate the Virtual Box Extension pack download.
 
-Resources - Virtual Box OS support [OS Support] (https://www.virtualbox.org/manual/ch01.html#hostossupport) / Virtual Box install instructions [Installation instructions] (https://www.virtualbox.org/manual/ch01.html#intro-installing) / [Virtual Box download] (https://www.virtualbox.org/wiki/Downloads) / [Virtual Box Extention download] (https://www.virtualbox.org/wiki/Downloads)
+Resources -
+* Virtual Box OS support [OS Support](https://www.virtualbox.org/manual/ch01.html#hostossupport)
+* Virtual Box install instructions [Installation instructions](https://www.virtualbox.org/manual/ch01.html#intro-installing)
+* [Virtual Box download](https://www.virtualbox.org/wiki/Downloads)
+* [Virtual Box Extention download](https://www.virtualbox.org/wiki/Downloads)
 
 #### Downloading VRE
-VRE is downloaded as a single machine image as a prebuilt OVA file. The most current version can be downloaded via the following link: [VREv1.0] (https://ddhn.openpreservation.org/ddhn-rc.ov). Note this is a 4GB file and is likely to take several minutes to download.
+VRE is downloaded as a single machine image as a prebuilt OVA file. The most current version can be downloaded via the following link: [VREv1.0](https://ddhn.openpreservation.org/ddhn-rc.ov). Note this is a 4GB file and is likely to take several minutes to download.
 
 ## Setting up and Installation
 
