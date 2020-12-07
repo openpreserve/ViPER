@@ -176,7 +176,7 @@ In order to use the VRE you will need to download software that will create the 
 
 #### Checking your desktop
 If you have a system administrator, ask them to check whether the BIOS settings on your  desktop has been set up for virtualisation. If not then this is done at startup, the BIOS setting for virtualisation needs to be enabled. The process for doing this varies so refer to the manufacturer's instructions as needed.
-Resources - [enabling virtualisation example](https://2nwiki.2n.cz/pages/viewpage.action?pageId=75202968#:~:text=Press%20F2%20key%20at%20startup,changes%20and%20Reboot%20into%20Windows)
+Resources - 
 
 #### Downloading Oracle Virtual Box
 VRE has been built and tested using Oracle Virtual Box.  Virtual Box can be installed across several O/S including Windows (NT 4.0, 2000, XP, Server 2003, Vista, Windows 7, Windows 8, Windows 10), DOS/Windows 3.x, Linux (2.4, 2.6, 3.x and 4.x), Solaris and OpenSolaris, OS/2, and OpenBSD. Note VRE has been baselined to work with Oracle Virtual Box v6.1.1.6
