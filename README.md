@@ -1,27 +1,9 @@
 Overview
 --------
 This project creates the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/en/) virtual digital preservation research environment. The environment is a virtual machine set up with a set of digital preservation tools installed and ready to use from the desktop. The supporting documentation has been broken down into 3 distinct areas:
-1. Quick Start - to be updated with a Maintainers Guide 
+
+1. Quick Start - to be updated with a Maintainers Guide
 2. VRE User Guide
-
-### Current Tool List
-This prototype comes with four open source digital preservation tools installed. These were selected for ease of use, they all have graphical user interfaces, and homogeneity as they're all Java based.
-
-- DROID: A file format identification tool developed and maintained by The National Archives of the UK
-  + Homepage: https://digital-preservation.github.io/droid/
-  + GitHub: https://github.com/digital-preservation/droid
-- JHOVE: A format validation and characterisation tool developed by Harvard University Library and the Open Preservation Foundation
-  + Homepage: https://jhove.openpreservation.org
-  + GitHub: https://github.com/openpreserve/jhove
-- Apache Tika: A characterisation and text extraction tool developed and maintained by the Apache Software Foundation
-  + Homepage: https://tika.apache.org/
-  + GitHub: https://github.com/apache/tika
-- veraPDF: A validation and characterisation tool for the PDF/A format
-  + Homepage: https://docs.verapdf.org
-  + GitHub: https://github.com/veraPDF/veraPDF-library
-- Handbrake: a tool for converting video from nearly any format to a selection of modern, widely supported codecs.
-  + Homepage: https://handbrake.fr/
-  + GitHub: https://github.com/HandBrake/HandBrake
 
 Quick Start
 -----------
@@ -59,6 +41,9 @@ Out of the box the machine should come configured with:
 More CPU and RAM will almost certainly improve performance. If you're setting up a vagrant box from scratch
 you can use the [Initialisation](#initialisation) instructions to change the parameters. If you've imported
 the OVA you can use the VirtualBox GUI to make the changes as [described here](https://www.virtualbox.org/manual/ch01.html#ovf).
+
+### VRE Tools and Resources
+The list of tools and reference resources is maintained [here in a separate Markdown file](./docs/tools/index.md).
 
 Prototyping Decisions
 ---------------------
@@ -154,31 +139,25 @@ The [`ddhn.tools`](ansible/roles/ddhn.tools) role installs the digital preservat
 - download the tool installation package and install to `/usr/local/lib/<tool-name>`;
 - add any required symlinks to `/usr/local/bin` so that tool executables are effectively on the path; and
 - put an icon for the tool GUI on the desktop.
-  
-  
+
+
 Guide
 -----
-# Virtual Research Environment (VRE) Guide 
+# Virtual Research Environment (VRE) Guide
 
 ## About VRE
-The virtual digital preservation research environment (VRE) is a pre-configured virtual machine environment with an installed set of digital preservation (DP) tools for use directly from your desktop. The VRE image was created by the [OPF](https://openpreservation.org/) and funded by the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/en/). VRE works in conjunction with other Open Source applications including [Oracle Virtualbox](https://www.virtualbox.org/manual) that provides the basis for cross platform virtualisation and makes use of [Gnome](https://www.gnome.org/gnome-3/) that provides the default desktop environment.  VRE supports the following DP tools:
-
-* Jhove
-* fido
-* veraPDF
-* Jypylyzer
-* Handbrake (Ffmpeg) 
+The virtual digital preservation research environment (VRE) is a pre-configured virtual machine environment with an installed set of digital preservation (DP) tools for use directly from your desktop. The VRE image was created by the [OPF](https://openpreservation.org/) and funded by the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/en/). VRE works in conjunction with other Open Source applications including [Oracle Virtualbox](https://www.virtualbox.org/manual) that provides the basis for cross platform virtualisation and makes use of [Gnome](https://www.gnome.org/gnome-3/) that provides the default desktop environment.
 
 ## Pre reqs
 In order to use the VRE you will need to:
 * check that your desktop has been set up to support virtualisation, this is done in your BIOS settings
-* download and install Oracle Virtualbox 
+* download and install Oracle Virtualbox
 * download and install the VRE image
 
 ### Creating the VM environment
 
 #### Checking your desktop
-If you have a system administrator, ask them to check the BIOS settings on your desktop have been enabled for virtualisation. If not then this is usually done at startup, the process for doing this varies so refer to the manufacturer's instructions. 
+If you have a system administrator, ask them to check the BIOS settings on your desktop have been enabled for virtualisation. If not then this is usually done at startup, the process for doing this varies so refer to the manufacturer's instructions.
 Resources - [enabling virtualization in BIOS](https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html)
 
 
@@ -207,8 +186,8 @@ Resources -
 * VRE download [VREv1.0](https://ddhn.openpreservation.org/ddhn-rc.ova)
 
 ## Starting VRE
-Following installation the normal start up procedure is to open the Virtualbox Manager window, the left side of which will contain the DDHN VRE virtual machine icon which will be in the powered off state. 
-To start, select the VRE icon and then the green start arrow on the top menu selecting ‘Normal Start’ - this will open the virtual machine and the VRE display window. 
+Following installation the normal start up procedure is to open the Virtualbox Manager window, the left side of which will contain the DDHN VRE virtual machine icon which will be in the powered off state.
+To start, select the VRE icon and then the green start arrow on the top menu selecting ‘Normal Start’ - this will open the virtual machine and the VRE display window.
 Note the Virtualbox Manager is also used for managing / configuring Virtualbox settings  - further details can be found on the Oracle Virtualbox user guide
 
 Resources - [Starting Virtualbox](https://www.virtualbox.org/manual/ch01.html#intro-starting)
@@ -242,35 +221,8 @@ From the Virtualbox Manager:
 
 Resources - [Virtualbox shared folders](https://www.virtualbox.org/manual/ch04.html#sharedfolders)
 
-### Accessing DP Tools
- To open the tools simply select the relevant icon: 
-* Droid
-* Jhove 
-* Tika 
-* veraPDF plus associated PDF document viewer
-* Handbrake (ffmpeg)
-* Mediainfo 
-* Inkscape and GNU Media Image
-Resources - 
-* DROID: A file format identification tool developed and maintained by The National Archives of the UK
-  + Homepage: https://digital-preservation.github.io/droid/
-  + GitHub: https://github.com/digital-preservation/droid
-* JHOVE: A format validation and characterisation tool developed by Harvard University Library and the Open Preservation Foundation
-  + Homepage: https://jhove.openpreservation.org
-  + GitHub: https://github.com/openpreserve/jhove
-* Apache Tika: A characterisation and text extraction tool developed and maintained by the Apache Software Foundation
-  + Homepage: https://tika.apache.org/
-  + GitHub: https://github.com/apache/tika
-* veraPDF: A validation and characterisation tool for the PDF/A format
-  + Homepage: https://docs.verapdf.org
-  + GitHub: https://github.com/veraPDF/veraPDF-library
-* Handbrake: a tool for converting video from nearly any format to a selection of modern, widely supported codecs.
-  + Homepage: https://handbrake.fr/
-  + GitHub: https://github.com/HandBrake/HandBrake
-* Mediainfo - tool for extracting media files
- +Homepage: https://mediaarea.net/en/MediaInfo
-* Inkscape and GNU Media Image - used for image manipulation that are bundled as part of Debian
- +Homepage: https://inkscape.org/ and https://inkscape.org/
+### VRE Tools and Resources
+The list of tools and reference resources is maintained [here in a separate Markdown file](./docs/tools/index.md).
 
 ## Logging VRE Issues
 Should you encounter any problems with the VRE container then please raise a Github issue at the following Github site [Openpreserve ddhn-forge](https://github.com/openpreserve/ddhn-forge/issues), use the same mechanism to suggest enhancements. Please note that this should be limited to VRE matters only, tool enhancements should be directed to the relevant sites. If you do not have a Github user account you can also post issues via the [OPF contact us page](https://openpreservation.org/contact/)
