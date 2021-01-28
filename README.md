@@ -2,13 +2,13 @@ Overview
 --------
 This project creates the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/en/) digital preservation virtual research environment (VRE). The environment is a virtual machine set up with a set of digital preservation tools installed and ready to use from the desktop.
 
-Supporting documentation is presented in these sections:
+Supporting documentation is presented in these sections, or you can use [the documentation website](https://openpreserve.github.io/ddhn-forge/):
 
 1. [Setup Guide](docs/setup/index.md): How to download and configure the VRE.
-2. [User Guide](docs/guide/index.md):
-3. [Tool Reference](docs/tools/index.md): A list of the
-4. [Maintainer's Guide](docs/maintainer/index.md):
-5. Quick Start: A brief look at how to use this project yourself
+2. [User Guide](docs/guide/index.md): Some help getting acquainted with VirtualBox and the environment.
+3. [Tool Reference](docs/tools/index.md): A list of the bundled tools and some help references.
+4. [Maintainer's Guide](docs/maintainer/index.md): A look at how the VRE is produced and how it can be updated or extended.
+5. Quick Start: A brief look at how to use this project yourself the rest of this README below.
 
 Quick Start
 -----------
