@@ -13,7 +13,9 @@ In order to use the VRE you will need to:
 
 ### Checking your desktop
 If you have a system administrator, ask them to check the BIOS settings on your desktop have been enabled for virtualisation. If not then this is usually done at startup, the process for doing this varies so refer to the manufacturer's instructions.
-Resources - [enabling virtualization in BIOS](https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html)
+
+**Resources**
+- [enabling virtualization in BIOS](https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html)
 
 
 ### Downloading Oracle Virtualbox
