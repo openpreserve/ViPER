@@ -1,11 +1,14 @@
 # User's Guide
+Here we provide help for users who are new to VirtualBox and using virtual machines. The guide isn't
 
 ## Starting VRE
-Following installation the normal start up procedure is to open the Virtualbox Manager window, the left side of which will contain the DDHN VRE virtual machine icon which will be in the powered off state.
+Following [installation](/setup) the normal start up procedure is to open the Virtualbox Manager window, the left side of which will contain the DDHN VRE virtual machine icon which will be in the powered off state.
 To start, select the VRE icon and then the green start arrow on the top menu selecting ‘Normal Start’ - this will open the virtual machine and the VRE display window.
 Note the Virtualbox Manager is also used for managing / configuring Virtualbox settings  - further details can be found on the Oracle Virtualbox user guide
 
-Resources - [Starting Virtualbox](https://www.virtualbox.org/manual/ch01.html#intro-starting)
+**Resources**
+
+- [Starting Virtualbox](https://www.virtualbox.org/manual/ch01.html#intro-starting)
 
 ## Using VRE
 The VRE default desktop environment is GNOME 3 based. For users unfamiliar with GNOME the simple user guide can be found via the following link [GNOME 3 User guide]( https://help.gnome.org/users/gnome-help/stable/shell-introduction.html.en). The visual guide provides an overview of the Activities menu that is accessed via the top left of the VRE display, this manages access to your windows and applications. When enabled the vertical panel provides access to the DP tools, files as well access to:
@@ -18,12 +21,15 @@ To access and manage the system settings on your desktop use the menu on the top
 * The left side symbol provides general settings access
 Further details can be found in the GNOME 3 guide.
 
-Resources - [GNOME 3 User guide]( https://help.gnome.org/users/gnome-help/stable/shell-introduction.html.en).
+**Resources**
+
+- [GNOME 3 User guide]( https://help.gnome.org/users/gnome-help/stable/shell-introduction.html.en).
 
 ### File Sharing
-To make best use of the DP tools you will need access to the files located on your normal operational computer (the host). These files will need to be accessed or shared with the  virtual machine (often referred to as the guest). This is a straightforward, Virtualbox control function. The detail covering set up can be found: [Virtualbox shared folders](https://www.virtualbox.org/manual/ch04.html#sharedfolders). In overview:
+To make best use of the DP tools you will need access to the files located on your normal operational computer (the host). These files will need to be accessed or shared with the  virtual machine (often referred to as the guest). This is a straightforward, Virtualbox control function. The detail covering set up can be found [online here](https://www.virtualbox.org/manual/ch04.html#sharedfolders).
 
 From the Virtualbox Manager:
+
 1. Ensure that the relevant virtual machine is selected - DDHN VRE. The machine should be powered off
 2. Select Settings - This is selected via the Settings icon that is by the Start icon or via the pull down selection menu entitled Machine on the left side of the Virtualbox window immediately above the DDHN VRE virtual machine icon
 3. Select the Shared Folders menu. A window will appear. The top right will display the Settings icon with the label DDHN VRE Settings. Above the main body of the window the heading ‘Shared Folders’. To the right side of the main window note a + symbol; select the + symbol this will open a further window
@@ -34,4 +40,6 @@ From the Virtualbox Manager:
 8. Enable Auto Mount’ - now select ‘OK’
 9. Start the DDHN VRE virtual machine - note the new shared folders icon in the virtual machine window
 
-Resources - [Virtualbox shared folders](https://www.virtualbox.org/manual/ch04.html#sharedfolders)
+**Resources**
+
+- [Virtualbox shared folders](https://www.virtualbox.org/manual/ch04.html#sharedfolders)
