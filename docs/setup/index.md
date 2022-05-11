@@ -1,4 +1,5 @@
 # Setting Up The Virtual Research Environment (VRE) Guide
+This guide is intended to help you install VirtualBox then download and import the VRE machine.
 
 ## About VRE
 The virtual digital preservation research environment (VRE) is a pre-configured virtual machine environment with an installed set of digital preservation (DP) tools for use directly from your desktop. The VRE image was created by the [OPF](https://openpreservation.org/) and funded by the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/en/). VRE works in conjunction with other Open Source applications including [Oracle Virtualbox](https://www.virtualbox.org/manual) that provides the basis for cross platform virtualisation and makes use of [Gnome](https://www.gnome.org/gnome-3/) that provides the default desktop environment.

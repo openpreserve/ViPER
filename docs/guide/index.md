@@ -1,5 +1,5 @@
 # User's Guide
-Here we provide help for users who are new to VirtualBox and using virtual machines. The guide isn't
+Here we provide help for users who are new to VirtualBox and using virtual machines. The guide isn't intended to provide help on the bundled toolset, these all have their own online references and you can find more information [on our tools page](/tools/).
 
 ## Starting VRE
 Following [installation](/setup) the normal start up procedure is to open the Virtualbox Manager window, the left side of which will contain the DDHN VRE virtual machine icon which will be in the powered off state.

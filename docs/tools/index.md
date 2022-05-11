@@ -1,4 +1,6 @@
 # Tools Included in the VRE
+Here you can find a full list of the bundled tools and some references to online resources.
+
 ## ![DROID icon](../assets/img/icons/droid.png "DROID icon") DROID (Digital Record Object Identification)
 A file format identification tool developed and maintained by The National Archives of the UK.
 DROID performs automated batch identification of file format. DROID uses internal signatures
