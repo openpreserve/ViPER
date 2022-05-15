@@ -15,8 +15,9 @@ ddhn_env_apt_defaults:
   - openjdk-11-jre
   - openjdk-11-doc
   - openjdk-11-source
-  # GNOME desktop
+  # GNOME desktop and Nemo add on for icon display
   - task-gnome-desktop
+  - nemo
 
 virtualbox_remove_os_packages: true
 virtualbox_x11: true
