@@ -10,7 +10,6 @@
   get_url:
     url: "{{ ddhn.tools.tika.installer.loc }}"
     dest: "{{ ddhn.tools.tika.dests.lib }}/tika-app-{{ tika_version }}.jar"
-    remote_src: yes
 
 - name: "TIKA | Copy the tika shell file."
   template:
