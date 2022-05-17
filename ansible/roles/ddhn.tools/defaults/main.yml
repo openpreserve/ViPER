@@ -13,6 +13,24 @@ ddhn_icons_share: "{{ ddhn_usr_share }}/icons"
 # Account name
 ddhn_account_name: "{{ ddhn_env_user_name | default('vagrant') }}"
 
+# Tools installed via Debian package manager
+ddhn_debian_tools:
+  # Debian package for mediainfo GUI
+  - "mediainfo-gui"
+  # Debian handbrake installation
+  - "handbrake"
+  # Debian Inkscape installation
+  - "inkscape"
+  # Debian GIMP installation
+  - "gimp"
+
+# Desktop icon files for the about to be copied to remote desktop
+ddhn_debian_icons:
+  - "org.gnome.Evince"
+  - "gimp"
+  - "org.inkscape.Inkscape"
+  - "mediainfo-gui"
+
 # JHOVE version details, to override set jhove_major_minor and jhove_patch
 jhove_major: "1"
 jhove_minor: "24"
@@ -21,18 +39,19 @@ jhove_version: "{{ jhove_major }}.{{ jhove_minor }}.{{ jhove_patch }}"
 
 # veraPDF version details, to override set verapdf_major }}.{{ verapdf_minor and vera_patch
 verapdf_major: "1"
-verapdf_minor: "16"
+verapdf_minor: "20"
 verapdf_patch: "1"
 verapdf_version: "{{ verapdf_major }}.{{ verapdf_minor }}.{{ verapdf_patch }}"
 
 droid_major: "6"
 droid_minor: "5"
-droid_version: "{{ droid_major }}.{{ droid_minor }}"
+droid_patch: "2"
+droid_version: "{{ droid_major }}.{{ droid_minor }}.{{ droid_patch }}"
 
 # Apache Tika version details
 tika_major: "1"
-tika_minor: "24"
-tika_patch: "1"
+tika_minor: "28"
+tika_patch: "2"
 tika_version: "{{ tika_major }}.{{ tika_minor }}.{{ tika_patch }}"
 
 ddhn:
@@ -66,7 +85,7 @@ ddhn:
         git: "https://github.com/digital-preservation/droid.git"
         tag: "droid-{{ droid_version }}"
       installer:
-        loc: "https://github.com/digital-preservation/droid/releases/download/droid-{{ droid_version }}/droid-binary-{{ droid_version }}-bin.zip"
+        loc: "https://repo1.maven.org/maven2/uk/gov/nationalarchives/droid-binary/{{ droid_version }}/droid-binary-{{ droid_version }}-bin.zip"
       dests:
         bin: "{{ ddhn_bin }}"
         lib: "{{ ddhn_lib }}/droid/{{ droid_version }}"
@@ -83,7 +102,7 @@ ddhn:
         git: "https://github.com/apache/tika.git"
         tag: "{{ tika_version }}"
       installer:
-        loc: "http://apache.mirror.anlx.net/tika/tika-app-{{ tika_version }}.jar"
+        loc: "https://archive.apache.org/dist/tika/{{ tika_version }}/tika-app-{{ tika_version }}.jar"
       dests:
         bin: "{{ ddhn_bin }}"
         lib: "{{ ddhn_lib }}/tika/{{ tika_version }}"

@@ -1,6 +1,9 @@
 ---
 # Main task entry point for ddhn.tools
 
+- name: "DDHN TOOLS | Install Debian Tools."
+  import_tasks: debTools.yml
+
 - name: "DDHN TOOLS | Install JHOVE."
   import_tasks: jhove.yml
 
