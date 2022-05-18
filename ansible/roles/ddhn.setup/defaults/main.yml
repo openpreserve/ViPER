@@ -12,15 +12,11 @@ ddhn_env_apt_defaults:
   - zip
   - unzip
   # Open JDK 8 for Java
-  - openjdk-8-jre
-  - openjdk-8-doc
-  - openjdk-8-source
+  - openjdk-11-jre
+  - openjdk-11-doc
+  - openjdk-11-source
   # GNOME desktop
   - task-gnome-desktop
-  # Debian package for mediainfo GUI
-  - mediainfo-gui
-  # Debian handbrake installation for now
-  - handbrake
 
 virtualbox_remove_os_packages: true
 virtualbox_x11: true
