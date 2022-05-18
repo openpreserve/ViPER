@@ -1,5 +1,7 @@
 ---
 # Main task entry point for ddhn.tools
+- name: "DDHN TOOLS | Install MediaArea tools."
+  import_tasks: mediaarea/main.yml
 
 - name: "DDHN TOOLS | Install Debian Tools."
   import_tasks: debTools.yml

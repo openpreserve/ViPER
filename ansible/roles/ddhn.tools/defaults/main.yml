@@ -15,8 +15,6 @@ ddhn_account_name: "{{ ddhn_env_user_name | default('vagrant') }}"
 
 # Tools installed via Debian package manager
 ddhn_debian_tools:
-  # Debian package for mediainfo GUI
-  - "mediainfo-gui"
   # Debian handbrake installation
   - "handbrake"
   # Debian Inkscape installation
@@ -30,6 +28,7 @@ ddhn_debian_icons:
   - "gimp"
   - "org.inkscape.Inkscape"
   - "mediainfo-gui"
+  - "mediaconch-gui"
 
 # JHOVE version details, to override set jhove_major_minor and jhove_patch
 jhove_major: "1"
@@ -126,3 +125,19 @@ ddhn:
         bin: "{{ ddhn_bin }}"
         lib: "{{ ddhn_lib }}/veraPDF/{{ verapdf_version }}"
         src: "{{ ddhn_src }}/veraPDF/{{ verapdf_version }}"
+    mediaarea:
+      - name: "libzen0v5"
+        download_url: "https://mediaarea.net/download/binary/libzen0/0.4.39/libzen0v5_0.4.39-1_amd64.Debian_11.deb"
+        package_name: "libzen0v5_0.4.39-1_amd64.Debian_11.deb"
+      - name: "libmediainfo0v5"
+        download_url: "https://mediaarea.net/download/binary/libmediainfo0/22.03/libmediainfo0v5_22.03-1_amd64.Debian_11.deb"
+        package_name: "libmediainfo0v5_22.03-1_amd64.Debian_11.deb"
+      - name: "libmediaconch0"
+        download_url: "https://mediaarea.net/download/binary/libmediaconch0/22.03/libmediaconch0_22.03-1_amd64.Debian_11.deb"
+        package_name: "libmediaconch0_22.03-1_amd64.Debian_11.deb"
+      - name: "mediainfo-gui"
+        download_url: "https://mediaarea.net/download/binary/mediainfo-gui/22.03/mediainfo-gui_22.03-1_amd64.Debian_11.deb"
+        package_name: "mediainfo-gui_22.03-1_amd64.Debian_11.deb"
+      - name: "mediaconch-gui"
+        download_url: "https://mediaarea.net/download/binary/mediaconch-gui/22.03/mediaconch-gui_22.03-1_amd64.Debian_11.deb"
+        package_name: "mediaconch-gui_22.03-1_amd64.Debian_11.deb"

@@ -1,0 +1,17 @@
+---
+# Install Media Area Tools and dependencies
+- name: "MediaArea Tools | Check for existing {{ item.name }} package."
+  command: dpkg-query -W {{ item.name }}
+  register: mediaarea_check_deb
+  failed_when: mediaarea_check_deb.rc > 1
+  changed_when: mediaarea_check_deb.rc == 1
+
+- name: "MediaArea Tools | Download Debian package for {{ item.name }}."
+  get_url: 
+    url="{{ item.download_url }}"
+    dest="/tmp/{{ item.package_name }}"
+  when: mediaarea_check_deb.rc == 1
+
+- name: "MediaArea Tools | Install Debian package for {{ item.name }}."
+  apt: deb="/tmp/{{ item.package_name }}"
+  when: mediaarea_check_deb.rc == 1
