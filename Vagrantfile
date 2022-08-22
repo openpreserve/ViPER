@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
   # provider for Vagrant. These expose provider-specific options.
   config.vm.provider "virtualbox" do |vb|
     # Name the prototype machine
-    vb.name = "DDHN v1.1 RC"
+    vb.name = "DDHN v1.1 RC2"
     # Display the VirtualBox GUI when booting the machine
     vb.gui = true
     # Customize the CPUs (2x) and memory (4GB) on the VM:

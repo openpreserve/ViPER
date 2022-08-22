@@ -11,7 +11,7 @@
 - name: "Debian Tools | Add desktop icons for Debian tools."
   copy:
     src: "/usr/share/applications/{{ item }}.desktop"
-    dest: "/home/vagrant/Desktop/{{ item }}.desktop"
+    dest: "/home/{{ ddhn_account_name }}/Desktop/{{ item }}.desktop"
     owner: "{{ ddhn_account_name }}"
     group: "{{ ddhn_account_name }}"
     mode: preserve
@@ -20,7 +20,7 @@
 
 - name: "Debian Tools | Set executable permissions for Desktop icons."
   ansible.builtin.file:
-    path: "/home/vagrant/Desktop/{{ item }}.desktop"
+    path: "/home/{{ ddhn_account_name }}/Desktop/{{ item }}.desktop"
     state: file
     mode: "u+x,g+x,o+x"
   with_items: "{{ ddhn_debian_icons }}"

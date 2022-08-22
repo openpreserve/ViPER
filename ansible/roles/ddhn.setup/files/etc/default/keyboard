@@ -1,0 +1,8 @@
+# KEYBOARD CONFIGURATION FILE
+# Consult the keyboard(5) and xkeyboard-config(7) manual page.
+
+KBMODEL="pc105"
+XKBLAYOUT="gb,fr,de,nl"
+XKBVARIANT=""
+XKBOPTIONS="grp:alt_shift_toggle"
+BACKSPACE="guess"

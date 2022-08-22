@@ -11,7 +11,7 @@ ddhn_apps_share: "{{ ddhn_usr_share }}/applications"
 ddhn_icons_share: "{{ ddhn_usr_share }}/icons"
 
 # Account name
-ddhn_account_name: "{{ ddhn_env_user_name | default('vagrant') }}"
+ddhn_account_name: "{{ ddhn_env_user_name | default('vre') }}"
 
 # Tools installed via Debian package manager
 ddhn_debian_tools:
@@ -32,14 +32,14 @@ ddhn_debian_icons:
 
 # JHOVE version details, to override set jhove_major_minor and jhove_patch
 jhove_major: "1"
-jhove_minor: "24"
+jhove_minor: "26"
 jhove_patch: "1"
 jhove_version: "{{ jhove_major }}.{{ jhove_minor }}.{{ jhove_patch }}"
 
 # veraPDF version details, to override set verapdf_major }}.{{ verapdf_minor and vera_patch
 verapdf_major: "1"
 verapdf_minor: "20"
-verapdf_patch: "1"
+verapdf_patch: "3"
 verapdf_version: "{{ verapdf_major }}.{{ verapdf_minor }}.{{ verapdf_patch }}"
 
 droid_major: "6"
@@ -50,7 +50,7 @@ droid_version: "{{ droid_major }}.{{ droid_minor }}.{{ droid_patch }}"
 # Apache Tika version details
 tika_major: "1"
 tika_minor: "28"
-tika_patch: "2"
+tika_patch: "4"
 tika_version: "{{ tika_major }}.{{ tika_minor }}.{{ tika_patch }}"
 
 ddhn:
@@ -130,14 +130,14 @@ ddhn:
         download_url: "https://mediaarea.net/download/binary/libzen0/0.4.39/libzen0v5_0.4.39-1_amd64.Debian_11.deb"
         package_name: "libzen0v5_0.4.39-1_amd64.Debian_11.deb"
       - name: "libmediainfo0v5"
-        download_url: "https://mediaarea.net/download/binary/libmediainfo0/22.03/libmediainfo0v5_22.03-1_amd64.Debian_11.deb"
-        package_name: "libmediainfo0v5_22.03-1_amd64.Debian_11.deb"
+        download_url: "https://mediaarea.net/download/binary/libmediainfo0/22.06/libmediainfo0v5_22.06-1_amd64.Debian_11.deb"
+        package_name: "libmediainfo0v5_22.06-1_amd64.Debian_11.deb"
       - name: "libmediaconch0"
         download_url: "https://mediaarea.net/download/binary/libmediaconch0/22.03/libmediaconch0_22.03-1_amd64.Debian_11.deb"
         package_name: "libmediaconch0_22.03-1_amd64.Debian_11.deb"
       - name: "mediainfo-gui"
-        download_url: "https://mediaarea.net/download/binary/mediainfo-gui/22.03/mediainfo-gui_22.03-1_amd64.Debian_11.deb"
-        package_name: "mediainfo-gui_22.03-1_amd64.Debian_11.deb"
+        download_url: "https://mediaarea.net/download/binary/mediainfo-gui/22.06/mediainfo-gui_22.06-1_amd64.Debian_11.deb"
+        package_name: "mediainfo-gui_22.06-1_amd64.Debian_11.deb"
       - name: "mediaconch-gui"
         download_url: "https://mediaarea.net/download/binary/mediaconch-gui/22.03/mediaconch-gui_22.03-1_amd64.Debian_11.deb"
         package_name: "mediaconch-gui_22.03-1_amd64.Debian_11.deb"
