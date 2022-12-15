@@ -29,6 +29,6 @@
 - hosts: all
   become: true
   roles:
-    - { role: PeterMosmans.virtualbox-guest }
     - { role: ddhn.setup }
+    - { role: PeterMosmans.virtualbox-guest }
     - { role: ddhn.tools }

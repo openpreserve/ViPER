@@ -5,3 +5,25 @@
   apt:
     name: "{{ ddhn.setup.prereqs.apt }}"
     state: "latest"
+
+- name: "LOCALE | Set up common locale packages."
+  community.general.locale_gen:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ddhn.setup.locales }}"
+  notify:
+    - rebuild locales database
+
+- name: "LOCALE | Set default locale."
+  debconf:
+    name: locales
+    question: locales/default_environment_locale
+    value: "{{ ddhn.setup.default_locale }}"
+    vtype: select
+  notify:
+    - rebuild locales database
+
+- name: "LOCALE | Setup keyboard defaults."
+  copy:
+    src: "files/etc/default/keyboard"
+    dest: "/etc/default/keyboard"

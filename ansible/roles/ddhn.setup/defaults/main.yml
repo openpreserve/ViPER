@@ -11,6 +11,9 @@ ddhn_env_apt_defaults:
   # Zip and unzip are always handy
   - zip
   - unzip
+  # Tools for keyboard and console setup
+  - keyboard-configuration
+  - console-setup
   # Open JDK 8 for Java
   - openjdk-11-jre
   - openjdk-11-doc
@@ -41,6 +44,15 @@ ddhn:
       https: "{{ ddhn_env_port_https | default('') }}"
     open_ports: "{{ ddhn_env_open_ports | default([]) }}"
     limited_account:
-      name: "{{ ddhn_env_user_name | default('vagrant') }}"
-      password: "{{ ddhn_env_user_password | default('$6$D.o3KgyK$3k1LYzMBfQBTXfp0GMzAuKpLp1TwKGb/Q0eVc5sP7sdlb.0TIeBOMISmIidT8CFqdOwU240Bnfp8On7484UCk1') }}"
-      home: "{{ ddhn_env_user_home | default('/home/vagrant') }}"
+      name: "{{ ddhn_env_user_name | default('vre') }}"
+      password: ""
+      home: "{{ ddhn_env_user_home | default('/home/vre') }}"
+    default_locale: en_GB.UTF-8
+    locales:
+      - da_DK.UTF-8
+      - de_DE.UTF-8
+      - en_GB.UTF-8
+      - en_US.UTF-8
+      - fr_FR.UTF-8
+      - nl_NL.UTF-8
+
