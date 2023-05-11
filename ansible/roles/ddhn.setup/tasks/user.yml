@@ -1,6 +1,11 @@
 ---
 # Main task entry point for ddhn.setup
 
+- name: "USER | Ensure group vboxsf exists"
+  ansible.builtin.group:
+    name: "vboxsf"
+    state: present
+
 - name: "USER | Creating user account: {{ ddhn.setup.limited_account.name }}."
   user:
     name: "{{ ddhn.setup.limited_account.name }}"
@@ -8,11 +13,12 @@
     createhome: yes
     home: "{{ ddhn.setup.limited_account.home }}"
     shell: "/bin/bash"
-    groups: "sudo"
+    groups: "vboxsf"
     password: "{{ ddhn.setup.limited_account.password }}"
     update_password: always
+    append: yes
 
-- name: "USER | Set authorized key for user: {{ ddhn.setup.limited_account.name }}, copied from current user"
+- name: "USER | Set authorized key for user: {{ ddhn.setup.limited_account.name }}, copied from current user."
   authorized_key:
     user: "{{ ddhn.setup.limited_account.name }}"
     state: present
@@ -25,9 +31,14 @@
     mode: '0775'
     owner: "{{ ddhn.setup.limited_account.name }}"
     group: "{{ ddhn.setup.limited_account.name }}"
+
+- name: "USER | Add execute privileges to the desktop dir."
+  file:
+    path: "{{ ddhn.setup.limited_account.home }}/Desktop"
+    state: directory
     mode: a+x
 
-- name: "USER | Set up auto login via /etc/gdm3/daemon.conf"
+- name: "USER | Set up auto login via /etc/gdm3/daemon.conf."
   template:
     src: "etc/gdm3/daemon.j2"
     dest: "/etc/gdm3/daemon.conf"

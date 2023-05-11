@@ -1,8 +1,15 @@
 ---
 # desktop Environment setup for DDHN tools
 
-- name: "Desktop | Enable desktop icons"
-  become: true
-  become_user: "{{ ddhn.setup.limited_account.name }}"
-  shell: |
-    dbus-launch gsettings set org.gnome.desktop.background show-desktop-icons true
+- name: "Desktop | Create Nemo config directory."
+  file:
+    path: "/home/{{ ddhn_account_name }}/.config/autostart"
+    state: directory
+    mode: '0755'
+    owner: "{{ ddhn_account_name }}"
+    group: "{{ ddhn_account_name }}"
+
+- name: "Desktop | Add hidden desktop file for Nemo and icons"
+  copy:
+    src: "files/home/.config/autostart/nemo-autostart-with-gnome.desktop"
+    dest: "/home/{{ ddhn_account_name }}/.config/autostart/nemo-autostart-with-gnome.desktop"
