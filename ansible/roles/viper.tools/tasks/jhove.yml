@@ -1,0 +1,32 @@
+---
+# JHOVE installation for viper.tools
+
+- name: "JHOVE | Running Tool Setup."
+  include_tasks: tool.yml
+  vars:
+    item: "{{ viper.tools.jhove }}"
+
+- name: "JHOVE | Download and installer."
+  get_url:
+    url: "{{ viper.tools.jhove.installer.loc }}"
+    dest: /tmp/jhove-installer.jar
+
+- name: "JHOVE | Copy custom installation config."
+  template:
+    src: "tmp/jhove-install.xml"
+    dest: "/tmp/jhove-install.xml"
+
+- name: "JHOVE | Run installation script"
+  command: java -jar /tmp/jhove-installer.jar /tmp/jhove-install.xml
+
+- name: "JHOVE | Create symlink for CLI shell file."
+  file:
+    src: "{{ viper.tools.jhove.dests.lib }}/jhove"
+    dest: "{{ viper.tools.jhove.dests.bin }}/jhove"
+    state: link
+
+- name: "JHOVE | Create symlink for GUI shell file."
+  file:
+    src: "{{ viper.tools.jhove.dests.lib }}/jhove-gui"
+    dest: "{{ viper.tools.jhove.dests.bin }}/jhove-gui"
+    state: link

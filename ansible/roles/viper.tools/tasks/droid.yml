@@ -1,0 +1,19 @@
+---
+# DROID installation for viper.tools
+
+- name: "DROID | Running Tool Setup."
+  include_tasks: tool.yml
+  vars:
+    item: "{{ viper.tools.droid }}"
+
+- name: "DROID | Download and upack installer."
+  unarchive:
+    src: "{{ viper.tools.droid.installer.loc }}"
+    dest: "{{ viper.tools.droid.dests.lib }}"
+    remote_src: yes
+
+- name: "DROID | Create symlink for shell file."
+  file:
+    src: "{{ viper.tools.droid.dests.lib }}/droid.sh"
+    dest: "{{ viper.tools.droid.dests.bin }}/droid-gui"
+    state: link

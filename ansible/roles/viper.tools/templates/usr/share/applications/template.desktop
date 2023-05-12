@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version={{ item.version }}
+Type=Application
+Name={{ item.desktop_name }}
+GenericName={{ item.generic_name }}
+Comment={{ item.comment }}
+Exec={{ item.exec }}
+Icon={{ viper_icons_share }}/{{ item.icon }}
+Terminal=false
+Categories=Utility;
