@@ -1,3 +1,6 @@
+---
+title: ViPER Mainter's Guide
+---
 # Maintainer's Guide
 
 This guide is intended for anybody interested in:

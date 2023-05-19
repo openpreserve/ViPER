@@ -1,3 +1,6 @@
+---
+title: Home
+---
 # ViPER, the Virtual Preservation Environment for Research
 
 1. [Setup Guide](./setup/): How to download and configure the ViPER.

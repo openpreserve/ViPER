@@ -1,3 +1,6 @@
+---
+title: ViPER Users Guide
+---
 # User's Guide
 
 Here we provide help for users who are new to VirtualBox and using virtual machines.
@@ -41,6 +44,7 @@ From the Virtualbox Manager:
 9. Start the ViPER virtual machine - note the new shared folders icon in the virtual machine window
 
 ## Using the tools
+
 Once ViPER and the shared folders are set up, the tools are ready to use. But what tool to start with, and which one to use with what goal in mind? The OPF developed a Reference Workflow for digital preservation consisting of the following steps:
 
 - Identification: identify file formats and versions (to be stored as technical metadata). Tool:

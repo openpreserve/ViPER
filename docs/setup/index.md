@@ -1,3 +1,6 @@
+---
+title: ViPER Setup
+---
 # Setting Up The Dutch Digital Heritage Network Virtual Research Environment (ViPER) Guide
 
 This guide is intended to help you install VirtualBox then download and import the ViPER machine.

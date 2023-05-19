@@ -1,3 +1,6 @@
+---
+title: ViPER FAQs
+---
 # Frequently Asked Questions and Known Issues
 
 ## FAQs {#faqs}

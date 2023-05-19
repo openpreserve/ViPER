@@ -1,3 +1,6 @@
+---
+title: ViPER Tools
+---
 # Tools Included in the ViPER
 
 Here you can find a full list of the bundled tools and some references to online resources.
