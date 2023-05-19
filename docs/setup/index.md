@@ -4,7 +4,7 @@ This guide is intended to help you install VirtualBox then download and import t
 
 ## About ViPER
 
-The virtual research environment (ViPER) is a pre-configured virtual machine environment with an installed set of digital preservation (DP) tools for use directly from your desktop. The ViPER image was created by the [OPF](https://openpreservation.org/) and funded by the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/en/). ViPER works in conjunction with other Open Source applications including [Oracle Virtualbox](https://www.virtualbox.org/manual) that provides the basis for cross platform virtualisation and makes use of [Gnome](https://www.gnome.org/gnome-3/) that provides the default desktop environment.
+ViPER is an easy-to-install virtual machine running popular open source preservation tools with graphical user interfaces. It was created by the [Open Preservation Foundation](https://openpreservation.org/) (OPF) and funded by the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/en/) (DDHN). ViPER is maintained by the [National Archives of the Netherlands](https://www.nationaalarchief.nl/) and the OPF. [Oracle Virtualbox](https://www.virtualbox.org/manual) that provides the basis for cross platform virtualisation and makes use of [Gnome](https://www.gnome.org/gnome-3/) that provides the default desktop environment.
 
 ## Pre reqs
 
@@ -37,4 +37,4 @@ When both downloads are completed install by selecting each exe file. As you dow
 
 ### Downloading ViPER
 
-ViPER is downloaded as a single machine image as a prebuilt OVA file. The most current version can be downloaded via the following link: ViPER download [ViPERv1.1](https://ddhn.openpreservation.org/viper.ova). Note this is a 4GB file and will take several minutes to download. When the download has completed select the .exe file to complete the installation process. This will open a dialogue box that will give you the option to import the virtual appliance (ViPER) - proceed by selecting ‘import’.
+ViPER is downloaded as a single machine image as a prebuilt OVA file. The most current version can be downloaded via the following link: <https://viper.openpreservation.org/viper-latest.ova>. Note this is a file of several GB and will take several minutes to download. When the download has completed select the .exe file to complete the installation process. This will open a dialogue box that will give you the option to import the virtual appliance (ViPER) - proceed by selecting ‘import’.

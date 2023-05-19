@@ -1,29 +1,28 @@
 # User's Guide
 
-Here we provide help for users who are new to VirtualBox and using virtual machines. The guide isn't intended to provide help on the bundled toolset, these all have their own online references and you can find more information [on our tools page](/tools/).
+Here we provide help for users who are new to VirtualBox and using virtual machines.
 
 ## Starting ViPER
 
 Following [installation](/setup) the normal start up procedure is to open the Virtualbox Manager window, the left side of which will contain the ViPER virtual machine icon which will be in the powered off state.
 To start, select the ViPER icon and then the green start arrow on the top menu selecting ‘Normal Start’ - this will open the virtual machine and the ViPER display window.
-Note the Virtualbox Manager is also used for managing / configuring Virtualbox settings  - further details can be found on the Oracle Virtualbox user guide
+Note the Virtualbox Manager is also used for managing / configuring Virtualbox settings  - further details can be found on the Oracle Virtualbox user guide.
 
 ## Using ViPER
 
-The ViPER default desktop environment is GNOME 3 based. For users unfamiliar with GNOME the simple user guide can be found via the following link [GNOME 3 User guide]( https://help.gnome.org/users/gnome-help/stable/shell-introduction.html.en). The visual guide provides an overview of the Activities menu that is accessed via the top left of the ViPER display, this manages access to your windows and applications. When enabled the vertical panel provides access to the DP tools, files as well access to:
+The ViPER default desktop environment is GNOME based. For users unfamiliar with GNOME the simple user guide can be found via the following link: [GNOME User guide]( https://help.gnome.org/users/gnome-help/stable/shell-introduction.html.en). The visual guide provides an overview of the Activities menu that is accessed via the top left of the ViPER display, this manages access to your windows and applications. When enabled the vertical panel provides access to the DP tools, files as well access to:
 
 - Firefox
-- Gnome help
-- Gnome terminal - this  terminal emulator and has been set up to provide access to the command line environment
+- GNOME help
+- GNOME terminal - this  terminal emulator and has been set up to provide access to the command line environment.
 
 To access and manage the system settings on your desktop use the menu on the top right of the screen. To access general settings select the top right down arrow, there are 3 selection symbols:
 
 - The right side power off symbol this should be used for a graceful shut down
 - The padlock symbol locks the application, a vagrant password is needed to reactivate
-- The left side symbol provides general settings access
+- The left side symbol provides general settings access.
 
-Further details can be found in the GNOME 3 guide.
-
+Further details can be found in the GNOME guide.
 
 ### File Sharing
 
@@ -40,3 +39,22 @@ From the Virtualbox Manager:
 7. The Select Share window will automatically define the path of the host folder selected. It is recommended that you tick the ‘Read only’ box, this will ensure that you do not inadvertently overwrite a file or folder on the host machine whilst using it on the guest machine.
 8. Enable Auto Mount’ - now select ‘OK’
 9. Start the ViPER virtual machine - note the new shared folders icon in the virtual machine window
+
+## Using the tools
+Once ViPER and the shared folders are set up, the tools are ready to use. But what tool to start with, and which one to use with what goal in mind? The OPF developed a Reference Workflow for digital preservation consisting of the following steps:
+
+- Identification: identify file formats and versions (to be stored as technical metadata). Tool:
+  - DROID
+- Validation: determine the level of compliance of a digital object to the relevant format specification. Tools:
+  - JHOVE (AIF, GIF, GZ, HTML, JPG, JPEG2000, PDF, TIFF, WARC, WAV, XML, EPUB, MP3, ZIP)
+  - veraPDF (PDF/A)
+  - MediaConch (AV files, specifically Matroska and FFV1)
+- Charactarization /  Metadata extraction: determine the format-specific significant properties of an object of a given format. Tools:
+  - Apache Tika (over a thousand different file types)
+  - MediaInfo (audio, video, subtitles)
+- Other, conversion-related tools included in ViPER are:
+  - HandBrake, for converting video from nearly any format to a selection of modern, widely supported codecs
+  - InkScape, image manipulation software
+  - GIMP, image manipulation software
+
+For an overview of all tools bundled in ViPER and their specific uses, visit the [Tool Reference guide](../tools/).
