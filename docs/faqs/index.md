@@ -12,9 +12,11 @@
 ## Known Issues {#known-issues}
 
 - **Desktop icons don’t appear**
-  Sometimes, the tool icons don’t appear on ViPER’s desktop. As a workaround, switch from full-screen mode to windowed mode and/or back, or change (when in windowed mode) the screen dimensions.
+  Sometimes, the tool icons don’t appear on ViPER’s desktop. This is usually caused if you try to re-scale the screen when the VM is booting and seems to be a VirtualBox issue. To fix this you can re-scale the screen again or switch from full screen to windowed mode and back again.
 - **Shared folder doesn’t appear**
   Sometimes, the shared folder icon doesn’t appear on ViPER’s desktop. Note that this shared folder can usually be found in /media (the media folder in the root folder). You can go there using command prompt commands (Terminal), when opening files in the tools (e.g. File > Open…) or by using the Nautilus file manager (Files).
+- **ViPER doesn't start on Windows 10**
+  If the ViPER OVA file won't start on a Windows 10 host you must enable 3D acceleration using the VirtualBox VM Display settings.
 
 See also ViPER’s  Github issues list: <https://github.com/openpreserve/ddhn-forge/issues>.
 
