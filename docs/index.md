@@ -1,4 +1,5 @@
 ---
+layout: page
 title: Home
 ---
 # ViPER, the Virtual Preservation Environment for Research
