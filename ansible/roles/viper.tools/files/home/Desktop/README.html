@@ -1,0 +1,146 @@
+<h2 id="overview">Overview</h2>
+<p>This project creates the <a href="https://www.netwerkdigitaalerfgoed.nl/en/">Dutch Digital Heritage Network</a> virtual digital preservation research environment. The environment is a virtual machine set up with a set of digital preservation tools installed and ready to use from the desktop. The supporting documentation has been broken down into 3 distinct areas:</p>
+<ol>
+<li>Quick Start</li>
+<li>ViPER User Guide</li>
+<li>Reference links</li>
+</ol>
+<h3 id="current-tool-list">Current Tool List</h3>
+<p>This prototype comes with four open source digital preservation tools installed. These were selected for ease of use, they all have graphical user interfaces, and homogeneity as they&#39;re all Java based.</p>
+<ul>
+<li>DROID: A file format identification tool developed and maintained by The National Archives of the UK<ul>
+<li>Homepage: <a href="https://digital-preservation.github.io/droid/">https://digital-preservation.github.io/droid/</a></li>
+<li>GitHub: <a href="https://github.com/digital-preservation/droid">https://github.com/digital-preservation/droid</a></li>
+</ul>
+</li>
+<li>JHOVE: A format validation and characterisation tool developed by Harvard University Library and the Open Preservation Foundation<ul>
+<li>Homepage: <a href="https://jhove.openpreservation.org">https://jhove.openpreservation.org</a></li>
+<li>GitHub: <a href="https://github.com/openpreserve/jhove">https://github.com/openpreserve/jhove</a></li>
+</ul>
+</li>
+<li>Apache Tika: A characterisation and text extraction tool developed and maintained by the Apache Software Foundation<ul>
+<li>Homepage: <a href="https://tika.apache.org/">https://tika.apache.org/</a></li>
+<li>GitHub: <a href="https://github.com/apache/tika">https://github.com/apache/tika</a></li>
+</ul>
+</li>
+<li>veraPDF: A validation and characterisation tool for the PDF/A format<ul>
+<li>Homepage: <a href="https://docs.verapdf.org">https://docs.verapdf.org</a></li>
+<li>GitHub: <a href="https://github.com/veraPDF/veraPDF-library">https://github.com/veraPDF/veraPDF-library</a></li>
+</ul>
+</li>
+<li>Handbrake: a tool for converting video from nearly any format to a selection of modern, widely supported codecs.<ul>
+<li>Homepage: <a href="https://handbrake.fr/">https://handbrake.fr/</a></li>
+<li>GitHub: <a href="https://github.com/HandBrake/HandBrake">https://github.com/HandBrake/HandBrake</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="quick-start">Quick Start</h2>
+<p>The quickest way to try out the environment is to download the machine image.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>You&#39;ll need <a href="https://www.virtualbox.org/">Virtual Box</a> on your machine to act as a virtualisation platform. If you&#39;re installing VirtualBox:</p>
+<ul>
+<li>Check that you have hardware <a href="https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html">virtualisation enabled in your BIOS</a>.</li>
+<li>Please install the <a href="https://www.virtualbox.org/manual/ch01.html#intro-installing">Extension Pack</a>.</li>
+</ul>
+<h3 id="downloading-the-virtual-machine">Downloading the virtual Machine</h3>
+<p>Rather than build a vagrant machine you can download a <a href="https://www.virtualbox.org/manual/ch01.html#ovf-about">prebuilt OVF file</a>
+which can be downloaded <a href="https://viper.openpreservation.org/viper.ova">from an OPF server</a>. The download takes some time
+as it&#39;s about 4GB. When it&#39;s finished you should have a file called <code>viper.ova</code>.</p>
+<p><a href="https://www.virtualbox.org/manual/ch01.html#ovf">These instructions</a> tell you how to import the OVA file into VirtualBox so you can start it.</p>
+<h3 id="logging-onto-the-machine">Logging onto the machine</h3>
+<ul>
+<li>Username: <code>viper</code></li>
+<li>Password: <code>viper</code></li>
+</ul>
+<p>The account has passwordless <code>sudo</code> privileges so can be used
+to fix, or break, most things. This may change when we release a production version.</p>
+<h3 id="tweaking-the-virtualbox-machine">Tweaking the VirtualBox Machine</h3>
+<p>Out of the box the machine should come configured with:</p>
+<ul>
+<li>2 virtual CPUS</li>
+<li>64MB of video RAM to allow desktop scaling</li>
+<li>4GB of RAM</li>
+</ul>
+<p>More CPU and RAM will almost certainly improve performance. If you&#39;re setting up a vagrant box from scratch
+you can use the <a href="#initialisation">Initialisation</a> instructions to change the parameters. If you&#39;ve imported
+the OVA you can use the VirtualBox GUI to make the changes as <a href="https://www.virtualbox.org/manual/ch01.html#ovf">described here</a>.</p>
+<h2 id="prototyping-decisions">Prototyping Decisions</h2>
+<h3 id="vm-and-os">VM and OS</h3>
+<p>There are a few flavours of VM for a particular OS. The project team have already
+agreed that Debian 9 (Stretch) was a sensible starting choice. The two main criteria
+that guided the decision were stability and long update cycles.</p>
+<p><a href="https://www.virtualbox.org/">Virtual Box</a> was chosen as the virtualisation platform
+because of its cross platform ubiquity. <a href="https://www.vagrantup.com/">Vagrant</a> is a
+tool designed for building and managing virtual machine environments. It was chosen
+to speed up the initial virtual box provisioning. <a href="https://app.vagrantup.com/">Vagrant Cloud</a>
+provides a collection of cookie-cut virtual machines. The Vagrant machine chosen
+as a starting point was an official Debian Stretch build with the addition of the
+Virtual Box shared folder kernel module: <a href="https://app.vagrantup.com/debian/boxes/contrib-stretch64">https://app.vagrantup.com/debian/boxes/contrib-stretch64</a>.</p>
+<h3 id="initialisation">Initialisation</h3>
+<p>A vagrant machine is configured by a <a href="./Vagrantfile"><code>Vagrantfile</code></a> which can be
+set up with the appropriate virtual machine template:</p>
+<pre><code class="lang-shell"><span class="hljs-attribute">vagrant</span> init debian/contrib-stretch64
+</code></pre>
+<p>Before starting the machine we want to configure a few things out of the box. By default Vagrant machines are headless, i.e. all access via terminal and SSH with no GUI. We also need to provision the memory and number of CPUs available to the machine. While cores and memory are plentiful on a development workstation, 2 virtual CPUs and 4GB or RAM are sensible starting parameters. Anything requiring significantly more compute power would struggle to satisfy the accessible research environment brief. These parameters can be adjusted in situ regardless.</p>
+<p>We can set these up for a Virtual Box VM by adding the following lines to our Vagrantfile, we&#39;ll also set a VM name while we&#39;re at it:</p>
+<pre><code class="lang-ruby">config.vm.provider "virtualbox" <span class="hljs-keyword">do</span> |vb|
+  # <span class="hljs-keyword">Name</span> the prototype machine
+  vb.name = <span class="hljs-string">"ViPER"</span>
+  # Display the VirtualBox GUI <span class="hljs-keyword">when</span> booting the machine
+  vb.gui = <span class="hljs-literal">true</span>
+  # Customize the CPUs (<span class="hljs-number">2</span>x) <span class="hljs-keyword">and</span> <span class="hljs-keyword">memory</span> (<span class="hljs-number">4</span>GB) <span class="hljs-keyword">on</span> the VM:
+  vb.cpus = <span class="hljs-number">2</span>
+  vb.memory = <span class="hljs-string">"4096"</span>
+  # <span class="hljs-keyword">Now</span> <span class="hljs-keyword">set</span> an execution cap <span class="hljs-keyword">at</span> <span class="hljs-number">50</span> % <span class="hljs-keyword">if</span> <span class="hljs-keyword">required</span>
+  # vb.customize [<span class="hljs-string">"modifyvm"</span>, :<span class="hljs-keyword">id</span>, <span class="hljs-string">"--cpuexecutioncap"</span>, <span class="hljs-string">"50"</span>]
+  # We need extra Video RAM <span class="hljs-keyword">for</span> display flexibility
+  vb.customize [<span class="hljs-string">"modifyvm"</span>, :<span class="hljs-keyword">id</span>, <span class="hljs-string">"--vram"</span>, <span class="hljs-string">"64"</span>]
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>We can now bring the machine up with the command <code>vagrant up</code>, this takes a while first time.</p>
+<h3 id="provisioning">Provisioning</h3>
+<p>Provisioning covers installation of the software tools and dependencies as well as configuration of the OS and user environment. <a href="https://docs.ansible.com/ansible/latest/index.html">Ansible</a> is a cross platform IT automation tool that simply requires SSH access to the target machine.</p>
+<h4 id="ansible-command">Ansible command</h4>
+<p>Vagrant features built in support for Ansible provisioning out of the box. The following section of the <a href="Vagrantfile"><code>Vagrantfile</code></a> invokes Ansible
+provisioning the first time that the VM is started using the <code>vagrant up</code> command. After first start the provisioning section can be invoked alone by using the <code>vagrant provision</code> command. The <code>Vagrantfile</code> section looks like:</p>
+<pre><code class="lang-yaml">config.vm.provision <span class="hljs-string">"ansible"</span> do |ansible|
+  <span class="hljs-comment"># Use the playbook ./ansible/initialise-env.yaml</span>
+  ansible.<span class="hljs-attr">playbook</span> = <span class="hljs-string">"ansible/initialise-env.yml"</span>
+  <span class="hljs-comment"># Let's ask for verbose output in case of problems</span>
+  ansible.<span class="hljs-attr">verbose</span> = <span class="hljs-string">"vv"</span>
+  <span class="hljs-comment"># Limit the use of this playbok to a particular host</span>
+  ansible.<span class="hljs-attr">limit</span> = <span class="hljs-string">"env.viper.test"</span>
+  <span class="hljs-comment"># Ansible job requirements, we need NGINX</span>
+  ansible.<span class="hljs-attr">galaxy_role_file</span> = <span class="hljs-string">"ansible/requirements.yml"</span>
+  ansible.<span class="hljs-attr">galaxy_command</span> = <span class="hljs-string">"ansible-galaxy install --role-file=%{role_file}"</span>
+  <span class="hljs-comment"># The inventory file that sets up details for the vagrant machine</span>
+  ansible.<span class="hljs-attr">inventory_path</span> = <span class="hljs-string">"ansible/vagrant.yml"</span>
+end
+</code></pre>
+<p>The playbook <a href="ansible/initialise-env.yaml"><code>ansible/initialise-env.yaml</code></a> is the list of roles that set up the virtual research environment. An Ansible role is simply a set of tasks that achieve a desired state, e.g. install software, copy files, etc.. The next two sections break down the sub-roles describing the general steps taken and the rationale.</p>
+<h4 id="ddhn-setup">ddhn.setup</h4>
+<p>The <a href="ansible/roles/ddhn.setup"><code>ddhn.setup</code></a> role handles the setup of the environment, updating the OS, installing dependencies, creating accounts and the like. The <a href="ansible/roles/ddhn.setup/tasks/main.yml">main role</a> simply calls four sub-roles.</p>
+<h5 id="server-tasks">Server tasks</h5>
+<p>The <a href="ansible/roles/ddhn.setup/tasks/server.yml">&#39;server.yml&#39;</a> sub-role:</p>
+<ul>
+<li>updates apt packages;</li>
+<li>sets up the hostname; and</li>
+<li>sets the timezone.</li>
+</ul>
+<h5 id="pre-requisites">Pre-requisites</h5>
+<p>The <a href="ansible/roles/ddhn.setup/tasks/prerequisites.yml"><code>prerequisites.yml</code></a> sub-role installs any apt package dependencies. The package list is the <code>ddhn_env_apt_defaults</code> variable in the <a href="ansible/roles/ddhn.setup/defaults/main.yml">roles&#39; main default file</a>.</p>
+<h5 id="user-tasks">User tasks</h5>
+<p>The <a href="ansible/roles/ddhn.setup/tasks/user.yml"><code>user.yml</code></a> sub-role creates a sudo user to administer the environment. Again, the task is configurable using variables in the <a href="ansible/roles/ddhn.setup/defaults/main.yml">roles&#39; main default file</a>.</p>
+<h5 id="security">Security</h5>
+<p>The <a href="ansible/roles/ddhn.setup/tasks/security"><code>security</code></a> role hardens SSH access, no password and no root access, while setting up firewall rules. The thinking is that the environment should be secure with port access only opened where required.</p>
+<h4 id="viper-tools">viper.tools</h4>
+<p>The <a href="ansible/roles/viper.tools"><code>viper.tools</code></a> role installs the digital preservation tools. It comprises a series of sub-roles, one for each tool. The general workflow for a tool is:</p>
+<ul>
+<li>download the tool source to &#39;/usr/local/src/<tool-name>&#39;;</li>
+<li>download the tool installation package and install to <code>/usr/local/lib/&lt;tool-name&gt;</code>;</li>
+<li>add any required symlinks to <code>/usr/local/bin</code> so that tool executables are effectively on the path; and</li>
+<li>put an icon for the tool GUI on the desktop.</li>
+</ul>
+<h2 id="user-guide">User Guide</h2>
+<h2 id="reference-sources">Reference Sources</h2>
+

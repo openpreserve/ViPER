@@ -1,9 +1,9 @@
-# ddhn.setup metadata
+# VIPER tools metadata
 ---
 galaxy_info:
   author: "Carl Wilson"
   company: "Open Preservation Foundation"
-  description: "ViPER environment setup, accounts, pre-installs, etc."
+  description: "ViPER tool installations."
   license: GPL v3
   min_ansible_version: 2.0.0
   platforms:

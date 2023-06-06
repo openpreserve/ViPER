@@ -1,0 +1,7 @@
+# Vagrant test file for viper.tools
+---
+- hosts: all
+  remote_user: vagrant
+  become: true
+  roles:
+    - ../../
