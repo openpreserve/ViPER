@@ -1,0 +1,39 @@
+---
+# veraPDF installation for viper.tools
+
+- name: "veraPDF | Running Tool Setup."
+  include_tasks: tool.yml
+  vars:
+    item: "{{ viper.tools.verapdf }}"
+
+- name: "veraPDF | Create installer root."
+  file:
+    path: "{{ viper.tools.verapdf.installer.root }}"
+    state: directory
+    mode: '0755'
+
+- name: "veraPDF | Download and upack installer."
+  unarchive:
+    src: "{{ viper.tools.verapdf.installer.loc }}"
+    dest: "{{ viper.tools.verapdf.installer.root }}"
+    remote_src: yes
+
+- name: "veraPDF | Copy custom installation config."
+  template:
+    src: "tmp/verapdf-install.xml"
+    dest: "/tmp/verapdf-install.xml"
+
+- name: "veraPDF | Run installation script"
+  command: "{{ viper.tools.verapdf.installer.script }} /tmp/verapdf-install.xml"
+
+- name: "veraPDF | Create symlink for CLI shell file."
+  file:
+    src: "{{ viper.tools.verapdf.dests.lib }}/verapdf"
+    dest: "{{ viper.tools.verapdf.dests.bin }}/verapdf"
+    state: link
+
+- name: "veraPDF | Create symlink for GUI shell file."
+  file:
+    src: "{{ viper.tools.verapdf.dests.lib }}/verapdf-gui"
+    dest: "{{ viper.tools.verapdf.dests.bin }}/verapdf-gui"
+    state: link
