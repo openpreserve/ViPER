@@ -1,4 +1,5 @@
 ---
+layout: page
 title: ViPER Tools
 ---
 # Tools Included in the ViPER

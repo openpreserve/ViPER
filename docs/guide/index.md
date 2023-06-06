@@ -1,5 +1,6 @@
 ---
-title: ViPER Users Guide
+layout: page
+title: User Guide
 ---
 # User's Guide
 

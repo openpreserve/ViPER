@@ -1,5 +1,6 @@
 ---
-title: ViPER Mainter's Guide
+layout: page
+title: Maintainer Guide
 ---
 # Maintainer's Guide
 

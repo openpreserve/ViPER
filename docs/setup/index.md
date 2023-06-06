@@ -1,5 +1,6 @@
 ---
-title: ViPER Setup
+layout: page
+title: Setup Guide
 ---
 # Setting Up The Dutch Digital Heritage Network Virtual Research Environment (ViPER) Guide
 

@@ -1,5 +1,6 @@
 ---
-title: ViPER References
+layout: page
+title: References
 ---
 # References
 

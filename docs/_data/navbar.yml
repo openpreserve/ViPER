@@ -1,5 +1,18 @@
-- title: "Home"
+- title: "ViPER Guides"
   href: "/"
+  subcategories:
+    - subtitle: "Setup"
+      subhref: "setup/"
+    - subtitle: "Users"
+      subhref: "guide/"
+    - subtitle: "Maintainers"
+      subhref: "maintainer/"
+
+- title: "ViPER Tools"
+  href: "/tools"
 
 - title: "FAQs"
   href: "/faqs"
+
+- title: "References"
+  href: "/refs"
