@@ -1,7 +1,0 @@
-# Vagrant test file for opf.proxy
----
-- hosts: all
-  remote_user: vagrant
-  become: true
-  roles:
-    - ../../
