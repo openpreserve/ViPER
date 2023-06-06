@@ -8,6 +8,10 @@ body {
     background-color: #137DA4;
   }
   
+  .btn-success {
+    background-color: #0D8663;
+  }
+  
   .footer-text {
     color: white;
   }
@@ -16,6 +20,12 @@ body {
     text-align: center;
   }
   
+  div.buttons {
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
   .theme-showcase > p > img {
     display: block;
     margin-left: auto;
