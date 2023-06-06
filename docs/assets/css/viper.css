@@ -26,6 +26,11 @@ body {
     padding-bottom: 10px;
   }
 
+  div.buttons > a {
+    padding-left: 70px;
+    padding-right: 70px;
+  }
+
   .theme-showcase > p > img {
     display: block;
     margin-left: auto;
