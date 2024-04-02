@@ -1,0 +1,7 @@
+# test file for viper.tools
+---
+- hosts: localhost
+  connection: local
+  become: true
+  roles:
+    - ../../

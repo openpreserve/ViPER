@@ -1,0 +1,26 @@
+---
+###
+# Installation of Debian packaged tools.
+###
+
+- name: "Debian Tools | Install apt package pre-requisites."
+  apt:
+    name: "{{ viper_debian_tools }}"
+    state: "latest"
+
+- name: "Debian Tools | Add desktop icons for Debian tools."
+  copy:
+    src: "/usr/share/applications/{{ item }}.desktop"
+    dest: "/home/{{ viper_account_name }}/Desktop/{{ item }}.desktop"
+    owner: "{{ viper_account_name }}"
+    group: "{{ viper_account_name }}"
+    mode: preserve
+    remote_src: yes
+  with_items: "{{ viper_debian_icons }}"
+
+- name: "Debian Tools | Set executable permissions for Desktop icons."
+  ansible.builtin.file:
+    path: "/home/{{ viper_account_name }}/Desktop/{{ item }}.desktop"
+    state: file
+    mode: "u+x,g+x,o+x"
+  with_items: "{{ viper_debian_icons }}"

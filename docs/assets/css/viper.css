@@ -1,0 +1,42 @@
+/* Show it is fixed to the top */
+body {
+    min-height: 75rem;
+    padding-top: 4.5rem;
+  }
+  
+  .bg-blue {
+    background-color: #137DA4;
+  }
+  
+  .btn-success {
+    background-color: #0D8663;
+  }
+  
+  .footer-text {
+    color: white;
+  }
+  
+  footer {
+    text-align: center;
+  }
+  
+  div.buttons {
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  div.buttons > a {
+    padding-left: 70px;
+    padding-right: 70px;
+  }
+
+  .theme-showcase > p > img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .navbar-brand >img {
+    height: 40px;
+  }

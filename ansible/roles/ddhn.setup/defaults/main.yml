@@ -22,10 +22,6 @@ ddhn_env_apt_defaults:
   - task-gnome-desktop
   - nemo
 
-virtualbox_remove_os_packages: true
-virtualbox_x11: true
-local_virtualbox_iso: "/usr/share/virtualbox/VBoxGuestAdditions.iso"
-
 ddhn:
   setup:
     prereqs:
@@ -44,9 +40,9 @@ ddhn:
       https: "{{ ddhn_env_port_https | default('') }}"
     open_ports: "{{ ddhn_env_open_ports | default([]) }}"
     limited_account:
-      name: "{{ ddhn_env_user_name | default('vre') }}"
+      name: "{{ ddhn_env_user_name | default('viper') }}"
       password: ""
-      home: "{{ ddhn_env_user_home | default('/home/vre') }}"
+      home: "{{ ddhn_env_user_home | default('/home/viper') }}"
     default_locale: en_GB.UTF-8
     locales:
       - da_DK.UTF-8

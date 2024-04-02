@@ -1,7 +1,0 @@
-# test file for ddhn.tools
----
-- hosts: localhost
-  connection: local
-  become: true
-  roles:
-    - ../../

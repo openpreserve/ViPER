@@ -1,0 +1,5 @@
+---
+# Install Media Area Tools and dependencies
+- name: "MediaArea Tools | Install Media Area Tools."
+  include_tasks: toolInstall.yml
+  with_items: "{{ viper.tools.mediaarea }}"

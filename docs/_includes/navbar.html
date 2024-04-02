@@ -1,0 +1,30 @@
+{% assign navurl = page.url | remove: 'index.html' %}
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-blue">
+    <a class="navbar-brand" href="{{ site.url }}/"><img src="/assets/img/viper-menu-logo.png" title="ViPER logo" alt="ViPER logo" /></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+      {% for item in include.nav %}
+        {% if item.subcategories != null %}
+        <li class="dropdown">
+          <a href="{{ site.url }}{{ item.href }}" class="nav-link dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">{{ item.title }} <span class="caret"></a>
+          <ul class="dropdown-menu">
+          {% for subcategory in item.subcategories %}
+            <li><a href="{{ site.url }}{{ item.href }}{{ subcategory.subhref }}">{{ subcategory.subtitle }}</a></li>
+          {% endfor %}
+          </ul>
+        {% else %}
+          {% if item.url == navurl %}
+            <li class="nav-item active">
+          {% else %}
+            <li class="nav-item">
+          {% endif %}
+          <a class="nav-link" href="{{ site.url }}{{ item.href }}">{{ item.title }}</a>
+        {% endif %}
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+  </nav>
