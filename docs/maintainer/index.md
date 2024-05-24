@@ -38,7 +38,7 @@ Provisioning covers installation of the software tools and dependencies as well 
 
 ### Vagrant configuration
 
-The vagrant machine is configured by a [`Vagrantfile`](https://github.com/openpreserve/ddhn-forge/blob/master/Vagrantfile) which can be set up with the appropriate virtual machine template:
+The vagrant machine is configured by a [`Vagrantfile`](https://github.com/openpreserve/ViPER/blob/main/Vagrantfile) which can be set up with the appropriate virtual machine template:
 
 #### Vagrant init and OS selection
 
@@ -111,7 +111,7 @@ end
 
 ### Ansible Playbook
 
-The playbook [`ansible/initialise-env.yaml`](https://github.com/openpreserve/ddhn-forge/blob/master/ansible/initialise-env.yml) is the list of roles that set up the virtual research environment.
+The playbook [`ansible/initialise-env.yaml`](https://github.com/openpreserve/ViPER/blob/main/ansible/initialise-env.yml) is the list of roles that set up the virtual research environment.
 An Ansible role is simply a set of tasks that achieve a desired state, e.g. install software, copy files, etc..
 
 ### Ansible Roles
@@ -120,11 +120,11 @@ The next sections break down the sub-roles describing the general steps taken an
 
 ### ddhn.setup
 
-The [`ddhn.setup`](https://github.com/openpreserve/ddhn-forge/blob/master/ansible/roles/ddhn.setup) role handles the setup of the environment, updating the OS, installing dependencies, creating accounts and the like. The [main role](https://github.com/openpreserve/ddhn-forge/blob/master/ansible/roles/ddhn.setup/tasks/main.yml) simply calls four sub-roles.
+The [`ddhn.setup`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup) role handles the setup of the environment, updating the OS, installing dependencies, creating accounts and the like. The [main role](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/tasks/main.yml) simply calls four sub-roles.
 
 #### Server tasks
 
-The ['server.yml'](https://github.com/openpreserve/ddhn-forge/blob/master/ansible/roles/ddhn.setup/tasks/server.yml) sub-role:
+The ['server.yml'](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/tasks/server.yml) sub-role:
 
 - updates apt packages;
 - sets up the hostname; and
@@ -132,19 +132,21 @@ The ['server.yml'](https://github.com/openpreserve/ddhn-forge/blob/master/ansibl
 
 #### Pre-requisites
 
-The [`prerequisites.yml`](https://github.com/openpreserve/ddhn-forge/blob/master/ansible/roles/ddhn.setup/tasks/prerequisites.yml) sub-role installs any apt package dependencies. The package list is the `ddhn_env_apt_defaults` variable in the [roles' main default file](https://github.com/openpreserve/ddhn-forge/blob/master/ansible/roles/ddhn.setup/defaults/main.yml).
+The [`prerequisites.yml`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/tasks/prerequisites.yml) sub-role installs any apt package dependencies. The package list is the `ddhn_env_apt_defaults` variable in the [roles' main default file](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/defaults/main.yml).
 
 #### User tasks
 
-The [`user.yml`](https://github.com/openpreserve/ddhn-forge/blob/master/ansible/roles/ddhn.setup/tasks/user.yml) sub-role creates a sudo user to administer the environment. Again, the task is configurable using variables in the [roles' main default file](https://github.com/openpreserve/ddhn-forge/blob/master/ansible/roles/ddhn.setup/defaults/main.yml).
+The [`user.yml`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/tasks/user.yml) sub-role creates a sudo user to administer the environment. Again, the task is configurable using variables in the [roles' main default file](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/defaults/main.yml).
+
+Note that this role requires that the user's has an RSA public key is available in a file: `~/.ssh/id_rsa`. The public key is added to the user's `~/.ssh/authorized_keys` file using the Ansible `authorized_key` module. If no such file exists, the role/task will fail. This can be fixed by generating a key pair with the command `ssh-keygen -t rsa" and accepting the defaults.
 
 #### Security
 
-The [`security`](https://github.com/openpreserve/ddhn-forge/blob/master/ansible/roles/ddhn.setup/tasks/security) role hardens SSH access, no password and no root access, while setting up firewall rules. The thinking is that the environment should be secure with port access only opened where required.
+The [`security`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/tasks/security) role hardens SSH access, no password and no root access, while setting up firewall rules. The thinking is that the environment should be secure with port access only opened where required.
 
 ### viper.tools
 
-The [`viper.tools`](https://github.com/openpreserve/ddhn-forge/blob/master/ansible/roles/viper.tools) role installs the digital preservation tools. It comprises a series of sub-roles, one for each tool. The general workflow for a tool is:
+The [`viper.tools`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/viper.tools) role installs the digital preservation tools. It comprises a series of sub-roles, one for each tool. The general workflow for a tool is:
 
 - download the tool source to '/usr/local/src/<tool-name>';
 - download the tool installation package and install to `/usr/local/lib/<tool-name>`;
