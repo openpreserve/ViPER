@@ -2,14 +2,13 @@
 layout: page
 title: Maintainer Guide
 ---
-# Maintainer's Guide
 
 This guide is intended for anybody interested in:
 
+- building their own instance of ViPER;
 - updating the ViPER operating system;
-- updating any of the bundled tools when new versions become available;
-- adding new tools to the existing tool set; or
-- building their own instance of ViPER.
+- updating any of the bundled tools when new versions become available; or
+- adding new tools to the existing tool set.
 
 It's not intended as a primer on the underpinning technologies, we assume that readers
 are technically proficient. If you just want to use ViPER and you're looking for help
@@ -28,8 +27,8 @@ You'll need at least familiarity with the following software and technologies to
 ### Virtualisation
 
 - [VirtualBox](https://www.virtualbox.org/) was chosen as the virtualisation platform because of its cross platform ubiquity.
-- [Vagrant](https://www.vagrantup.com/) is a tool designed for building and managing virtual machine environments. It was chosen to speed up the initial virtual box provisioning.
-- [Vagrant Cloud](https://app.vagrantup.com/) provides a collection of cookie-cut virtual machines. The Vagrant machine chosen as a starting point was an official Debian Stretch build with the addition of the Virtual Box shared folder kernel module: <https://app.vagrantup.com/debian/boxes/contrib-stretch64>.
+- [Vagrant](https://www.vagrantup.com/) is a tool designed for building and managing virtual machine environments. It was chosen to speed up the initial VirtualBox provisioning.
+- [Vagrant Cloud](https://app.vagrantup.com/) provides a collection of cookie-cut virtual machines. The Vagrant machine chosen as a starting point was an official Debian Stretch build with the addition of the VirtualBox shared folder kernel module: <https://app.vagrantup.com/debian/boxes/contrib-stretch64>.
 
 ### Provisioning
 
@@ -37,20 +36,30 @@ Provisioning covers installation of the software tools and dependencies as well 
 
 ## Setup & initialisation
 
+### Vagrant configuration
+
 The vagrant machine is configured by a [`Vagrantfile`](https://github.com/openpreserve/ddhn-forge/blob/master/Vagrantfile) which can be set up with the appropriate virtual machine template:
 
+#### Vagrant init and OS selection
+
+The VirtualBox VM is initialised with on the following line, which also selects the guest OS version:
+
 ```shell
-vagrant init debian/bullseye64
+config.vm.box = "debian/bullseye64"
 ```
+
+This choses a 64 bit Debian 11 (Bullseye) image as the base OS.
+
+#### VirtualBox configuration
 
 Before starting the machine we want to configure a few things out of the box. By default Vagrant machines are headless, i.e. all access via terminal and SSH with no GUI. We also need to provision the memory and number of CPUs available to the machine. While cores and memory are plentiful on a development workstation, 2 virtual CPUs and 4GB or RAM are sensible starting parameters. Anything requiring significantly more compute power would struggle to satisfy the accessible research environment brief. These parameters can be adjusted in situ regardless.
 
-We can set these up for a Virtual Box VM by adding the following lines to our Vagrantfile, we'll also set a VM name while we're at it:
+We can set these up for a VirtualBox VM by adding the following lines to our Vagrantfile, we'll also set a VM name while we're at it:
 
 ```ruby
 config.vm.provider "virtualbox" do |vb|
   # Name the prototype machine
-  vb.name = "ViPER"
+  vb.name = "VIPER v1.1"
   # Display the VirtualBox GUI when booting the machine
   vb.gui = true
   # Customize the CPUs (2x) and memory (4GB) on the VM:
@@ -60,10 +69,26 @@ config.vm.provider "virtualbox" do |vb|
   # vb.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
   # We need extra Video RAM for display flexibility
   vb.customize ["modifyvm", :id, "--vram", "128"]
+  # Set up bi-directional clipboard
+  vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+  # Setup Drag and Drop
+  vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
 end
 ```
 
-We can now bring the machine up with the command `vagrant up`, this takes a while first time, that's because the initial provisioning tasks.
+#### Installing VirtualBox Guest Additions
+
+From the [VirtalBox documentation site](https://www.virtualbox.org/manual/ch04.html#guestadd-intro):
+
+> Guest Additions are designed to be installed inside a virtual machine after the guest operating system has been installed. They consist of device drivers and system applications that optimize the guest operating system for better performance and usability.
+
+VirtualBox Guest Additions are installed via the [`vagrant-vbguest` Vagrant plugin](https://github.com/dotless-de/vagrant-vbguest). This can be installed using the command:
+
+```shell
+vagrant plugin install vagrant-vbguest
+```
+
+This will automatically install the Guest Additions on the guest machine when it is started. We can now bring the machine up with the command `vagrant up`, this takes a while first time, that's because the initial provisioning tasks.
 
 ## Provisioning with Ansible
 
@@ -79,9 +104,6 @@ config.vm.provision "ansible" do |ansible|
   ansible.verbose = "vv"
   # Limit the use of this playbok to a particular host
   ansible.limit = "env.ddhn.test"
-  # Ansible job requirements
-  ansible.galaxy_role_file = "ansible/requirements.yml"
-  ansible.galaxy_command = "ansible-galaxy install --role-file=%{role_file}"
   # The inventory file that sets up details for the vagrant machine
   ansible.inventory_path = "ansible/vagrant.yml"
 end

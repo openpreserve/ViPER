@@ -30,5 +30,4 @@
   become: true
   roles:
     - { role: ddhn.setup }
-    - { role: PeterMosmans.virtualbox-guest }
-    - { role: ddhn.tools }
+    - { role: viper.tools }
