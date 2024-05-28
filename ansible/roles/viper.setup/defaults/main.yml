@@ -3,7 +3,7 @@
 viper_env_apt_defaults:
   # Source control a
   - "git"
-  # Debian Stretch lacks the ability to download apt over HTTPS
+  # Debian lacks the ability to download apt over HTTPS
   - "apt-transport-https"
   # Install some helper network tools
   - "psmisc"
@@ -14,10 +14,10 @@ viper_env_apt_defaults:
   # Tools for keyboard and console setup
   - keyboard-configuration
   - console-setup
-  # Open JDK 11 for Java
-  - openjdk-11-jre
-  - openjdk-11-doc
-  - openjdk-11-source
+  # Open JDK 17 for Java
+  - openjdk-17-jre
+  - openjdk-17-doc
+  - openjdk-17-source
   # GNOME desktop and Nemo add on for icon display
   - task-gnome-desktop
   - nemo
