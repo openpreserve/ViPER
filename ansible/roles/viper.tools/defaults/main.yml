@@ -38,8 +38,8 @@ jhove_version: "{{ jhove_major }}.{{ jhove_minor }}.{{ jhove_patch }}"
 
 # veraPDF version details, to override set verapdf_major }}.{{ verapdf_minor and vera_patch
 verapdf_major: "1"
-verapdf_minor: "26"
-verapdf_patch: "2"
+verapdf_minor: "22"
+verapdf_patch: "3"
 verapdf_version: "{{ verapdf_major }}.{{ verapdf_minor }}.{{ verapdf_patch }}"
 
 droid_major: "6"
