@@ -1,5 +1,5 @@
 ---
-# Main task entry point for ddhn.setup
+# Main task entry point for viper.setup
 
 - name: "DEBCONF | Prevent the iptables-peristent install dialog."
   debconf:

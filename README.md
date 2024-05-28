@@ -2,7 +2,7 @@
 
 This project creates ViPER, the Virtual Preservation Environment for Research. The environment is a virtual machine set up with a set of digital preservation tools installed and ready to use from the desktop.
 
-Supporting documentation is presented in these sections, or you can use [the documentation website](https://openpreserve.github.io/ddhn-forge/):
+Supporting documentation is presented in these sections, or you can use [the documentation website](https://viper.openpreserve.org/):
 
 1. [Setup Guide](docs/setup/index.md): How to download and configure ViPER.
 2. [User Guide](docs/guide/index.md): Some help getting acquainted with VirtualBox and the environment.
@@ -13,7 +13,7 @@ Supporting documentation is presented in these sections, or you can use [the doc
 
 ## Logging Issues
 
-Should you have problems with ViPER then please [raise a GitHub issue](https://github.com/openpreserve/ddhn-forge/issues/new) on the project GitHub issue tracker [Openpreserve ddhn-forge](https://github.com/openpreserve/ddhn-forge/issues). You're also free to suggest enhancements by [raising an issue](https://github.com/openpreserve/ddhn-forge/issues/new). Please note that this should be limited to ViPER functionality only, tool enhancements should be directed to the relevant sites. If you do not have a GitHub user account you can also post issues via the [OPF contact us page](https://openpreservation.org/contact/)
+Should you have problems with ViPER then please [raise a GitHub issue](https://github.com/openpreserve/ViPER/issues/new) on the [project GitHub issue tracker](https://github.com/openpreserve/ViPER/issues). You're also free to suggest enhancements by [raising an issue](https://github.com/openpreserve/ViPER/issues/new). Please note that this should be limited to ViPER functionality only, tool enhancements should be directed to the relevant sites. If you do not have a GitHub user account you can also post issues via the [OPF contact us page](https://openpreservation.org/contact/)
 
 ## Quick Start
 
@@ -29,7 +29,7 @@ You'll need [Virtual Box](https://www.virtualbox.org/) on your machine to act as
 ### Downloading the virtual Machine
 
 Rather than build a vagrant machine you can download a [prebuilt OVF file](https://www.virtualbox.org/manual/ch01.html#ovf-about)
-which can be downloaded [ViPER](https://viper.openpreservation.org/viper.ova). The download takes some time
+which can be downloaded [ViPER](https://ddhn.openpreservation.org/viper.ova). The download takes some time
 as it's about 4GB. When it's finished you should have a file called `viper.ova`.
 
 [These instructions](https://www.virtualbox.org/manual/ch01.html#ovf) tell you how to import the OVA file into VirtualBox so you can start it.

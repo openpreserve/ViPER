@@ -1,5 +1,5 @@
 ---
-# Main task entry point for ddhn.setup
+# Main task entry point for viper.setup
 
 - name: "IPTABLES V6 | Allow all loopback (lo0) traffic."
   iptables:

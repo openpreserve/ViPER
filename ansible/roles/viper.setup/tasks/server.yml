@@ -1,14 +1,14 @@
 ---
-# Server tasks for ddhn.setup
+# Server tasks for viper.setup
 
 - name: "APT | Update apt repos and upgrade distro."
   apt:
     update_cache: "yes"
     upgrade: "dist"
 
-- name: "HOST | Set the hostname: {{ ddhn.setup.hostname }}."
+- name: "HOST | Set the hostname: {{ viper.setup.hostname }}."
   hostname:
-    name: "{{ ddhn.setup.hostname }}"
+    name: "{{ viper.setup.hostname }}"
 
 - name: "HOST | Set up /etc/hosts"
   template:
@@ -16,6 +16,6 @@
     dest: "/etc/hosts"
     owner: "root"
 
-- name: "HOST | Set the timezone: {{ ddhn.setup.timezone }}."
+- name: "HOST | Set the timezone: {{ viper.setup.timezone }}."
   timezone:
-    name: "{{ ddhn.setup.timezone }}"
+    name: "{{ viper.setup.timezone }}"

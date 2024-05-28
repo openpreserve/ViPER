@@ -1,5 +1,5 @@
 ---
-# ddhn.setup handlers
+# viper.setup handlers
 
 - name: restart ssh
   service:
