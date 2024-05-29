@@ -43,8 +43,8 @@ verapdf_patch: "2"
 verapdf_version: "{{ verapdf_major }}.{{ verapdf_minor }}.{{ verapdf_patch }}"
 
 droid_major: "6"
-droid_minor: "6"
-droid_patch: "1"
+droid_minor: "7"
+droid_patch: "0"
 droid_version: "{{ droid_major }}.{{ droid_minor }}.{{ droid_patch }}"
 
 # Apache Tika version details
