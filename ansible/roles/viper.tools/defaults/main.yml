@@ -79,7 +79,7 @@ viper:
       comment: "File format identification tool from The National Archives of the UK."
       exec: "droid-gui"
       icon: "droid.png"
-      version: "{{ droid_version }}"
+      version: "droid-{{ droid_version }}"
       source:
         git: "https://github.com/digital-preservation/droid.git"
         tag: "{{ droid_version }}"
