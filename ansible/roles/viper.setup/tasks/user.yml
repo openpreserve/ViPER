@@ -1,40 +1,40 @@
 ---
-# Main task entry point for ddhn.setup
+# Main task entry point for viper.setup
 
 - name: "USER | Ensure group vboxsf exists"
   ansible.builtin.group:
     name: "vboxsf"
     state: present
 
-- name: "USER | Creating user account: {{ ddhn.setup.limited_account.name }}."
+- name: "USER | Creating user account: {{ viper.setup.limited_account.name }}."
   user:
-    name: "{{ ddhn.setup.limited_account.name }}"
+    name: "{{ viper.setup.limited_account.name }}"
     comment: "Sudo user account for server admin."
     createhome: yes
-    home: "{{ ddhn.setup.limited_account.home }}"
+    home: "{{ viper.setup.limited_account.home }}"
     shell: "/bin/bash"
     groups: "vboxsf"
-    password: "{{ ddhn.setup.limited_account.password }}"
+    password: "{{ viper.setup.limited_account.password }}"
     update_password: always
     append: yes
 
-- name: "USER | Set authorized key for user: {{ ddhn.setup.limited_account.name }}, copied from current user."
+- name: "USER | Set authorized key for user: {{ viper.setup.limited_account.name }}, copied from current user."
   authorized_key:
-    user: "{{ ddhn.setup.limited_account.name }}"
+    user: "{{ viper.setup.limited_account.name }}"
     state: present
     key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
 
 - name: "USER | Create user desktop dir."
   file:
-    path: "{{ ddhn.setup.limited_account.home }}/Desktop"
+    path: "{{ viper.setup.limited_account.home }}/Desktop"
     state: directory
     mode: '0775'
-    owner: "{{ ddhn.setup.limited_account.name }}"
-    group: "{{ ddhn.setup.limited_account.name }}"
+    owner: "{{ viper.setup.limited_account.name }}"
+    group: "{{ viper.setup.limited_account.name }}"
 
 - name: "USER | Add execute privileges to the desktop dir."
   file:
-    path: "{{ ddhn.setup.limited_account.home }}/Desktop"
+    path: "{{ viper.setup.limited_account.home }}/Desktop"
     state: directory
     mode: a+x
 

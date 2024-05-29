@@ -1,5 +1,5 @@
 ---
-# Main task entry point for ddhn.setup
+# Main task entry point for viper.setup
 
 - name: "IPTABLES V4 | Allow all loopback (lo0) traffic."
   iptables:
@@ -40,12 +40,12 @@
     chain: INPUT
     in_interface: "{{ item }}"
     protocol: tcp
-    destination_port: "{{ ddhn.setup.port.http }}"
+    destination_port: "{{ viper.setup.port.http }}"
     ctstate: NEW
     jump: ACCEPT
     comment: "Allow HTTP connections"
-  with_items: "{{ ddhn.setup.iptables.interfaces }}"
-  when: ddhn.setup.port.http is defined and ddhn.setup.port.http != ""
+  with_items: "{{ viper.setup.iptables.interfaces }}"
+  when: viper.setup.port.http is defined and viper.setup.port.http != ""
 
 - name: "IPTABLES V4 | Allow port traffic from proxy."
   iptables:
@@ -58,7 +58,7 @@
     jump: ACCEPT
     comment: "Allow TCP connections on port: {{ item }}"
   when: opf_proxy_private_ip is defined and opf_proxy_private_ip != ""
-  with_items: "{{ ddhn.setup.open_ports }}"
+  with_items: "{{ viper.setup.open_ports }}"
 
 - name: "IPTABLES V4 | Allow HTTPS."
   iptables:
@@ -66,12 +66,12 @@
     chain: INPUT
     in_interface: "{{ item }}"
     protocol: tcp
-    destination_port: "{{ ddhn.setup.port.https }}"
+    destination_port: "{{ viper.setup.port.https }}"
     ctstate: NEW
     jump: ACCEPT
     comment: "Allow HTTP connections"
-  with_items: "{{ ddhn.setup.iptables.interfaces }}"
-  when: ddhn.setup.port.https is defined and ddhn.setup.port.https != ""
+  with_items: "{{ viper.setup.iptables.interfaces }}"
+  when: viper.setup.port.https is defined and viper.setup.port.https != ""
 
 - name: "IPTABLES V4 | Allow inbound traffic from established connections."
   iptables:

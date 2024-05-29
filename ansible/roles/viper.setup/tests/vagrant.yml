@@ -1,4 +1,4 @@
-# Vagrant test file for ddhn.setup
+# Vagrant test file for viper.setup
 ---
 - hosts: all
   remote_user: vagrant

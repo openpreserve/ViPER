@@ -1,16 +1,16 @@
 ---
-# Prerequisites for ddhn.setup
+# Prerequisites for viper.setup
 
 - name: "APT | Install apt package pre-requisites."
   apt:
-    name: "{{ ddhn.setup.prereqs.apt }}"
+    name: "{{ viper.setup.prereqs.apt }}"
     state: "latest"
 
 - name: "LOCALE | Set up common locale packages."
   community.general.locale_gen:
     name: "{{ item }}"
     state: present
-  with_items: "{{ ddhn.setup.locales }}"
+  with_items: "{{ viper.setup.locales }}"
   notify:
     - rebuild locales database
 
@@ -18,7 +18,7 @@
   debconf:
     name: locales
     question: locales/default_environment_locale
-    value: "{{ ddhn.setup.default_locale }}"
+    value: "{{ viper.setup.default_locale }}"
     vtype: select
   notify:
     - rebuild locales database

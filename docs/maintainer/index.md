@@ -103,7 +103,7 @@ config.vm.provision "ansible" do |ansible|
   # Let's ask for verbose output in case of problems
   ansible.verbose = "vv"
   # Limit the use of this playbok to a particular host
-  ansible.limit = "env.ddhn.test"
+  ansible.limit = "env.viper.test"
   # The inventory file that sets up details for the vagrant machine
   ansible.inventory_path = "ansible/vagrant.yml"
 end
@@ -118,13 +118,13 @@ An Ansible role is simply a set of tasks that achieve a desired state, e.g. inst
 
 The next sections break down the sub-roles describing the general steps taken and the rationale.
 
-### ddhn.setup
+### viper.setup
 
-The [`ddhn.setup`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup) role handles the setup of the environment, updating the OS, installing dependencies, creating accounts and the like. The [main role](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/tasks/main.yml) simply calls four sub-roles.
+The [`viper.setup`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/viper.setup) role handles the setup of the environment, updating the OS, installing dependencies, creating accounts and the like. The [main role](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/viper.setup/tasks/main.yml) simply calls four sub-roles.
 
 #### Server tasks
 
-The ['server.yml'](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/tasks/server.yml) sub-role:
+The ['server.yml'](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/viper.setup/tasks/server.yml) sub-role:
 
 - updates apt packages;
 - sets up the hostname; and
@@ -132,17 +132,17 @@ The ['server.yml'](https://github.com/openpreserve/ViPER/blob/main/ansible/roles
 
 #### Pre-requisites
 
-The [`prerequisites.yml`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/tasks/prerequisites.yml) sub-role installs any apt package dependencies. The package list is the `ddhn_env_apt_defaults` variable in the [roles' main default file](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/defaults/main.yml).
+The [`prerequisites.yml`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/viper.setup/tasks/prerequisites.yml) sub-role installs any apt package dependencies. The package list is the `viper_env_apt_defaults` variable in the [roles' main default file](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/viper.setup/defaults/main.yml).
 
 #### User tasks
 
-The [`user.yml`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/tasks/user.yml) sub-role creates a sudo user to administer the environment. Again, the task is configurable using variables in the [roles' main default file](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/defaults/main.yml).
+The [`user.yml`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/viper.setup/tasks/user.yml) sub-role creates a sudo user to administer the environment. Again, the task is configurable using variables in the [roles' main default file](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/viper.setup/defaults/main.yml).
 
 Note that this role requires that the user's has an RSA public key is available in a file: `~/.ssh/id_rsa`. The public key is added to the user's `~/.ssh/authorized_keys` file using the Ansible `authorized_key` module. If no such file exists, the role/task will fail. This can be fixed by generating a key pair with the command `ssh-keygen -t rsa" and accepting the defaults.
 
 #### Security
 
-The [`security`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/ddhn.setup/tasks/security) role hardens SSH access, no password and no root access, while setting up firewall rules. The thinking is that the environment should be secure with port access only opened where required.
+The [`security`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/viper.setup/tasks/security) role hardens SSH access, no password and no root access, while setting up firewall rules. The thinking is that the environment should be secure with port access only opened where required.
 
 ### viper.tools
 

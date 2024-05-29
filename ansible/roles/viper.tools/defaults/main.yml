@@ -11,7 +11,7 @@ viper_apps_share: "{{ viper_usr_share }}/applications"
 viper_icons_share: "{{ viper_usr_share }}/icons"
 
 # Account name
-viper_account_name: "{{ ddhn_env_user_name | default('viper') }}"
+viper_account_name: "{{ viper_env_user_name | default('viper') }}"
 
 # Tools installed via Debian package manager
 viper_debian_tools:

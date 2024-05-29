@@ -29,5 +29,5 @@
 - hosts: all
   become: true
   roles:
-    - { role: ddhn.setup }
+    - { role: viper.setup }
     - { role: viper.tools }

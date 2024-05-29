@@ -118,21 +118,21 @@ provisioning the first time that the VM is started using the <code>vagrant up</c
 end
 </code></pre>
 <p>The playbook <a href="ansible/initialise-env.yaml"><code>ansible/initialise-env.yaml</code></a> is the list of roles that set up the virtual research environment. An Ansible role is simply a set of tasks that achieve a desired state, e.g. install software, copy files, etc.. The next two sections break down the sub-roles describing the general steps taken and the rationale.</p>
-<h4 id="ddhn-setup">ddhn.setup</h4>
-<p>The <a href="ansible/roles/ddhn.setup"><code>ddhn.setup</code></a> role handles the setup of the environment, updating the OS, installing dependencies, creating accounts and the like. The <a href="ansible/roles/ddhn.setup/tasks/main.yml">main role</a> simply calls four sub-roles.</p>
+<h4 id="viper-setup">viper.setup</h4>
+<p>The <a href="ansible/roles/viper.setup"><code>viper.setup</code></a> role handles the setup of the environment, updating the OS, installing dependencies, creating accounts and the like. The <a href="ansible/roles/viper.setup/tasks/main.yml">main role</a> simply calls four sub-roles.</p>
 <h5 id="server-tasks">Server tasks</h5>
-<p>The <a href="ansible/roles/ddhn.setup/tasks/server.yml">&#39;server.yml&#39;</a> sub-role:</p>
+<p>The <a href="ansible/roles/viper.setup/tasks/server.yml">&#39;server.yml&#39;</a> sub-role:</p>
 <ul>
 <li>updates apt packages;</li>
 <li>sets up the hostname; and</li>
 <li>sets the timezone.</li>
 </ul>
 <h5 id="pre-requisites">Pre-requisites</h5>
-<p>The <a href="ansible/roles/ddhn.setup/tasks/prerequisites.yml"><code>prerequisites.yml</code></a> sub-role installs any apt package dependencies. The package list is the <code>ddhn_env_apt_defaults</code> variable in the <a href="ansible/roles/ddhn.setup/defaults/main.yml">roles&#39; main default file</a>.</p>
+<p>The <a href="ansible/roles/viper.setup/tasks/prerequisites.yml"><code>prerequisites.yml</code></a> sub-role installs any apt package dependencies. The package list is the <code>viper_env_apt_defaults</code> variable in the <a href="ansible/roles/viper.setup/defaults/main.yml">roles&#39; main default file</a>.</p>
 <h5 id="user-tasks">User tasks</h5>
-<p>The <a href="ansible/roles/ddhn.setup/tasks/user.yml"><code>user.yml</code></a> sub-role creates a sudo user to administer the environment. Again, the task is configurable using variables in the <a href="ansible/roles/ddhn.setup/defaults/main.yml">roles&#39; main default file</a>.</p>
+<p>The <a href="ansible/roles/viper.setup/tasks/user.yml"><code>user.yml</code></a> sub-role creates a sudo user to administer the environment. Again, the task is configurable using variables in the <a href="ansible/roles/viper.setup/defaults/main.yml">roles&#39; main default file</a>.</p>
 <h5 id="security">Security</h5>
-<p>The <a href="ansible/roles/ddhn.setup/tasks/security"><code>security</code></a> role hardens SSH access, no password and no root access, while setting up firewall rules. The thinking is that the environment should be secure with port access only opened where required.</p>
+<p>The <a href="ansible/roles/viper.setup/tasks/security"><code>security</code></a> role hardens SSH access, no password and no root access, while setting up firewall rules. The thinking is that the environment should be secure with port access only opened where required.</p>
 <h4 id="viper-tools">viper.tools</h4>
 <p>The <a href="ansible/roles/viper.tools"><code>viper.tools</code></a> role installs the digital preservation tools. It comprises a series of sub-roles, one for each tool. The general workflow for a tool is:</p>
 <ul>

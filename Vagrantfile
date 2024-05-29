@@ -44,7 +44,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "ansible/initialise-env.yml"
     ansible.verbose = "vv"
-    ansible.limit = "env.ddhn.test"
+    ansible.limit = "env.viper.test"
     ansible.inventory_path = "ansible/vagrant.yml"
   end
 end

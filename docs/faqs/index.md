@@ -22,6 +22,6 @@ title: Frequently Asked Questions
 - **ViPER doesn't start on Windows 10**
   If the ViPER OVA file won't start on a Windows 10 host you must enable 3D acceleration using the VirtualBox VM Display settings.
 
-See also ViPER’s  Github issues list: <https://github.com/openpreserve/ddhn-forge/issues>.
+See also ViPER’s  Github issues list: <https://github.com/openpreserve/ViPER/issues>.
 
 See also VirtualBox’s Frequently Asked Questions for end users: <https://www.virtualbox.org/wiki/User_FAQ>.

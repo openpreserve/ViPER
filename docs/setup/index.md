@@ -14,9 +14,9 @@ ViPER is an easy-to-install virtual machine running popular open source preserva
 
 In order to use the ViPER you will need to:
 
-- check that your desktop has been set up to support virtualisation, this is done in your BIOS settings
-- download and install Oracle Virtualbox
-- download and install the ViPER image
+- check that your desktop has been set up to support virtualisation, this is done in your [BIOS settings](https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html)
+- download and install [Oracle Virtualbox](https://www.virtualbox.org/wiki/Downloads)
+- download and install the [ViPER image](https://ddhn.openpreservation.org/viper-v1.1.ova)
 
 ## Creating the VM environment
 
