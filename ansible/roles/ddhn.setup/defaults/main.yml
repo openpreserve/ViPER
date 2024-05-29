@@ -14,7 +14,7 @@ ddhn_env_apt_defaults:
   # Tools for keyboard and console setup
   - keyboard-configuration
   - console-setup
-  # Open JDK 8 for Java
+  # Open JDK 11 for Java
   - openjdk-11-jre
   - openjdk-11-doc
   - openjdk-11-source

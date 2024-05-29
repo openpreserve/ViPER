@@ -45,8 +45,6 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "ansible/initialise-env.yml"
     ansible.verbose = "vv"
     ansible.limit = "env.ddhn.test"
-    ansible.galaxy_role_file = "ansible/requirements.yml"
-    ansible.galaxy_command = "ansible-galaxy install --role-file=%{role_file}"
     ansible.inventory_path = "ansible/vagrant.yml"
   end
 end
