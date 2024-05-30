@@ -6,11 +6,11 @@ title: Frequently Asked Questions and Known Issues
 
 ## FAQs {#faqs}
 
-1. Q: Which tools are included in ViPER?
+1. Q: Which tools are included in ViPER?  
    A: For a list of included tool, see the [Tool Reference](../tools/).
-2. Q: Does ViPER work on the newer M1/M2 Mac chips?
+2. Q: Does ViPER work on the newer M1/M2 Mac chips?  
    A: VirtualBox provides developer previews for these chips, but chances are that ViPER doesn’t work yet. See <https://www.virtualbox.org/manual/ch01.html#hostossupport> for a list of supported VirtualBox host OSes.
-3. Q: My ViPER environment starts, but freezes or crashes soon afterwards, why could that be?
+3. Q: My ViPER environment starts, but freezes or crashes soon afterwards, why could that be?  
    A: Please ensure that you have enough free disc space when you start VirtualBox with ViPER. To know what is ‘enough’, monitor your disc space in the host OS after starting ViPER.
 
 ## Known Issues {#known-issues}
