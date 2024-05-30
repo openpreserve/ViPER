@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "debian/bullseye64"
+  config.vm.box = "debian/bookworm64"
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
   # provider for Vagrant. These expose provider-specific options.
   config.vm.provider "virtualbox" do |vb|
     # Name the prototype machine
-    vb.name = "VIPER v1.1"
+    vb.name = "VIPER v1.2"
     # Display the VirtualBox GUI when booting the machine
     vb.gui = true
     # Customize the CPUs (2x) and memory (4GB) on the VM:

@@ -67,19 +67,19 @@ the OVA you can use the VirtualBox GUI to make the changes as <a href="https://w
 <h2 id="prototyping-decisions">Prototyping Decisions</h2>
 <h3 id="vm-and-os">VM and OS</h3>
 <p>There are a few flavours of VM for a particular OS. The project team have already
-agreed that Debian 9 (Stretch) was a sensible starting choice. The two main criteria
+agreed that Debian 12 (Bookworm) was a sensible starting choice. The two main criteria
 that guided the decision were stability and long update cycles.</p>
 <p><a href="https://www.virtualbox.org/">Virtual Box</a> was chosen as the virtualisation platform
 because of its cross platform ubiquity. <a href="https://www.vagrantup.com/">Vagrant</a> is a
 tool designed for building and managing virtual machine environments. It was chosen
 to speed up the initial virtual box provisioning. <a href="https://app.vagrantup.com/">Vagrant Cloud</a>
 provides a collection of cookie-cut virtual machines. The Vagrant machine chosen
-as a starting point was an official Debian Stretch build with the addition of the
-Virtual Box shared folder kernel module: <a href="https://app.vagrantup.com/debian/boxes/contrib-stretch64">https://app.vagrantup.com/debian/boxes/contrib-stretch64</a>.</p>
+as a starting point was an official Debian Bookworm build with the addition of the
+Virtual Box shared folder kernel module: <a href="https://app.vagrantup.com/debian/boxes/bookworm64">https://app.vagrantup.com/debian/boxes/bookworm64</a>.</p>
 <h3 id="initialisation">Initialisation</h3>
 <p>A vagrant machine is configured by a <a href="./Vagrantfile"><code>Vagrantfile</code></a> which can be
 set up with the appropriate virtual machine template:</p>
-<pre><code class="lang-shell"><span class="hljs-attribute">vagrant</span> init debian/contrib-stretch64
+<pre><code class="lang-shell"><span class="hljs-attribute">vagrant</span> init debian/bookworm64
 </code></pre>
 <p>Before starting the machine we want to configure a few things out of the box. By default Vagrant machines are headless, i.e. all access via terminal and SSH with no GUI. We also need to provision the memory and number of CPUs available to the machine. While cores and memory are plentiful on a development workstation, 2 virtual CPUs and 4GB or RAM are sensible starting parameters. Anything requiring significantly more compute power would struggle to satisfy the accessible research environment brief. These parameters can be adjusted in situ regardless.</p>
 <p>We can set these up for a Virtual Box VM by adding the following lines to our Vagrantfile, we&#39;ll also set a VM name while we&#39;re at it:</p>

@@ -22,13 +22,13 @@ You'll need at least familiarity with the following software and technologies to
 
 ### Operating system
 
-[Debian 11 (Bullseye)](https://www.debian.org/) was chosen as a base OS. The two main criteria that guided the decision were stability and long update cycles.
+[Debian 12 (Bookworm)](https://www.debian.org/) was chosen as a base OS. The two main criteria that guided the decision were stability and long update cycles.
 
 ### Virtualisation
 
 - [VirtualBox](https://www.virtualbox.org/) was chosen as the virtualisation platform because of its cross platform ubiquity.
 - [Vagrant](https://www.vagrantup.com/) is a tool designed for building and managing virtual machine environments. It was chosen to speed up the initial VirtualBox provisioning.
-- [Vagrant Cloud](https://app.vagrantup.com/) provides a collection of cookie-cut virtual machines. The Vagrant machine chosen as a starting point was an official Debian Stretch build with the addition of the VirtualBox shared folder kernel module: <https://app.vagrantup.com/debian/boxes/contrib-stretch64>.
+- [Vagrant Cloud](https://app.vagrantup.com/) provides a collection of cookie-cut virtual machines. The Vagrant machine chosen as a starting point was an official Debian Bookworm build with the addition of the VirtualBox shared folder kernel module: <https://app.vagrantup.com/debian/boxes/bookworm64>.
 
 ### Provisioning
 
@@ -45,10 +45,10 @@ The vagrant machine is configured by a [`Vagrantfile`](https://github.com/openpr
 The VirtualBox VM is initialised with on the following line, which also selects the guest OS version:
 
 ```shell
-config.vm.box = "debian/bullseye64"
+config.vm.box = "debian/bookworm64"
 ```
 
-This choses a 64 bit Debian 11 (Bullseye) image as the base OS.
+This choses a 64 bit Debian 12 (Bookworm) image as the base OS.
 
 #### VirtualBox configuration
 
