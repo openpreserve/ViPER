@@ -4,12 +4,12 @@ This project creates ViPER, the Virtual Preservation Environment for Research. T
 
 Supporting documentation is presented in these sections, or you can use [the documentation website](https://viper.openpreserve.org/):
 
-1. [Setup Guide](docs/setup/index.md): How to download and configure ViPER.
-2. [User Guide](docs/guide/index.md): Some help getting acquainted with VirtualBox and the environment.
-3. [Tool Reference](docs/tools/index.md): A list of the bundled tools and some help references.
-4. [Maintainer's Guide](docs/maintainer/index.md): A look at how ViPER is produced and how it can be updated or extended.
+1. [Setup Guide](https://viper.openpreservation.org/setup/): How to download and configure ViPER.
+2. [User Guide](https://viper.openpreservation.org/guide/): Some help getting acquainted with VirtualBox and the environment.
+3. [Tool Reference](https://viper.openpreservation.org/tools/): A list of the bundled tools and some help references.
+4. [Maintainer's Guide](https://viper.openpreservation.org/maintainer/): A look at how ViPER is produced and how it can be updated or extended.
 5. [Quick Start](#quick-start): A brief look at how to get going with this project yourself.
-6. [References](docs/refs/index.md): A list of references used in the documentation.
+6. [References](https://viper.openpreservation.org/refs/): A list of references used in the documentation.
 
 ## Logging Issues
 
@@ -47,7 +47,3 @@ Out of the box the machine should come configured with:
 - 128MB of video RAM to allow desktop scaling
 
 More CPU and RAM will almost certainly improve performance. If you're setting up a vagrant box from scratch you can use the [Maintenance Initialisation](docs/maintainer/index.md#initialisation) instructions to change the parameters. If you've imported the OVA you can use the VirtualBox GUI to make the changes as [described here](https://www.virtualbox.org/manual/ch01.html#ovf).
-
-## ViPER Tools and Resources
-
-The list of tools and reference resources is maintained [here in a separate Markdown file](./docs/tools/index.md).

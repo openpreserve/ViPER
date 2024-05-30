@@ -2,9 +2,9 @@
 layout: page
 title: ViPER Tools
 ---
-# Tools Included in the ViPER
+# Tools Guide
 
-Here you can find a full list of the bundled tools and some references to online resources.
+A list of the bundled tools with references to online resources.
 
 ## ![DROID icon](../assets/img/icons/droid.png "DROID icon") DROID (Digital Record Object Identification) v{{ site.data.vars.droid_version }}
 

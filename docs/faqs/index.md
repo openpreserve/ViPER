@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Frequently Asked Questions
+title: Frequently Asked Questions and Known Issues
 ---
 # Frequently Asked Questions and Known Issues
 
