@@ -29,6 +29,7 @@ viper_debian_icons:
   - "org.inkscape.Inkscape"
   - "mediainfo-gui"
   - "mediaconch-gui"
+  - "fr.handbrake.ghb"
 
 # JHOVE version details, to override set jhove_major_minor and jhove_patch
 jhove_major: "1"
