@@ -49,9 +49,9 @@ droid_patch: "0"
 droid_version: "{{ droid_major }}.{{ droid_minor }}.{{ droid_patch }}"
 
 # Apache Tika version details
-tika_major: "1"
-tika_minor: "28"
-tika_patch: "5"
+tika_major: "2"
+tika_minor: "9"
+tika_patch: "2"
 tika_version: "{{ tika_major }}.{{ tika_minor }}.{{ tika_patch }}"
 
 viper:
@@ -83,7 +83,7 @@ viper:
       version: "droid-{{ droid_version }}"
       source:
         git: "https://github.com/digital-preservation/droid.git"
-        tag: "{{ droid_version }}"
+        tag: "droid-{{ droid_version }}"
       installer:
         loc: "https://repo1.maven.org/maven2/uk/gov/nationalarchives/droid-binary/{{ droid_version }}/droid-binary-{{ droid_version }}-bin.zip"
       dests:
