@@ -32,8 +32,8 @@ viper_debian_icons:
 
 # JHOVE version details, to override set jhove_major_minor and jhove_patch
 jhove_major: "1"
-jhove_minor: "26"
-jhove_patch: "1"
+jhove_minor: "28"
+jhove_patch: "0"
 jhove_version: "{{ jhove_major }}.{{ jhove_minor }}.{{ jhove_patch }}"
 
 # veraPDF version details, to override set verapdf_major }}.{{ verapdf_minor and vera_patch
