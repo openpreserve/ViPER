@@ -41,4 +41,4 @@ When both downloads are completed install by selecting each exe file. As you dow
 
 ### Downloading ViPER
 
-ViPER is downloaded as a single machine image as a prebuilt OVA file. The most current version can be downloaded via the following link: <https://viper.openpreservation.org/viper-v1.1.ova>. Note this is a file of several GB and will take several minutes to download. When the download has completed select the .exe file to complete the installation process. This will open a dialogue box that will give you the option to import the virtual appliance (ViPER) - proceed by selecting ‘import’.
+ViPER is downloaded as a single machine image as a prebuilt OVA file. The most current version can be downloaded via the following link: <https://viper.openpreservation.org/viper-v1.1.ova>. Note this is a file of several GB and will take several minutes to download. When the download has completed select the .ova file to complete the installation process. This will open a dialogue box that will give you the option to import the virtual appliance (ViPER) - proceed by selecting ‘import’.
