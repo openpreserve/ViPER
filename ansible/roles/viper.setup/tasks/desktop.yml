@@ -24,7 +24,7 @@
     src: "files/etc/dbconf/profile/user"
     dest: "/etc/dbconf/profile/user"
 
-- name: "Desktop | Create dconf user profile directory."
+- name: "Desktop | Create dconf key directory."
   file:
     path: "/etc/dbconf/db/local.d"
     state: directory
@@ -33,6 +33,11 @@
   copy:
     src: "files/etc/dbconf/db/local.d/00-background"
     dest: "/etc/dbconf/db/local.d/00-background"
+
+- name: "Desktop | Create user shared backgrounds directory."
+  file:
+    path: "/usr/local/share/backgrounds"
+    state: directory
 
 - name: "Desktop | Copy background image"
   copy:
