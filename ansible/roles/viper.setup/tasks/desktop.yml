@@ -14,10 +14,20 @@
     src: "files/home/.config/autostart/nemo-autostart-with-gnome.desktop"
     dest: "/home/{{ viper.setup.limited_account.name }}/.config/autostart/nemo-autostart-with-gnome.desktop"
 
+- name: "Desktop | Create dconf user profile directory."
+  file:
+    path: "/etc/dbconf/profile"
+    state: directory
+
 - name: "Desktop | Copy user profile"
   copy:
     src: "files/etc/dbconf/profile/user"
     dest: "/etc/dbconf/profile/user"
+
+- name: "Desktop | Create dconf user profile directory."
+  file:
+    path: "/etc/dbconf/db/local.d"
+    state: directory
 
 - name: "Desktop | Copy dbconf key file with background details"
   copy:
