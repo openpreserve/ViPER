@@ -13,3 +13,21 @@
   copy:
     src: "files/home/.config/autostart/nemo-autostart-with-gnome.desktop"
     dest: "/home/{{ viper.setup.limited_account.name }}/.config/autostart/nemo-autostart-with-gnome.desktop"
+
+- name: "Desktop | Copy user profile"
+  copy:
+    src: "files/etc/dbconf/profile/user"
+    dest: "/etc/dbconf/profile/user"
+
+- name: "Desktop | Copy dbconf key file with background details"
+  copy:
+    src: "files/etc/dbconf/db/local.d/00-background"
+    dest: "/etc/dbconf/db/local.d/00-background"
+
+- name: "Desktop | Copy background image"
+  copy:
+    src: "files/usr/local/share/backgrounds/viper-desktop.jpg"
+    dest: "/usr/local/share/backgrounds/viper-desktop.jpg"
+
+- name: "Desktop | Run dconf update"
+  command: dconf update
