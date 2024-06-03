@@ -30,7 +30,6 @@ viper_env_apt_remove:
   - "aspell"
   - "aspell-en"
   - "avahi-daemon"
-  - "bash-completion"
   - "bc"
   - "bin86"
   - "bind9-host"
