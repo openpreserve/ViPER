@@ -8,19 +8,21 @@ viper_env_apt_defaults:
   # Install some helper network tools
   - "psmisc"
   - "net-tools"
+  # Python3 module so that ansible can handle dconf tasks
+  - "python3-psutil"
   # Zip and unzip are always handy
-  - zip
-  - unzip
+  - "zip"
+  - "unzip"
   # Tools for keyboard and console setup
-  - keyboard-configuration
-  - console-setup
+  - "keyboard-configuration"
+  - "console-setup"
   # Open JDK 17 for Java
-  - openjdk-17-jre
-  - openjdk-17-doc
-  - openjdk-17-source
+  - "openjdk-17-jre"
+  - "openjdk-17-doc"
+  - "openjdk-17-source"
   # GNOME desktop and Nemo add on for icon display
-  - task-gnome-desktop
-  - nemo
+  - "task-gnome-desktop"
+  - "nemo"
 
 viper_env_apt_remove:
   - "acpi"

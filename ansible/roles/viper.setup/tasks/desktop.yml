@@ -13,3 +13,53 @@
   copy:
     src: "files/home/.config/autostart/nemo-autostart-with-gnome.desktop"
     dest: "/home/{{ viper.setup.limited_account.name }}/.config/autostart/nemo-autostart-with-gnome.desktop"
+
+- name: "Desktop | Create user shared backgrounds directory."
+  file:
+    path: "/usr/local/share/backgrounds"
+    state: directory
+
+- name: "Desktop | Copy ViPER wallpaper to shared backgrounds directory."
+  copy:
+    src: "files/usr/local/share/backgrounds/viper-desktop.jpg"
+    dest: "/usr/local/share/backgrounds/viper-desktop.jpg"
+
+- name: "Desktop | Set wallpaper for user."
+  become: true
+  become_user: "{{ viper.setup.limited_account.name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/background/picture-uri"
+    value: "'file:///usr/local/share/backgrounds/viper-desktop.jpg'"
+    state: present
+
+- name: "Desktop | Set dark theme wallpaper for user."
+  become: true
+  become_user: "{{ viper.setup.limited_account.name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/background/picture-uri-dark"
+    value: "'file:///usr/local/share/backgrounds/viper-desktop.jpg'"
+    state: present
+
+- name: "Desktop | Set screensaver wallpaper for user."
+  become: true
+  become_user: "{{ viper.setup.limited_account.name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/screensaver/picture-uri"
+    value: "'file:///usr/local/share/backgrounds/viper-desktop.jpg'"
+    state: present
+
+- name: "Desktop | Set dark theme screensaver wallpaper for user."
+  become: true
+  become_user: "{{ viper.setup.limited_account.name }}"
+  community.general.dconf:
+    key: "/org/gnome/desktop/screensaver/picture-uri-dark"
+    value: "'file:///usr/local/share/backgrounds/viper-desktop.jpg'"
+    state: present
+
+- name: "Desktop | Tell Nemo to show mounted volumes on desktop."
+  become: true
+  become_user: "{{ viper.setup.limited_account.name }}"
+  community.general.dconf:
+    key: "/org/nemo/desktop/volumes-visible"
+    value: "true"
+    state: present
