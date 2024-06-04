@@ -1,5 +1,5 @@
-version: "1.2-RC1"
-release_date: "31.05.2024"
+version: "1.2-alpha"
+release_date: "05.06.2024"
 guest_os: "Debian"
 guest_os_version: "12"
 guest_os_nickname: "Bookworm"
