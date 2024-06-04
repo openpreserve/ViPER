@@ -36,9 +36,13 @@ Windows; OS X; Linux; Solaris
 
 ### Oracle VirtualBox Setup and Installation
 
-When the Oracle VirtualBox download has completed, immediately repeat the exercise by downloading the VirtualBox extension pack.
-When both downloads are completed install by selecting each exe file. As you download each file a series of install dialogue boxes will be displayed, unless you wish to change any of the specific items they can all be Ok’d. Note when installing VirtualBox a warning message may be displayed stating that your network interfaces may be reset and become temporarily unavailable during the install process.
+When the Oracle Virtualbox download has completed, immediately repeat the exercise by downloading the Virtualbox extension pack.
+When both downloads are completed install by selecting each executable file. A series of install dialogue boxes will be displayed. Unless you wish to change any of the specific items they can all be Ok’d.
+
+**Note:** A warning message may be displayed stating that your network interfaces may be reset and become temporarily unavailable during the install process.
+
+**Note:** Windows hosts may require the installation of a Microsoft Visual C++ redistributable version. Please check that you download the correct version from <https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist>. One user reported having to install a 2019 version of Microsoft Visual C++ Redistributable x64 (not x86 or ARM64) in their Microsoft Windows 10 Professional environment.
 
 ### Downloading ViPER
 
-ViPER is downloaded as a single machine image as a prebuilt OVA file. The most current version can be downloaded via the following link: <https://viper.openpreservation.org/viper-v1.1.ova>. Note this is a file of several GB and will take several minutes to download. When the download has completed select the .ova file to complete the installation process. This will open a dialogue box that will give you the option to import the virtual appliance (ViPER) - proceed by selecting ‘import’.
+ViPER is downloaded as a single machine image as a prebuilt OVA file. The most current version can be downloaded via the following link: <https://ddhn.openpreservation.org/viper-v{{ site.data.vars.version }}.ova>. The file is several GB and may take some time to download. When the download has completed select the .ova file to complete the installation process. This will open a dialogue box that will give you the option to import the virtual appliance (ViPER) - proceed by selecting ‘import’.
