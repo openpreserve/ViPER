@@ -19,3 +19,8 @@
 - name: "HOST | Set the timezone: {{ viper.setup.timezone }}."
   timezone:
     name: "{{ viper.setup.timezone }}"
+
+- name: "APT | Remove unnecessary packages."
+  apt:
+    name: "{{ viper.setup.remove.apt }}"
+    state: "absent"

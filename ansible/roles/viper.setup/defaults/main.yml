@@ -8,24 +8,104 @@ viper_env_apt_defaults:
   # Install some helper network tools
   - "psmisc"
   - "net-tools"
+  # Python3 module so that ansible can handle dconf tasks
+  - "python3-psutil"
   # Zip and unzip are always handy
-  - zip
-  - unzip
+  - "zip"
+  - "unzip"
   # Tools for keyboard and console setup
-  - keyboard-configuration
-  - console-setup
+  - "keyboard-configuration"
+  - "console-setup"
   # Open JDK 17 for Java
-  - openjdk-17-jre
-  - openjdk-17-doc
-  - openjdk-17-source
+  - "openjdk-17-jre"
+  - "openjdk-17-doc"
+  - "openjdk-17-source"
   # GNOME desktop and Nemo add on for icon display
-  - task-gnome-desktop
-  - nemo
+  - "task-gnome-desktop"
+  - "nemo"
+
+viper_env_apt_remove:
+  - "acpi"
+  - "apcid"
+  - "aptitude"
+  - "at"
+  - "aspell"
+  - "aspell-en"
+  - "avahi-daemon"
+  - "bc"
+  - "bin86"
+  - "bind9-host"
+  - "console-common"
+  - "console-data"
+  - "console-tools"
+  - "dc"
+  - "debian-faq"
+  - "debian-faq-de"
+  - "debian-faq-fr"
+  - "debian-faq-it"
+  - "debian-faq-zh-cn"
+  - "dhcp"
+  - "dhcp3-client"
+  - "dhcp3-common"
+  - "dictionaries"
+  - "dnsutils"
+  - "doc-debian"
+  - "doc-linux-text"
+  - "eject"
+  - "fdutils"
+  - "file"
+  - "finger"
+  - "foomatic-filters"
+  - "gettext-base"
+  - "groff"
+  - "gnupg"
+  - "gnu-efi"
+  - "grub"
+  - "hplip"
+  - "iamerican"
+  - "ibritish"
+  - "info"
+  - "ispell"
+  - "laptop-detect"
+  - "libavahi-compat-libdnssd1"
+  - "libc6-amd64"
+  - "libc6-i686"
+  - "libgpmg1"
+  - "manpages"
+  - "mtools"
+  - "mtr-tiny"
+  - "mutt"
+  - "nano"
+  - "netcat"
+  - "net-tools"
+  - "ncurses-term"
+  - "openssl"
+  - "pidentd"
+  - "ppp"
+  - "pppconfig"
+  - "pppoe"
+  - "pppoeconf"
+  - "read-edid"
+  - "reportbug"
+  - "smclient"
+  - "tasksel"
+  - "tcsh"
+  - "traceroute"
+  - "usbutils"
+  - "vim-common"
+  - "vim-tiny"
+  - "wamerican"
+  - "w3m"
+  - "whois"
+  - "zeroinstall-injector"
+
 
 viper:
   setup:
     prereqs:
       apt: "{{ viper_env_prereqs_apt | default (viper_env_apt_defaults) }}"
+    remove:
+      apt: "{{ viper_env_remove_apt | default (viper_env_apt_remove) }}"
     hostname: "{{ viper_env_hostname | default('localhost') }}"
     hostdomain: "{{ viper_env_hostdomain | default('localdomain') }}"
     fqdn: "{{ viper_env_fqdn | default('localhost.localdomain') }}"
