@@ -1,0 +1,26 @@
+---
+# Server tasks for viper.setup
+
+- name: "APT | Update apt repos and upgrade distro."
+  apt:
+    update_cache: "yes"
+    upgrade: "dist"
+
+- name: "HOST | Set the hostname: {{ viper.setup.hostname }}."
+  hostname:
+    name: "{{ viper.setup.hostname }}"
+
+- name: "HOST | Set up /etc/hosts"
+  template:
+    src: "etc/hosts.j2"
+    dest: "/etc/hosts"
+    owner: "root"
+
+- name: "HOST | Set the timezone: {{ viper.setup.timezone }}."
+  timezone:
+    name: "{{ viper.setup.timezone }}"
+
+- name: "APT | Remove unnecessary packages."
+  apt:
+    name: "{{ viper.setup.remove.apt }}"
+    state: "absent"

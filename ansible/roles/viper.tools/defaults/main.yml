@@ -11,7 +11,7 @@ viper_apps_share: "{{ viper_usr_share }}/applications"
 viper_icons_share: "{{ viper_usr_share }}/icons"
 
 # Account name
-viper_account_name: "{{ ddhn_env_user_name | default('viper') }}"
+viper_account_name: "{{ viper_env_user_name | default('viper') }}"
 
 # Tools installed via Debian package manager
 viper_debian_tools:
@@ -29,28 +29,29 @@ viper_debian_icons:
   - "org.inkscape.Inkscape"
   - "mediainfo-gui"
   - "mediaconch-gui"
+  - "fr.handbrake.ghb"
 
 # JHOVE version details, to override set jhove_major_minor and jhove_patch
 jhove_major: "1"
-jhove_minor: "26"
-jhove_patch: "1"
+jhove_minor: "28"
+jhove_patch: "0"
 jhove_version: "{{ jhove_major }}.{{ jhove_minor }}.{{ jhove_patch }}"
 
 # veraPDF version details, to override set verapdf_major }}.{{ verapdf_minor and vera_patch
 verapdf_major: "1"
-verapdf_minor: "22"
-verapdf_patch: "3"
+verapdf_minor: "26"
+verapdf_patch: "2"
 verapdf_version: "{{ verapdf_major }}.{{ verapdf_minor }}.{{ verapdf_patch }}"
 
 droid_major: "6"
-droid_minor: "6"
-droid_patch: "1"
+droid_minor: "7"
+droid_patch: "0"
 droid_version: "{{ droid_major }}.{{ droid_minor }}.{{ droid_patch }}"
 
 # Apache Tika version details
-tika_major: "1"
-tika_minor: "28"
-tika_patch: "5"
+tika_major: "2"
+tika_minor: "9"
+tika_patch: "2"
 tika_version: "{{ tika_major }}.{{ tika_minor }}.{{ tika_patch }}"
 
 viper:
@@ -79,10 +80,10 @@ viper:
       comment: "File format identification tool from The National Archives of the UK."
       exec: "droid-gui"
       icon: "droid.png"
-      version: "{{ droid_version }}"
+      version: "droid-{{ droid_version }}"
       source:
         git: "https://github.com/digital-preservation/droid.git"
-        tag: "{{ droid_version }}"
+        tag: "droid-{{ droid_version }}"
       installer:
         loc: "https://repo1.maven.org/maven2/uk/gov/nationalarchives/droid-binary/{{ droid_version }}/droid-binary-{{ droid_version }}-bin.zip"
       dests:
@@ -126,18 +127,18 @@ viper:
         lib: "{{ viper_lib }}/veraPDF/{{ verapdf_version }}"
         src: "{{ viper_src }}/veraPDF/{{ verapdf_version }}"
     mediaarea:
-      - name: "libzen0v5"
-        download_url: "https://mediaarea.net/download/binary/libzen0/0.4.41/libzen0v5_0.4.41-1_amd64.Debian_11.deb"
-        package_name: "libzen0v5_0.4.41-1_amd64.Debian_11.deb"
-      - name: "libmediainfo0v5"
-        download_url: "https://mediaarea.net/download/binary/libmediainfo0/23.04/libmediainfo0v5_23.04-1_amd64.Debian_11.deb"
-        package_name: "libmediainfo0v5_23.04-1_amd64.Debian_11.deb"
+      - name: "libzen0"
+        download_url: "https://mediaarea.net/download/binary/libzen0/0.4.41/libzen0v5_0.4.41-1_amd64.Debian_12.deb"
+        package_name: "libzen0v5_0.4.41-1_amd64.Debian_12.deb"
+      - name: "libmediainfo0"
+        download_url: "https://mediaarea.net/download/binary/libmediainfo0/24.04/libmediainfo0v5_24.04-1_amd64.Debian_12.deb"
+        package_name: "libmediainfo0v5_24.04-1_amd64.Debian_12.deb"
       - name: "libmediaconch0"
-        download_url: "https://mediaarea.net/download/binary/libmediaconch0/23.03/libmediaconch0_23.03-1_amd64.Debian_11.deb"
-        package_name: "libmediaconch0_23.03-1_amd64.Debian_11.deb"
+        download_url: "https://mediaarea.net/download/binary/libmediaconch0/23.10/libmediaconch0_23.10-1_amd64.Debian_12.deb"
+        package_name: "libmediaconch0_23.10-1_amd64.Debian_12.deb"
       - name: "mediainfo-gui"
-        download_url: "https://mediaarea.net/download/binary/mediainfo-gui/23.04/mediainfo-gui_23.04-1_amd64.Debian_11.deb"
-        package_name: "mediainfo-gui_23.04-1_amd64.Debian_11.deb"
+        download_url: "https://mediaarea.net/download/binary/mediainfo-gui/24.04/mediainfo-gui_24.04-1_amd64.Debian_12.deb"
+        package_name: "mediainfo-gui_24.04-1_amd64.Debian_12.deb"
       - name: "mediaconch-gui"
-        download_url: "https://mediaarea.net/download/binary/mediaconch-gui/23.03/mediaconch-gui_23.03-1_amd64.Debian_11.deb"
-        package_name: "mediaconch-gui_23.03-1_amd64.Debian_11.deb"
+        download_url: "https://mediaarea.net/download/binary/mediaconch-gui/23.10/mediaconch-gui_23.10-1_amd64.Debian_12.deb"
+        package_name: "mediaconch-gui_23.10-1_amd64.Debian_12.deb"

@@ -1,0 +1,45 @@
+---
+# Main task entry point for viper.setup
+
+- name: "USER | Ensure group vboxsf exists"
+  ansible.builtin.group:
+    name: "vboxsf"
+    state: present
+
+- name: "USER | Creating user account: {{ viper.setup.limited_account.name }}."
+  user:
+    name: "{{ viper.setup.limited_account.name }}"
+    comment: "Sudo user account for server admin."
+    createhome: yes
+    home: "{{ viper.setup.limited_account.home }}"
+    shell: "/bin/bash"
+    groups: "vboxsf"
+    password: "{{ viper.setup.limited_account.password }}"
+    update_password: always
+    append: yes
+
+- name: "USER | Set authorized key for user: {{ viper.setup.limited_account.name }}, copied from current user."
+  authorized_key:
+    user: "{{ viper.setup.limited_account.name }}"
+    state: present
+    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+
+- name: "USER | Create user desktop dir."
+  file:
+    path: "{{ viper.setup.limited_account.home }}/Desktop"
+    state: directory
+    mode: '0775'
+    owner: "{{ viper.setup.limited_account.name }}"
+    group: "{{ viper.setup.limited_account.name }}"
+
+- name: "USER | Add execute privileges to the desktop dir."
+  file:
+    path: "{{ viper.setup.limited_account.home }}/Desktop"
+    state: directory
+    mode: a+x
+
+- name: "USER | Set up auto login via /etc/gdm3/daemon.conf."
+  template:
+    src: "etc/gdm3/daemon.j2"
+    dest: "/etc/gdm3/daemon.conf"
+    owner: "root"

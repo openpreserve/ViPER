@@ -1,0 +1,17 @@
+---
+# Main task entry point for ViPER.setup
+
+- name: "ViPER SETUP | Update host OS and setup server."
+  import_tasks: server.yml
+
+- name: "ViPER SETUP | Install prerequisites."
+  import_tasks: prerequisites.yml
+
+- name: "ViPER SETUP | Set up user account with SSH key."
+  import_tasks: user.yml
+
+- name: "ViPER SETUP | Secure server."
+  import_tasks: security/main.yml
+
+- name: "ViPER SETUP | Setup desktop environment."
+  import_tasks: desktop.yml
