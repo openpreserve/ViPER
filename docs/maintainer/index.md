@@ -15,7 +15,7 @@ It's not intended as a primer on the underpinning technologies, we assume that r
 are technically proficient. If you just want to use ViPER and you're looking for help
 the please refer to the [setup guide](../setup/) or [user's guide](../guide/).
 
-ViPER is an easy-to-install virtual machine running popular open source preservation tools with graphical user interfaces. It was created by the [Open Preservation Foundation(https://openpreservation.org/)] (OPF) and funded by the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/) (DDHN). ViPER is now maintained by the OPF and the [National Archives of the Netherlands](https://www.nationaalarchief.nl/).
+ViPER is an easy-to-install virtual machine running popular open source preservation tools with graphical user interfaces. It was created by the [Open Preservation Foundation](https://openpreservation.org/) (OPF) and funded by the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/) (DDHN). ViPER is now maintained by the OPF and the [National Archives of the Netherlands](https://www.nationaalarchief.nl/).
 
 ## Technologies
 
