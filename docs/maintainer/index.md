@@ -2,6 +2,7 @@
 layout: page
 title: Maintainer Guide
 ---
+# Maintainer Guide
 
 This guide is intended for anybody interested in:
 
@@ -14,7 +15,7 @@ It's not intended as a primer on the underpinning technologies, we assume that r
 are technically proficient. If you just want to use ViPER and you're looking for help
 the please refer to the [setup guide](../setup/) or [user's guide](../guide/).
 
-ViPER is an easy-to-install virtual machine running popular open source preservation tools with graphical user interfaces. It was created by the [Open Preservation Foundation(https://openpreservation.org/)] (OPF) and funded by the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/) (DDHN). ViPER is maintained by the OPF and the [National Archives of the Netherlands](https://www.nationaalarchief.nl/).
+ViPER is an easy-to-install virtual machine running popular open source preservation tools with graphical user interfaces. It was created by the [Open Preservation Foundation(https://openpreservation.org/)] (OPF) and funded by the [Dutch Digital Heritage Network](https://www.netwerkdigitaalerfgoed.nl/) (DDHN). ViPER is now maintained by the OPF and the [National Archives of the Netherlands](https://www.nationaalarchief.nl/).
 
 ## Technologies
 
@@ -22,7 +23,7 @@ You'll need at least familiarity with the following software and technologies to
 
 ### Operating system
 
-[Debian 12 (Bookworm)](https://www.debian.org/) was chosen as a base OS. The two main criteria that guided the decision were stability and long update cycles.
+[{{ site.data.vars.guest_os }} {{ site.data.vars.guest_os_version }} ({{ site.data.vars.guest_os_nickname }})](https://www.debian.org/) is the base OS. The two main criteria that guided the decision were stability and long update cycles.
 
 ### Virtualisation
 
@@ -48,7 +49,7 @@ The VirtualBox VM is initialised with on the following line, which also selects 
 config.vm.box = "debian/bookworm64"
 ```
 
-This choses a 64 bit Debian 12 (Bookworm) image as the base OS.
+This choses a 64 bit {{ site.data.vars.guest_os }} {{ site.data.vars.guest_os_version }} ({{ site.data.vars.guest_os_nickname }}) image as the base OS.
 
 #### VirtualBox configuration
 
@@ -59,7 +60,7 @@ We can set these up for a VirtualBox VM by adding the following lines to our Vag
 ```ruby
 config.vm.provider "virtualbox" do |vb|
   # Name the prototype machine
-  vb.name = "VIPER v1.1"
+  vb.name = "VIPER v1.2"
   # Display the VirtualBox GUI when booting the machine
   vb.gui = true
   # Customize the CPUs (2x) and memory (4GB) on the VM:
@@ -111,7 +112,7 @@ end
 
 ### Ansible Playbook
 
-The playbook [`ansible/initialise-env.yaml`](https://github.com/openpreserve/ViPER/blob/main/ansible/initialise-env.yml) is the list of roles that set up the virtual research environment.
+The playbook [`ansible/initialise-env.yaml`](https://github.com/openpreserve/ViPER/blob/main/ansible/initialise-env.yml) is the list of roles that set up the ViPER environment.
 An Ansible role is simply a set of tasks that achieve a desired state, e.g. install software, copy files, etc..
 
 ### Ansible Roles
@@ -152,3 +153,7 @@ The [`viper.tools`](https://github.com/openpreserve/ViPER/blob/main/ansible/role
 - download the tool installation package and install to `/usr/local/lib/<tool-name>`;
 - add any required symlinks to `/usr/local/bin` so that tool executables are effectively on the path; and
 - put an icon for the tool GUI on the desktop.
+
+## Updating the environment
+
+## Updating the tools
