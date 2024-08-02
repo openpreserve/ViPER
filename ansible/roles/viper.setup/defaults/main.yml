@@ -1,0 +1,134 @@
+---
+# viper.setup default values
+viper_env_apt_defaults:
+  # Source control a
+  - "git"
+  # Debian lacks the ability to download apt over HTTPS
+  - "apt-transport-https"
+  # Install some helper network tools
+  - "psmisc"
+  - "net-tools"
+  # Python3 module so that ansible can handle dconf tasks
+  - "python3-psutil"
+  # Zip and unzip are always handy
+  - "zip"
+  - "unzip"
+  # Tools for keyboard and console setup
+  - "keyboard-configuration"
+  - "console-setup"
+  # Open JDK 17 for Java
+  - "openjdk-17-jre"
+  - "openjdk-17-doc"
+  - "openjdk-17-source"
+  # GNOME desktop and Nemo add on for icon display
+  - "task-gnome-desktop"
+  - "nemo"
+
+viper_env_apt_remove:
+  - "acpi"
+  - "apcid"
+  - "aptitude"
+  - "at"
+  - "aspell"
+  - "aspell-en"
+  - "avahi-daemon"
+  - "bc"
+  - "bin86"
+  - "bind9-host"
+  - "console-common"
+  - "console-data"
+  - "console-tools"
+  - "dc"
+  - "debian-faq"
+  - "debian-faq-de"
+  - "debian-faq-fr"
+  - "debian-faq-it"
+  - "debian-faq-zh-cn"
+  - "dhcp"
+  - "dhcp3-client"
+  - "dhcp3-common"
+  - "dictionaries"
+  - "dnsutils"
+  - "doc-debian"
+  - "doc-linux-text"
+  - "eject"
+  - "fdutils"
+  - "file"
+  - "finger"
+  - "foomatic-filters"
+  - "gettext-base"
+  - "groff"
+  - "gnupg"
+  - "gnu-efi"
+  - "grub"
+  - "hplip"
+  - "iamerican"
+  - "ibritish"
+  - "info"
+  - "ispell"
+  - "laptop-detect"
+  - "libavahi-compat-libdnssd1"
+  - "libc6-amd64"
+  - "libc6-i686"
+  - "libgpmg1"
+  - "manpages"
+  - "mtools"
+  - "mtr-tiny"
+  - "mutt"
+  - "nano"
+  - "netcat"
+  - "net-tools"
+  - "ncurses-term"
+  - "openssl"
+  - "pidentd"
+  - "ppp"
+  - "pppconfig"
+  - "pppoe"
+  - "pppoeconf"
+  - "read-edid"
+  - "reportbug"
+  - "smclient"
+  - "tasksel"
+  - "tcsh"
+  - "traceroute"
+  - "usbutils"
+  - "vim-common"
+  - "vim-tiny"
+  - "wamerican"
+  - "w3m"
+  - "whois"
+  - "zeroinstall-injector"
+
+
+viper:
+  setup:
+    prereqs:
+      apt: "{{ viper_env_prereqs_apt | default (viper_env_apt_defaults) }}"
+    remove:
+      apt: "{{ viper_env_remove_apt | default (viper_env_apt_remove) }}"
+    hostname: "{{ viper_env_hostname | default('localhost') }}"
+    hostdomain: "{{ viper_env_hostdomain | default('localdomain') }}"
+    fqdn: "{{ viper_env_fqdn | default('localhost.localdomain') }}"
+    timezone: "{{ viper_env_timezone | default('Europe/London') }}"
+    iptables:
+      interfaces: "{{ viper_env_http_interfaces | default([]) }}"
+    ip:
+      v4: "{{ viper_env_ip | default('127.0.0.1') }}"
+      v6: "{{ viper_env_ip_v6 | default('') }}"
+    port:
+      http: "{{ viper_env_port_http | default('') }}"
+      https: "{{ viper_env_port_https | default('') }}"
+    open_ports: "{{ viper_env_open_ports | default([]) }}"
+    limited_account:
+      name: "{{ viper_env_user_name | default('viper') }}"
+      password: ""
+      home: "{{ viper_env_user_home | default('/home/viper') }}"
+    default_locale: en_GB.UTF-8
+    locales:
+      - da_DK.UTF-8
+      - de_DE.UTF-8
+      - en_GB.UTF-8
+      - en_US.UTF-8
+      - fr_FR.UTF-8
+      - nl_NL.UTF-8
+

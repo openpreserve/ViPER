@@ -1,0 +1,13 @@
+---
+# Main task entry point for viper.setup
+
+- name: "IMPORT | Harden SSH access."
+  import_tasks: ssh.yml
+
+- name: "APT | Install fail2ban."
+  apt:
+    name: "fail2ban"
+    state: "latest"
+
+- name: "IMPORT | Set up iptable firewall."
+  import_tasks: iptables/main.yml
