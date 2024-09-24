@@ -1,0 +1,30 @@
+- name: Run ViPER Ansible job against Docker container
+  hosts: localhost
+  tasks:
+    - name: Create a Docker container
+      community.docker.docker_container:
+        name: docker-viper
+        # image: lscr.io/linuxserver/webtop:debian-xfce-48fa8b80-ls90
+        image: opf-viper-cloud:v0.0.3
+        state: started
+        command: sleep infinity
+        published_ports:
+          - "3000:3000"
+          - "3001:3001"
+        # volumes:
+          # - "../volumes/data-xfce:/config"  # Mount host directory to container directory
+        env:
+          PUID: "1000"  # Set PUID environment variable
+          PGID: "1000"  # Set PGID environment variable
+
+    # - name: Wait for the Docker container to be ready
+    #   wait_for:
+    #     host: 127.0.0.1
+    #     port: 3000
+    #     delay: 10
+    #     timeout: 300
+
+    # - name: Apply further Ansible roles to the Docker container
+    #   ansible.builtin.include_role:
+    #     name: your_role_name
+    #   delegate_to: docker-viper

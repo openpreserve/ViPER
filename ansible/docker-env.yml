@@ -1,0 +1,73 @@
+- hosts: docker-viper
+  become: true
+  roles:
+    - { role: viper.setup }
+    - { role: viper.tools }
+
+# docker host specfic actions
+# put the desktop icons in the right place
+- hosts: docker-viper
+  tasks:
+    - name: DOCKER Tools | Install rsync
+      apt:
+        name: rsync
+        state: present
+
+    - name: DOCKER Tools | Synchronize viper Desktop to vnc abc user home folder
+      command: rsync -av /home/viper/Desktop/ /config/Desktop/
+      become: yes
+      become_user: root
+
+    - name: DOCKER tools | Change ownership of all files in Desktop folder
+      command: sudo chown -R abc:abc /config/Desktop
+      become: yes
+
+    - name: DOCKER tools | Mark executable files in Desktop folder
+      command: find /config/Desktop -type f -exec chmod +x {} \;
+      become: yes
+
+    - name: Get list of all files in Desktop folder
+      find:
+        paths: /config/Desktop
+        patterns: "*.desktop"
+        file_type: file
+      register: desktop_files
+
+    - name: Make all desktop launchers executable
+      file:
+        path: "{{ item.path }}"
+        mode: '0755'
+      loop: "{{ desktop_files.files }}"
+      become: yes
+
+    - name: Set metadata::xfce-exe-checksum for each .desktop file
+      command: >
+        dbus-launch gio set -t string {{ item.path }} metadata::xfce-exe-checksum
+        "$(sha256sum {{ item.path }} | awk '{print $1}')"
+      loop: "{{ desktop_files.files }}"
+      become_user: yes
+
+    - name: DOCKER Tools | Install xfconf-query
+      apt:
+        name: xfconf
+        state: present
+
+    - name: Set desktop background to custom image
+      command: >
+        xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image -s /usr/local/share/backgrounds/viper-desktop.jpg
+
+    - name: DOCKER Tools | Hide Home icon from desktop
+      command: >
+        xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-home -n -t bool -s false
+
+    - name: DOCKER Tools | Hide Filesystem icon from desktop
+      command: >
+        xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -n -t bool -s false
+
+    - name: DOCKER Tools | Hide Trash icon from desktop
+      command: >
+        xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-trash -n -t bool -s false
+
+
+
+
