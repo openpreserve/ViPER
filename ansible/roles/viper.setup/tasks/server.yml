@@ -10,11 +10,11 @@
   hostname:
     name: "{{ viper.setup.hostname }}"
 
-- name: "HOST | Set up /etc/hosts"
-  template:
-    src: "etc/hosts.j2"
-    dest: "/etc/hosts"
-    owner: "root"
+# - name: "HOST | Set up /etc/hosts"
+#   template:
+#     src: "etc/hosts.j2"
+#     dest: "/etc/hosts"
+#     owner: "root"
 
 - name: "HOST | Set the timezone: {{ viper.setup.timezone }}."
   timezone:

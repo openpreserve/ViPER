@@ -5,7 +5,8 @@
       community.docker.docker_container:
         name: docker-viper
         # image: lscr.io/linuxserver/webtop:debian-xfce-48fa8b80-ls90
-        image: opf-viper-cloud:v0.0.3
+        # image: opf-viper-cloud:v0.0.3
+        image: ghcr.io/darrendignam/webtop-debian-xfce:v1@sha256:3696644ee947551adc7e37a63f16579ffc0ec552ef957def36cc4a6f52a910c3
         state: started
         command: sleep infinity
         published_ports:

@@ -1,0 +1,7 @@
+- name: List Docker containers
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Display Docker containers
+      debug:
+        msg: "{{ inventory_hostname }}"

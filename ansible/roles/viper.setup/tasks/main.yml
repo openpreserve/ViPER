@@ -10,8 +10,8 @@
 - name: "ViPER SETUP | Set up user account with SSH key."
   import_tasks: user.yml
 
-- name: "ViPER SETUP | Secure server."
-  import_tasks: security/main.yml
+# - name: "ViPER SETUP | Secure server."
+#   import_tasks: security/main.yml
 
 - name: "ViPER SETUP | Setup desktop environment."
   import_tasks: desktop.yml
