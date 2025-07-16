@@ -28,7 +28,7 @@ You'll need [Virtual Box](https://www.virtualbox.org/) on your machine to act as
 
 ### Downloading the virtual Machine
 
-Download the latest version of ViPER at <https://ddhn.openpreservation.org/viper-v{{ site.data.vars.version }}.ova>. ViPER is distributed as a [prebuilt OVF file](https://www.virtualbox.org/manual/ch01.html#ovf-about). The download takes some time as the file is about 5GB.
+Download the latest version of ViPER at <https://ddhn.openpreservation.org/viper-v1.2.ova>. ViPER is distributed as a [prebuilt OVF file](https://www.virtualbox.org/manual/ch01.html#ovf-about). The download takes some time as the file is about 5GB.
 
 [These instructions](https://www.virtualbox.org/manual/ch01.html#ovf) tell you how to import the OVA file into VirtualBox so you can start it.
 
