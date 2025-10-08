@@ -1,0 +1,49 @@
+- name: Run ViPER Ansible job against Docker container
+  hosts: localhost
+  tasks:
+    - name: Create a Docker container
+      community.docker.docker_container:
+        name: docker-viper
+        image: lscr.io/linuxserver/webtop:debian-xfce
+        state: started
+        command: sleep infinity
+        published_ports:
+          - "3000:3000"
+          - "3001:3001"
+        volumes:
+          # - "../volumes/data-xfce:/config"  # Mount host directory to container directory
+          # - "../ansible:/ansible"  # Mount the ansible dir
+        env:
+          PUID: "1000"  # Set PUID environment variable
+          PGID: "1000"  # Set PGID environment variable
+
+# - hosts: docker-viper
+#   become: true
+#   roles:
+#     - { role: viper.setup }
+#     - { role: viper.tools }
+
+    # - name: Apt Update in container
+    #   community.docker.docker_container_exec:
+    #     container: docker-viper
+    #     command: apt-get update
+
+    # - name: Install Ansible in the Docker container
+    #   community.docker.docker_container_exec:
+    #     container: docker-viper
+    #     command: apt-get install -y ansible
+
+    # - name: Execute Ansible playbook inside Docker container
+    #   community.docker.docker_container_exec:
+    #     container: docker-viper
+    #     command: ansible-playbook /ansible/localhost-env.yml
+
+    # - name: Execute Ansible playbook inside Docker container
+    #   community.docker.docker_container_exec:
+    #     container: docker-viper
+    #     command: ansible-playbook /ansible/initialise-env.yml
+
+    # - name: Execute viper.tools role in Docker container
+    #   community.docker.docker_container_exec:
+    #     container: docker-viper
+    #     command: ansible-playbook -i localhost, -c local /ansible/roles/viper.tools/tasks/main.yml
