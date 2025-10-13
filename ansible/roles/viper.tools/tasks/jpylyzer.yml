@@ -1,0 +1,26 @@
+---
+# Install jpylyzer (JP2 validator and properties extractor)
+# Python-based command-line tool for JPEG 2000 validation
+
+- name: "jpylyzer | Install Python3 pip if not present."
+  apt:
+    name: "python3-pip"
+    state: "present"
+
+- name: "jpylyzer | Install jpylyzer via pip (with --break-system-packages for Debian 12+)."
+  pip:
+    name: "{{ viper.tools.jpylyzer.package }}"
+    version: "{{ viper.tools.jpylyzer.version }}"
+    state: "present"
+    executable: pip3
+    extra_args: "--break-system-packages"
+
+- name: "jpylyzer | Verify jpylyzer installation."
+  command: "jpylyzer --version"
+  register: jpylyzer_version_check
+  changed_when: false
+  failed_when: jpylyzer_version_check.rc != 0
+
+- name: "jpylyzer | Display installed version."
+  debug:
+    msg: "{{ jpylyzer_version_check.stdout_lines }}"

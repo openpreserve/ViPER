@@ -66,6 +66,12 @@ tika_minor: "9"
 tika_patch: "2"
 tika_version: "{{ tika_major }}.{{ tika_minor }}.{{ tika_patch }}"
 
+# FIDO version details
+fido_version: "1.6.1"
+
+# jpylyzer version details
+jpylyzer_version: "2.2.1"
+
 viper:
   tools:
     jhove:
@@ -138,6 +144,20 @@ viper:
         bin: "{{ viper_bin }}"
         lib: "{{ viper_lib }}/veraPDF/{{ verapdf_version }}"
         src: "{{ viper_src }}/veraPDF/{{ verapdf_version }}"
+    fido:
+      name: "fido"
+      version: "{{ fido_version }}"
+      package: "opf-fido"
+      source:
+        git: "https://github.com/openpreserve/fido.git"
+        tag: "v{{ fido_version }}"
+    jpylyzer:
+      name: "jpylyzer"
+      version: "{{ jpylyzer_version }}"
+      package: "jpylyzer"
+      source:
+        git: "https://github.com/openpreserve/jpylyzer.git"
+        tag: "{{ jpylyzer_version }}"
     mediaarea:
       - name: "libzen0"
         download_url: "https://mediaarea.net/download/binary/libzen0/0.4.41/libzen0v5_0.4.41-1_amd64.Debian_12.deb"
