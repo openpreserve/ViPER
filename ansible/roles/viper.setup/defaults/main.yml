@@ -38,9 +38,8 @@ viper_env_apt_defaults: "{{ (ansible_virtualization_type == 'docker') | ternary(
 
 # Packages to remove from Docker containers (XFCE cruft - save space)
 # Note: aspell, aspell-en, dictionaries-common, emacsen-common cannot be removed as they are XFCE dependencies
-# locales-all is 227MB and redundant since we install specific locales
+# Note: locales-all kept (227MB) to avoid locale generation issues
 viper_env_apt_docker_remove:
-  - "locales-all"
   - "nano"
   - "vim-tiny"
   - "vim-common"
