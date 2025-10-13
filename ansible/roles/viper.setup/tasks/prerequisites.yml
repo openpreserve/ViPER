@@ -34,3 +34,10 @@
   copy:
     src: "files/etc/default/keyboard"
     dest: "/etc/default/keyboard"
+
+- name: "APT | Remove unnecessary packages."
+  apt:
+    name: "{{ viper.setup.remove.apt }}"
+    state: "absent"
+    purge: yes
+    autoremove: yes

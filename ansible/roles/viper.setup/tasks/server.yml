@@ -35,8 +35,3 @@
     content: "{{ viper.setup.timezone }}\n"
     dest: /etc/timezone
   when: ansible_virtualization_type == "docker"
-
-- name: "APT | Remove unnecessary packages."
-  apt:
-    name: "{{ viper.setup.remove.apt }}"
-    state: "absent"
