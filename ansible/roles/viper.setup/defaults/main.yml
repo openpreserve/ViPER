@@ -1,29 +1,40 @@
 ---
 # viper.setup default values
-viper_env_apt_defaults:
-  # Source control a
+# Default packages for Docker containers (minimal set, for Debian Bookworm)
+viper_env_apt_docker_defaults:
   - "git"
-  # Debian lacks the ability to download apt over HTTPS
   - "apt-transport-https"
-  # Install some helper network tools
   - "psmisc"
   - "net-tools"
-  # Python3 module so that ansible can handle dconf tasks
   - "python3-psutil"
-  # Zip and unzip are always handy
   - "zip"
   - "unzip"
-  # Tools for keyboard and console setup
   - "keyboard-configuration"
   - "console-setup"
-  # Open JDK 17 for Java
+  - "openjdk-17-jre"
+  - "evince"
+  - "locales"
+
+# Default packages for VMs (includes desktop environment)
+viper_env_apt_vm_defaults:
+  - "git"
+  - "apt-transport-https"
+  - "psmisc"
+  - "net-tools"
+  - "python3-psutil"
+  - "zip"
+  - "unzip"
+  - "keyboard-configuration"
+  - "console-setup"
   - "openjdk-17-jre"
   - "openjdk-17-doc"
   - "openjdk-17-source"
-  # GNOME desktop and Nemo add on for icon display
   - "task-gnome-desktop"
   - "nemo"
   - "locales"
+
+# Use Docker defaults if running in Docker, otherwise use VM defaults
+viper_env_apt_defaults: "{{ (ansible_virtualization_type == 'docker') | ternary(viper_env_apt_docker_defaults, viper_env_apt_vm_defaults) }}"
 
 viper_env_apt_remove:
   # - "acpi"

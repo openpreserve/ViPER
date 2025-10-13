@@ -43,3 +43,4 @@
     src: "etc/gdm3/daemon.j2"
     dest: "/etc/gdm3/daemon.conf"
     owner: "root"
+  when: ansible_virtualization_type != "docker"

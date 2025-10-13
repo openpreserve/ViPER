@@ -10,15 +10,31 @@
   hostname:
     name: "{{ viper.setup.hostname }}"
 
-# - name: "HOST | Set up /etc/hosts"
-#   template:
-#     src: "etc/hosts.j2"
-#     dest: "/etc/hosts"
-#     owner: "root"
+- name: "HOST | Set up /etc/hosts"
+  template:
+    src: "etc/hosts.j2"
+    dest: "/etc/hosts"
+    owner: "root"
+  when: ansible_virtualization_type != "docker"
 
 - name: "HOST | Set the timezone: {{ viper.setup.timezone }}."
   timezone:
     name: "{{ viper.setup.timezone }}"
+  when: ansible_virtualization_type != "docker"
+
+- name: "DOCKER | Set timezone via symlink"
+  ansible.builtin.file:
+    src: "/usr/share/zoneinfo/{{ viper.setup.timezone }}"
+    dest: /etc/localtime
+    state: link
+    force: yes
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Set timezone in /etc/timezone"
+  ansible.builtin.copy:
+    content: "{{ viper.setup.timezone }}\n"
+    dest: /etc/timezone
+  when: ansible_virtualization_type == "docker"
 
 - name: "APT | Remove unnecessary packages."
   apt:
