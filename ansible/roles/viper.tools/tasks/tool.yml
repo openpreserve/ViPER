@@ -24,10 +24,19 @@
     dest: "{{ viper_apps_share }}/{{ item.name }}.desktop"
     mode: a+x
 
-- name: "TOOL {{ item.name }} | Create user desktop file from template"
+- name: "TOOL {{ item.name }} | Create user desktop file from template (VM)"
   template:
     src: "usr/share/applications/template.desktop"
     dest: "/home/{{ viper_account_name }}/Desktop/{{ item.name }}.desktop"
     owner: "{{ viper_account_name }}"
     group: "{{ viper_account_name }}"
     mode: a+x
+
+- name: "TOOL {{ item.name }} | Create user desktop file from template (Docker)"
+  template:
+    src: "usr/share/applications/template.desktop"
+    dest: "/config/Desktop/{{ item.name }}.desktop"
+    owner: "abc"
+    group: "abc"
+    mode: a+x
+  when: ansible_virtualization_type == "docker"

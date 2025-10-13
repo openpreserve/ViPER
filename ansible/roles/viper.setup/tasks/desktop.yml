@@ -73,3 +73,69 @@
     value: "true"
     state: present
   when: ansible_virtualization_type != "docker"
+
+# Docker/XFCE Desktop Configuration
+- name: "DOCKER | Create shared backgrounds directory."
+  file:
+    path: "/usr/local/share/backgrounds"
+    state: directory
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Copy ViPER wallpaper to shared backgrounds directory."
+  copy:
+    src: "files/usr/local/share/backgrounds/viper-desktop.jpg"
+    dest: "/usr/local/share/backgrounds/viper-desktop.jpg"
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Create XFCE config directory for abc user."
+  file:
+    path: "/config/.config/xfce4/xfconf/xfce-perchannel-xml"
+    state: directory
+    owner: "abc"
+    group: "abc"
+    mode: '0755'
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Make desktop icons trusted - set execute permission."
+  file:
+    path: "/config/Desktop"
+    state: directory
+    owner: "abc"
+    group: "abc"
+    mode: '0755'
+    recurse: no
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Copy post-install script for desktop icon configuration."
+  copy:
+    src: "{{ playbook_dir }}/../docker-files/post-install.sh"
+    dest: "/usr/local/bin/viper-post-install.sh"
+    owner: "root"
+    group: "root"
+    mode: '0755'
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Create autostart directory for abc user."
+  file:
+    path: "/config/.config/autostart"
+    state: directory
+    owner: "abc"
+    group: "abc"
+    mode: '0755'
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Create autostart desktop file for post-install script."
+  copy:
+    dest: "/config/.config/autostart/viper-post-install.desktop"
+    owner: "abc"
+    group: "abc"
+    mode: '0644'
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Name=ViPER Desktop Setup
+      Exec=/usr/local/bin/viper-post-install.sh
+      Hidden=false
+      NoDisplay=true
+      X-GNOME-Autostart-enabled=true
+  when: ansible_virtualization_type == "docker"

@@ -8,7 +8,7 @@
     name: "{{ viper_debian_tools }}"
     state: "latest"
 
-- name: "Debian Tools | Add desktop icons for Debian tools."
+- name: "Debian Tools | Add desktop icons for Debian tools (VM)."
   copy:
     src: "/usr/share/applications/{{ item }}.desktop"
     dest: "/home/{{ viper_account_name }}/Desktop/{{ item }}.desktop"
@@ -18,9 +18,28 @@
     remote_src: yes
   with_items: "{{ viper_debian_icons }}"
 
-- name: "Debian Tools | Set executable permissions for Desktop icons."
+- name: "Debian Tools | Set executable permissions for Desktop icons (VM)."
   ansible.builtin.file:
     path: "/home/{{ viper_account_name }}/Desktop/{{ item }}.desktop"
     state: file
     mode: "u+x,g+x,o+x"
   with_items: "{{ viper_debian_icons }}"
+
+- name: "Debian Tools | Copy desktop icons to /config/Desktop for Docker."
+  copy:
+    src: "/usr/share/applications/{{ item }}.desktop"
+    dest: "/config/Desktop/{{ item }}.desktop"
+    owner: "abc"
+    group: "abc"
+    mode: preserve
+    remote_src: yes
+  with_items: "{{ viper_debian_icons }}"
+  when: ansible_virtualization_type == "docker"
+
+- name: "Debian Tools | Set executable permissions for Desktop icons (Docker)."
+  ansible.builtin.file:
+    path: "/config/Desktop/{{ item }}.desktop"
+    state: file
+    mode: "u+x,g+x,o+x"
+  with_items: "{{ viper_debian_icons }}"
+  when: ansible_virtualization_type == "docker"
