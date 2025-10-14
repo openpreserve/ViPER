@@ -22,68 +22,77 @@ mkdir -p "$DESKTOP_DIR"
 chown abc:abc "$DESKTOP_DIR"
 chmod 755 "$DESKTOP_DIR"
 
-# Wait for X server to be ready
-sleep 5
-
-# Find the DBUS session address from xfce4-session process
-XFCE_PID=$(pgrep -u abc xfce4-session | head -n1)
-if [[ -n "$XFCE_PID" ]]; then
-  export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$XFCE_PID/environ | cut -d= -f2-)
-  echo "$(date): Found DBUS address: $DBUS_SESSION_BUS_ADDRESS" >> "$LOG_FILE"
+# Copy desktop files from /home/viper/Desktop to /config/Desktop
+echo "$(date): Copying desktop files" >> "$LOG_FILE"
+if [[ -d /home/viper/Desktop ]]; then
+  cp -v /home/viper/Desktop/*.desktop "$DESKTOP_DIR/" 2>&1 >> "$LOG_FILE"
+  chown abc:abc "$DESKTOP_DIR"/*.desktop
+  chmod 755 "$DESKTOP_DIR"/*.desktop
 fi
 
-# Set desktop wallpaper using xfconf-query
-echo "$(date): Setting desktop wallpaper" >> "$LOG_FILE"
-xfconf-query -c xfce4-desktop \
-  -p /backdrop/screen0/monitorVNC-0/workspace0/last-image \
-  -s /usr/local/share/backgrounds/viper-desktop.jpg 2>&1 | tee -a "$LOG_FILE"
+# Create XFCE config directories
+mkdir -p /config/.config/xfce4/xfconf/xfce-perchannel-xml
+chown -R abc:abc /config/.config/xfce4
 
-xfconf-query -c xfce4-desktop \
-  -p /backdrop/screen0/monitorVNC-0/workspace0/image-style \
-  -s 5 2>&1 | tee -a "$LOG_FILE"
+# Configure single workspace
+echo "$(date): Configuring single workspace" >> "$LOG_FILE"
+cat > /config/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml << 'EOFXML'
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfwm4" version="1.0">
+  <property name="general" type="empty">
+    <property name="workspace_count" type="int" value="1"/>
+  </property>
+</channel>
+EOFXML
+chown abc:abc /config/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+
+# Wait for X server and desktop to be ready
+sleep 10
+
+echo "$(date): Configuring desktop as abc user" >> "$LOG_FILE"
+
+# Hide desktop icons (Home, Filesystem, Trash)
+# Run as abc user with proper environment
+echo "$(date): Hiding desktop icons" >> "$LOG_FILE"
+su - abc << 'EOFABC' >> "$LOG_FILE" 2>&1
+export DISPLAY=:1
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-home -n -t bool -s false
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -n -t bool -s false
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-trash -n -t bool -s false
+EOFABC
+
+# Set desktop wallpaper
+echo "$(date): Setting desktop wallpaper" >> "$LOG_FILE"
+su - abc << 'EOFABC' >> "$LOG_FILE" 2>&1
+export DISPLAY=:1
+xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image -s /usr/local/share/backgrounds/viper-desktop.jpg
+xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image-style -s 5
+EOFABC
 
 # Configure XFCE panel - add system monitor plugins
 echo "$(date): Configuring XFCE panel plugins" >> "$LOG_FILE"
 
-# Add system monitor plugins to the panel
-# These will appear on the right side of the panel
-
-# System load monitor (CPU, RAM, Swap bars)
-if [ -f /usr/lib/x86_64-linux-gnu/xfce4/panel/plugins/libsystemload.so ]; then
-  echo "$(date): Configuring systemload plugin" >> "$LOG_FILE"
-  xfconf-query -c xfce4-panel -p /plugins/plugin-20 -n -t string -s systemload 2>&1 >> "$LOG_FILE"
-  xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids -t int -s 1 -t int -s 2 -t int -s 3 -t int -s 4 -t int -s 5 -t int -s 20 -t int -s 6 -t int -s 11 -t int -s 12 -t int -s 13 -t int -s 14 2>&1 >> "$LOG_FILE"
-fi
-
-# CPU graph
-if [ -f /usr/lib/x86_64-linux-gnu/xfce4/panel/plugins/libcpugraph.so ]; then
-  echo "$(date): Configuring cpugraph plugin" >> "$LOG_FILE"
-  xfconf-query -c xfce4-panel -p /plugins/plugin-21 -n -t string -s cpugraph 2>&1 >> "$LOG_FILE"
-  xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids -t int -s 1 -t int -s 2 -t int -s 3 -t int -s 4 -t int -s 5 -t int -s 20 -t int -s 21 -t int -s 6 -t int -s 11 -t int -s 12 -t int -s 13 -t int -s 14 2>&1 >> "$LOG_FILE"
-fi
-
-# Network monitor
-if [ -f /usr/lib/x86_64-linux-gnu/xfce4/panel/plugins/libnetload.so ]; then
-  echo "$(date): Configuring netload plugin" >> "$LOG_FILE"
-  xfconf-query -c xfce4-panel -p /plugins/plugin-22 -n -t string -s netload 2>&1 >> "$LOG_FILE"
-  xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids -t int -s 1 -t int -s 2 -t int -s 3 -t int -s 4 -t int -s 5 -t int -s 20 -t int -s 21 -t int -s 22 -t int -s 6 -t int -s 11 -t int -s 12 -t int -s 13 -t int -s 14 2>&1 >> "$LOG_FILE"
-fi
-
-# Set Firefox as default browser (update all references to chromium)
-echo "$(date): Setting Firefox as default browser" >> "$LOG_FILE"
-
-# Update XFCE favorites (panel launchers)
-# Plugin 3 is usually the favorites/launcher plugin
-xfconf-query -c xfce4-panel -p /plugins/plugin-3/items -r 2>/dev/null
-xfconf-query -c xfce4-panel -p /plugins/plugin-3/items -n -t string -s "firefox-esr.desktop" -a 2>&1 >> "$LOG_FILE"
+# Note: Panel plugin configuration is complex and may not persist properly
+# The plugins are installed but need manual addition to the panel
+# Users can right-click the panel > Panel > Add New Items > Choose system monitors
 
 # Set Firefox as default web browser using xdg-mime
-su - abc -c "xdg-mime default firefox-esr.desktop x-scheme-handler/http" 2>&1 >> "$LOG_FILE"
-su - abc -c "xdg-mime default firefox-esr.desktop x-scheme-handler/https" 2>&1 >> "$LOG_FILE"
-su - abc -c "xdg-mime default firefox-esr.desktop text/html" 2>&1 >> "$LOG_FILE"
+su - abc << 'EOFABC' >> "$LOG_FILE" 2>&1
+export DISPLAY=:1
+xdg-mime default firefox-esr.desktop x-scheme-handler/http
+xdg-mime default firefox-esr.desktop x-scheme-handler/https
+xdg-mime default firefox-esr.desktop text/html
 
-# Restart panel to apply changes
-xfce4-panel --restart 2>&1 >> "$LOG_FILE"
+# Restart window manager to apply workspace changes
+pkill xfwm4
+xfwm4 > /dev/null 2>&1 &
+
+# Restart desktop to apply wallpaper and icon changes
+pkill xfdesktop
+xfdesktop > /dev/null 2>&1 &
+EOFABC
+
+echo "$(date): Desktop configuration completed and applied" >> "$LOG_FILE"
 
 # Make all desktop files executable and trusted
 if [[ -d "$DESKTOP_DIR" ]]; then
