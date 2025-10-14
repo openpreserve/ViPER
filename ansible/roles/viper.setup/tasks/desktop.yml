@@ -96,6 +96,30 @@
     mode: '0755'
   when: ansible_virtualization_type == "docker"
 
+- name: "DOCKER | Configure XFCE window manager (reduce to 1 workspace)."
+  copy:
+    dest: "/config/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml"
+    owner: "abc"
+    group: "abc"
+    mode: '0644'
+    content: |
+      <?xml version="1.0" encoding="UTF-8"?>
+      <channel name="xfwm4" version="1.0">
+        <property name="general" type="empty">
+          <property name="workspace_count" type="int" value="1"/>
+        </property>
+      </channel>
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Install XFCE system monitor plugins."
+  apt:
+    name:
+      - xfce4-systemload-plugin
+      - xfce4-cpugraph-plugin
+      - xfce4-netload-plugin
+    state: present
+  when: ansible_virtualization_type == "docker"
+
 - name: "DOCKER | Make desktop icons trusted - set execute permission."
   file:
     path: "/config/Desktop"

@@ -42,6 +42,36 @@ xfconf-query -c xfce4-desktop \
   -p /backdrop/screen0/monitorVNC-0/workspace0/image-style \
   -s 5 2>&1 | tee -a "$LOG_FILE"
 
+# Configure XFCE panel - add system monitor plugins
+echo "$(date): Configuring XFCE panel plugins" >> "$LOG_FILE"
+
+# Add system monitor plugins to the panel
+# These will appear on the right side of the panel
+
+# System load monitor (CPU, RAM, Swap bars)
+if [ -f /usr/lib/x86_64-linux-gnu/xfce4/panel/plugins/libsystemload.so ]; then
+  echo "$(date): Configuring systemload plugin" >> "$LOG_FILE"
+  xfconf-query -c xfce4-panel -p /plugins/plugin-20 -n -t string -s systemload 2>&1 >> "$LOG_FILE"
+  xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids -t int -s 1 -t int -s 2 -t int -s 3 -t int -s 4 -t int -s 5 -t int -s 20 -t int -s 6 -t int -s 11 -t int -s 12 -t int -s 13 -t int -s 14 2>&1 >> "$LOG_FILE"
+fi
+
+# CPU graph
+if [ -f /usr/lib/x86_64-linux-gnu/xfce4/panel/plugins/libcpugraph.so ]; then
+  echo "$(date): Configuring cpugraph plugin" >> "$LOG_FILE"
+  xfconf-query -c xfce4-panel -p /plugins/plugin-21 -n -t string -s cpugraph 2>&1 >> "$LOG_FILE"
+  xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids -t int -s 1 -t int -s 2 -t int -s 3 -t int -s 4 -t int -s 5 -t int -s 20 -t int -s 21 -t int -s 6 -t int -s 11 -t int -s 12 -t int -s 13 -t int -s 14 2>&1 >> "$LOG_FILE"
+fi
+
+# Network monitor
+if [ -f /usr/lib/x86_64-linux-gnu/xfce4/panel/plugins/libnetload.so ]; then
+  echo "$(date): Configuring netload plugin" >> "$LOG_FILE"
+  xfconf-query -c xfce4-panel -p /plugins/plugin-22 -n -t string -s netload 2>&1 >> "$LOG_FILE"
+  xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids -t int -s 1 -t int -s 2 -t int -s 3 -t int -s 4 -t int -s 5 -t int -s 20 -t int -s 21 -t int -s 22 -t int -s 6 -t int -s 11 -t int -s 12 -t int -s 13 -t int -s 14 2>&1 >> "$LOG_FILE"
+fi
+
+# Restart panel to apply changes
+xfce4-panel --restart 2>&1 >> "$LOG_FILE"
+
 # Make all desktop files executable and trusted
 if [[ -d "$DESKTOP_DIR" ]]; then
   for file in "$DESKTOP_DIR"/*.desktop; do
