@@ -56,11 +56,19 @@ jobs:
             type=semver,pattern={{major}}
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Install Ansible and dependencies
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible and Python dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ansible python3-pip
-          pip3 install docker requests
+          python3 -m pip install --upgrade pip
+          pip3 install ansible docker requests
+
+      - name: Install Ansible collections
+        run: |
+          ansible-galaxy collection install community.docker
 
       - name: Build Docker image with Ansible provisioning
         run: |
