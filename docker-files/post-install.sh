@@ -14,6 +14,19 @@ if [[ -f "$MARKER_FILE" ]]; then
   exit 0
 fi
 
+# Detect if running as root or abc user
+CURRENT_USER=$(whoami)
+echo "$(date): Script running as user: $CURRENT_USER" >> "$LOG_FILE"
+
+# Function to run command as abc user
+run_as_abc() {
+  if [[ "$CURRENT_USER" == "root" ]]; then
+    runuser -u abc -- bash -c "$1"
+  else
+    bash -c "$1"
+  fi
+}
+
 # Wait for desktop to be fully loaded
 echo "$(date): Waiting for desktop environment to be ready" >> "$LOG_FILE"
 for i in {1..30}; do
@@ -49,7 +62,7 @@ chown -R abc:abc /config/.config/xfce4
 
 # Configure single workspace using xfconf-query
 echo "$(date): Configuring single workspace" >> "$LOG_FILE"
-runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfwm4 -p /general/workspace_count -s 1' >> "$LOG_FILE" 2>&1
+run_as_abc 'export DISPLAY=:1 && xfconf-query -c xfwm4 -p /general/workspace_count -s 1' >> "$LOG_FILE" 2>&1
 
 # Wait for X server and desktop to be ready
 sleep 10
@@ -59,14 +72,14 @@ echo "$(date): Configuring desktop as abc user" >> "$LOG_FILE"
 # Hide desktop icons (Home, Filesystem, Trash)
 # Run as abc user with proper environment
 echo "$(date): Hiding desktop icons" >> "$LOG_FILE"
-runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-home -n -t bool -s false' >> "$LOG_FILE" 2>&1
-runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -n -t bool -s false' >> "$LOG_FILE" 2>&1
-runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-trash -n -t bool -s false' >> "$LOG_FILE" 2>&1
+run_as_abc 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-home -n -t bool -s false' >> "$LOG_FILE" 2>&1
+run_as_abc 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -n -t bool -s false' >> "$LOG_FILE" 2>&1
+run_as_abc 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-trash -n -t bool -s false' >> "$LOG_FILE" 2>&1
 
 # Set desktop wallpaper
 echo "$(date): Setting desktop wallpaper" >> "$LOG_FILE"
-runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image -s /usr/local/share/backgrounds/viper-desktop.jpg' >> "$LOG_FILE" 2>&1
-runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image-style -s 5' >> "$LOG_FILE" 2>&1
+run_as_abc 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image -s /usr/local/share/backgrounds/viper-desktop.jpg' >> "$LOG_FILE" 2>&1
+run_as_abc 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image-style -s 5' >> "$LOG_FILE" 2>&1
 
 # Configure XFCE panel - add system monitor plugins
 echo "$(date): Configuring XFCE panel plugins" >> "$LOG_FILE"
@@ -76,17 +89,17 @@ echo "$(date): Configuring XFCE panel plugins" >> "$LOG_FILE"
 # Users can right-click the panel > Panel > Add New Items > Choose system monitors
 
 # Set Firefox as default web browser using xdg-mime
-runuser -u abc -- bash -c 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop x-scheme-handler/http' >> "$LOG_FILE" 2>&1
-runuser -u abc -- bash -c 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop x-scheme-handler/https' >> "$LOG_FILE" 2>&1
-runuser -u abc -- bash -c 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop text/html' >> "$LOG_FILE" 2>&1
+run_as_abc 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop x-scheme-handler/http' >> "$LOG_FILE" 2>&1
+run_as_abc 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop x-scheme-handler/https' >> "$LOG_FILE" 2>&1
+run_as_abc 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop text/html' >> "$LOG_FILE" 2>&1
 
-# Reload desktop settings without killing processes
+# Reload desktop settings by restarting desktop manager and window manager
 echo "$(date): Reloading desktop settings" >> "$LOG_FILE"
-# Signal xfdesktop to reload instead of killing it
-runuser -u abc -- bash -c 'export DISPLAY=:1 && xfdesktop --reload' >> "$LOG_FILE" 2>&1 &
-# Window manager workspace changes require a full restart, but do it gently
-sleep 2
-runuser -u abc -- bash -c 'export DISPLAY=:1 && xfwm4 --replace' >> "$LOG_FILE" 2>&1 &
+# Restart xfdesktop to apply wallpaper and icon changes
+run_as_abc 'export DISPLAY=:1 && pkill xfdesktop && sleep 1 && xfdesktop > /dev/null 2>&1 &' >> "$LOG_FILE" 2>&1
+# Restart window manager to apply workspace changes
+sleep 1
+run_as_abc 'export DISPLAY=:1 && xfwm4 --replace' >> "$LOG_FILE" 2>&1 &
 
 echo "$(date): Desktop configuration completed and applied" >> "$LOG_FILE"
 
