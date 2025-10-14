@@ -14,6 +14,7 @@ viper_env_apt_docker_defaults:
   - "openjdk-17-jre"
   - "evince"
   - "locales"
+  - "firefox-esr"
 
 # Default packages for VMs (includes desktop environment)
 viper_env_apt_vm_defaults:
@@ -39,12 +40,16 @@ viper_env_apt_defaults: "{{ (ansible_virtualization_type == 'docker') | ternary(
 # Packages to remove from Docker containers (XFCE cruft - save space)
 # Note: aspell, aspell-en, dictionaries-common, emacsen-common cannot be removed as they are XFCE dependencies
 # Note: locales-all kept (227MB) to avoid locale generation issues
+# Note: Removing Chrome/Chromium because sandbox doesn't work in Docker
 viper_env_apt_docker_remove:
   - "nano"
   - "vim-tiny"
   - "vim-common"
   - "w3m"
   - "xterm"
+  - "chromium"
+  - "chromium-common"
+  - "chromium-sandbox"
 
 # Packages to remove from VMs (Debian 12 cruft)
 viper_env_apt_vm_remove:

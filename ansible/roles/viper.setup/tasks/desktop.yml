@@ -120,6 +120,14 @@
     state: present
   when: ansible_virtualization_type == "docker"
 
+- name: "DOCKER | Configure Firefox as default browser in XFCE."
+  file:
+    src: "/usr/share/applications/firefox-esr.desktop"
+    dest: "/usr/share/applications/chromium.desktop"
+    state: link
+    force: yes
+  when: ansible_virtualization_type == "docker"
+
 - name: "DOCKER | Make desktop icons trusted - set execute permission."
   file:
     path: "/config/Desktop"

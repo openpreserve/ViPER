@@ -69,6 +69,19 @@ if [ -f /usr/lib/x86_64-linux-gnu/xfce4/panel/plugins/libnetload.so ]; then
   xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids -t int -s 1 -t int -s 2 -t int -s 3 -t int -s 4 -t int -s 5 -t int -s 20 -t int -s 21 -t int -s 22 -t int -s 6 -t int -s 11 -t int -s 12 -t int -s 13 -t int -s 14 2>&1 >> "$LOG_FILE"
 fi
 
+# Set Firefox as default browser (update all references to chromium)
+echo "$(date): Setting Firefox as default browser" >> "$LOG_FILE"
+
+# Update XFCE favorites (panel launchers)
+# Plugin 3 is usually the favorites/launcher plugin
+xfconf-query -c xfce4-panel -p /plugins/plugin-3/items -r 2>/dev/null
+xfconf-query -c xfce4-panel -p /plugins/plugin-3/items -n -t string -s "firefox-esr.desktop" -a 2>&1 >> "$LOG_FILE"
+
+# Set Firefox as default web browser using xdg-mime
+su - abc -c "xdg-mime default firefox-esr.desktop x-scheme-handler/http" 2>&1 >> "$LOG_FILE"
+su - abc -c "xdg-mime default firefox-esr.desktop x-scheme-handler/https" 2>&1 >> "$LOG_FILE"
+su - abc -c "xdg-mime default firefox-esr.desktop text/html" 2>&1 >> "$LOG_FILE"
+
 # Restart panel to apply changes
 xfce4-panel --restart 2>&1 >> "$LOG_FILE"
 
