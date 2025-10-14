@@ -47,17 +47,9 @@ fi
 mkdir -p /config/.config/xfce4/xfconf/xfce-perchannel-xml
 chown -R abc:abc /config/.config/xfce4
 
-# Configure single workspace
+# Configure single workspace using xfconf-query
 echo "$(date): Configuring single workspace" >> "$LOG_FILE"
-cat > /config/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml << 'EOFXML'
-<?xml version="1.0" encoding="UTF-8"?>
-<channel name="xfwm4" version="1.0">
-  <property name="general" type="empty">
-    <property name="workspace_count" type="int" value="1"/>
-  </property>
-</channel>
-EOFXML
-chown abc:abc /config/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfwm4 -p /general/workspace_count -s 1' >> "$LOG_FILE" 2>&1
 
 # Wait for X server and desktop to be ready
 sleep 10
@@ -67,20 +59,14 @@ echo "$(date): Configuring desktop as abc user" >> "$LOG_FILE"
 # Hide desktop icons (Home, Filesystem, Trash)
 # Run as abc user with proper environment
 echo "$(date): Hiding desktop icons" >> "$LOG_FILE"
-su - abc << 'EOFABC' >> "$LOG_FILE" 2>&1
-export DISPLAY=:1
-xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-home -n -t bool -s false
-xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -n -t bool -s false
-xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-trash -n -t bool -s false
-EOFABC
+runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-home -n -t bool -s false' >> "$LOG_FILE" 2>&1
+runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -n -t bool -s false' >> "$LOG_FILE" 2>&1
+runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-trash -n -t bool -s false' >> "$LOG_FILE" 2>&1
 
 # Set desktop wallpaper
 echo "$(date): Setting desktop wallpaper" >> "$LOG_FILE"
-su - abc << 'EOFABC' >> "$LOG_FILE" 2>&1
-export DISPLAY=:1
-xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image -s /usr/local/share/backgrounds/viper-desktop.jpg
-xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image-style -s 5
-EOFABC
+runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/last-image -s /usr/local/share/backgrounds/viper-desktop.jpg' >> "$LOG_FILE" 2>&1
+runuser -u abc -- bash -c 'export DISPLAY=:1 && xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVNC-0/workspace0/image-style -s 5' >> "$LOG_FILE" 2>&1
 
 # Configure XFCE panel - add system monitor plugins
 echo "$(date): Configuring XFCE panel plugins" >> "$LOG_FILE"
@@ -90,23 +76,17 @@ echo "$(date): Configuring XFCE panel plugins" >> "$LOG_FILE"
 # Users can right-click the panel > Panel > Add New Items > Choose system monitors
 
 # Set Firefox as default web browser using xdg-mime
-su - abc << 'EOFABC' >> "$LOG_FILE" 2>&1
-export DISPLAY=:1
-xdg-mime default firefox-esr.desktop x-scheme-handler/http
-xdg-mime default firefox-esr.desktop x-scheme-handler/https
-xdg-mime default firefox-esr.desktop text/html
-EOFABC
+runuser -u abc -- bash -c 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop x-scheme-handler/http' >> "$LOG_FILE" 2>&1
+runuser -u abc -- bash -c 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop x-scheme-handler/https' >> "$LOG_FILE" 2>&1
+runuser -u abc -- bash -c 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop text/html' >> "$LOG_FILE" 2>&1
 
 # Reload desktop settings without killing processes
 echo "$(date): Reloading desktop settings" >> "$LOG_FILE"
-su - abc << 'EOFABC' >> "$LOG_FILE" 2>&1
-export DISPLAY=:1
 # Signal xfdesktop to reload instead of killing it
-xfdesktop --reload > /dev/null 2>&1 &
+runuser -u abc -- bash -c 'export DISPLAY=:1 && xfdesktop --reload' >> "$LOG_FILE" 2>&1 &
 # Window manager workspace changes require a full restart, but do it gently
-sleep 1
-xfwm4 --replace > /dev/null 2>&1 &
-EOFABC
+sleep 2
+runuser -u abc -- bash -c 'export DISPLAY=:1 && xfwm4 --replace' >> "$LOG_FILE" 2>&1 &
 
 echo "$(date): Desktop configuration completed and applied" >> "$LOG_FILE"
 
