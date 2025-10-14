@@ -87,29 +87,8 @@
     dest: "/usr/local/share/backgrounds/viper-desktop.jpg"
   when: ansible_virtualization_type == "docker"
 
-- name: "DOCKER | Create XFCE config directory for abc user."
-  file:
-    path: "/config/.config/xfce4/xfconf/xfce-perchannel-xml"
-    state: directory
-    owner: "abc"
-    group: "abc"
-    mode: '0755'
-  when: ansible_virtualization_type == "docker"
-
-- name: "DOCKER | Configure XFCE window manager (reduce to 1 workspace)."
-  copy:
-    dest: "/config/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml"
-    owner: "abc"
-    group: "abc"
-    mode: '0644'
-    content: |
-      <?xml version="1.0" encoding="UTF-8"?>
-      <channel name="xfwm4" version="1.0">
-        <property name="general" type="empty">
-          <property name="workspace_count" type="int" value="1"/>
-        </property>
-      </channel>
-  when: ansible_virtualization_type == "docker"
+# Note: /config is a volume mount, so we cannot create files there during build
+# All /config configuration is handled by the post-install script at runtime
 
 - name: "DOCKER | Install XFCE system monitor plugins."
   apt:
@@ -128,16 +107,6 @@
     force: yes
   when: ansible_virtualization_type == "docker"
 
-- name: "DOCKER | Make desktop icons trusted - set execute permission."
-  file:
-    path: "/config/Desktop"
-    state: directory
-    owner: "abc"
-    group: "abc"
-    mode: '0755'
-    recurse: no
-  when: ansible_virtualization_type == "docker"
-
 - name: "DOCKER | Copy post-install script for desktop icon configuration."
   copy:
     src: "{{ playbook_dir }}/../docker-files/post-install.sh"
@@ -147,20 +116,11 @@
     mode: '0755'
   when: ansible_virtualization_type == "docker"
 
-- name: "DOCKER | Create autostart directory for abc user."
-  file:
-    path: "/config/.config/autostart"
-    state: directory
-    owner: "abc"
-    group: "abc"
-    mode: '0755'
-  when: ansible_virtualization_type == "docker"
-
-- name: "DOCKER | Create autostart desktop file for post-install script."
+- name: "DOCKER | Create system-wide autostart desktop file for post-install script."
   copy:
-    dest: "/config/.config/autostart/viper-post-install.desktop"
-    owner: "abc"
-    group: "abc"
+    dest: "/etc/xdg/autostart/viper-post-install.desktop"
+    owner: "root"
+    group: "root"
     mode: '0644'
     content: |
       [Desktop Entry]
