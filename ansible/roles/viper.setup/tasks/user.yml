@@ -23,6 +23,7 @@
     user: "{{ viper.setup.limited_account.name }}"
     state: present
     key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+  when: ansible_virtualization_type != "docker"
 
 - name: "USER | Create user desktop dir."
   file:
