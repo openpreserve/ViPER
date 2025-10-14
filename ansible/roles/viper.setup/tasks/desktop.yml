@@ -120,6 +120,27 @@
     state: present
   when: ansible_virtualization_type == "docker"
 
+- name: "DOCKER | Install xfconf for desktop configuration."
+  apt:
+    name: xfconf
+    state: present
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Hide Home icon from desktop."
+  command: >
+    xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-home -n -t bool -s false
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Hide Filesystem icon from desktop."
+  command: >
+    xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -n -t bool -s false
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Hide Trash icon from desktop."
+  command: >
+    xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-trash -n -t bool -s false
+  when: ansible_virtualization_type == "docker"
+
 - name: "DOCKER | Configure Firefox as default browser in XFCE."
   file:
     src: "/usr/share/applications/firefox-esr.desktop"
