@@ -2,8 +2,6 @@ name: Build and Push ViPER Docker Image
 
 on:
   push:
-    # branches:
-    #   - docker-viper
     tags:
       - 'docker-v*.*.*'
 
