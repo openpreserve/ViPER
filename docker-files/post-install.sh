@@ -56,6 +56,14 @@ if [[ -d /home/viper/Desktop ]]; then
   chmod 755 "$DESKTOP_DIR"/*.desktop
 fi
 
+# Copy Conky config from system location to user config (if it exists)
+echo "$(date): Copying Conky configuration" >> "$LOG_FILE"
+if [[ -f /usr/local/share/conky/conky.conf ]]; then
+  cp -v /usr/local/share/conky/conky.conf /config/.conkyrc 2>&1 >> "$LOG_FILE"
+  chown abc:abc /config/.conkyrc
+  chmod 644 /config/.conkyrc
+fi
+
 # Create XFCE config directories
 mkdir -p /config/.config/xfce4/xfconf/xfce-perchannel-xml
 chown -R abc:abc /config/.config/xfce4
@@ -92,6 +100,12 @@ echo "$(date): Configuring XFCE panel plugins" >> "$LOG_FILE"
 run_as_abc 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop x-scheme-handler/http' >> "$LOG_FILE" 2>&1
 run_as_abc 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop x-scheme-handler/https' >> "$LOG_FILE" 2>&1
 run_as_abc 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop text/html' >> "$LOG_FILE" 2>&1
+
+# Start Conky system monitor if config exists
+if [[ -f /config/.conkyrc ]]; then
+  echo "$(date): Starting Conky system monitor" >> "$LOG_FILE"
+  run_as_abc 'export DISPLAY=:1 && pkill conky; sleep 1; conky -c /config/.conkyrc > /dev/null 2>&1 &' >> "$LOG_FILE" 2>&1
+fi
 
 # Reload desktop settings by restarting desktop manager and window manager
 echo "$(date): Reloading desktop settings" >> "$LOG_FILE"

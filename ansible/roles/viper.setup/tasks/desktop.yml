@@ -87,6 +87,19 @@
     dest: "/usr/local/share/backgrounds/viper-desktop.jpg"
   when: ansible_virtualization_type == "docker"
 
+- name: "DOCKER | Create Conky config directory."
+  file:
+    path: "/usr/local/share/conky"
+    state: directory
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Copy Conky system monitor config to system location."
+  copy:
+    src: "{{ playbook_dir }}/../docker-files/conky.conf"
+    dest: "/usr/local/share/conky/conky.conf"
+    mode: '0644'
+  when: ansible_virtualization_type == "docker"
+
 # Note: /config is a volume mount, so we cannot create files there during build
 # All /config configuration is handled by the post-install script at runtime
 

@@ -15,6 +15,7 @@ viper_env_apt_docker_defaults:
   - "evince"
   - "locales"
   - "firefox-esr"
+  - "conky-all"
 
 # Default packages for VMs (includes desktop environment)
 viper_env_apt_vm_defaults:
