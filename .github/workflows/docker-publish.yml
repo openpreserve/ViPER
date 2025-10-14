@@ -2,8 +2,8 @@ name: Build and Push ViPER Docker Image
 
 on:
   push:
-    branches:
-      - docker-viper
+    # branches:
+    #   - docker-viper
     tags:
       - 'docker-v*.*.*'
 
@@ -16,7 +16,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: readgit push origin docker-viper
       packages: write
       id-token: write
 
