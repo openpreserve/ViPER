@@ -1,6 +1,6 @@
 #!/bin/bash
 # Post-install script for ViPER Docker container
-# This script runs on first boot to configure desktop icons and permissions
+# This script runs on user login to configure desktop icons and permissions
 
 LOG_FILE="/config/viper-post-install.log"
 DESKTOP_DIR="/config/Desktop"
@@ -13,6 +13,19 @@ if [[ -f "$MARKER_FILE" ]]; then
   echo "$(date): Desktop already configured, skipping" >> "$LOG_FILE"
   exit 0
 fi
+
+# Wait for desktop to be fully loaded
+echo "$(date): Waiting for desktop environment to be ready" >> "$LOG_FILE"
+for i in {1..30}; do
+  if pgrep -x xfdesktop > /dev/null && pgrep -x xfwm4 > /dev/null; then
+    echo "$(date): Desktop environment is ready" >> "$LOG_FILE"
+    break
+  fi
+  sleep 1
+done
+
+# Give it a few more seconds to stabilize
+sleep 5
 
 # Set ownership of gvfs metadata
 chown -R abc:abc /config/.local/share/gvfs-metadata/ 2>/dev/null
@@ -82,14 +95,17 @@ export DISPLAY=:1
 xdg-mime default firefox-esr.desktop x-scheme-handler/http
 xdg-mime default firefox-esr.desktop x-scheme-handler/https
 xdg-mime default firefox-esr.desktop text/html
+EOFABC
 
-# Restart window manager to apply workspace changes
-pkill xfwm4
-xfwm4 > /dev/null 2>&1 &
-
-# Restart desktop to apply wallpaper and icon changes
-pkill xfdesktop
-xfdesktop > /dev/null 2>&1 &
+# Reload desktop settings without killing processes
+echo "$(date): Reloading desktop settings" >> "$LOG_FILE"
+su - abc << 'EOFABC' >> "$LOG_FILE" 2>&1
+export DISPLAY=:1
+# Signal xfdesktop to reload instead of killing it
+xfdesktop --reload > /dev/null 2>&1 &
+# Window manager workspace changes require a full restart, but do it gently
+sleep 1
+xfwm4 --replace > /dev/null 2>&1 &
 EOFABC
 
 echo "$(date): Desktop configuration completed and applied" >> "$LOG_FILE"

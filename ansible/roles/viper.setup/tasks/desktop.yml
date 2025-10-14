@@ -130,4 +130,6 @@
       Hidden=false
       NoDisplay=true
       X-GNOME-Autostart-enabled=true
+      X-GNOME-Autostart-Delay=10
+      StartupNotify=false
   when: ansible_virtualization_type == "docker"
