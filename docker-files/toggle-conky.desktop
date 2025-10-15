@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Toggle System Monitor
+Comment=Show/Hide Conky system monitor
+Exec=/usr/local/bin/toggle-conky.sh
+Icon=utilities-system-monitor
+Terminal=false
+Categories=System;Monitor;

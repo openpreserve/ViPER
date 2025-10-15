@@ -100,6 +100,24 @@
     mode: '0644'
   when: ansible_virtualization_type == "docker"
 
+- name: "DOCKER | Copy Conky toggle script to system bin."
+  copy:
+    src: "files/toggle-conky.sh"
+    dest: "/usr/local/bin/toggle-conky.sh"
+    owner: "root"
+    group: "root"
+    mode: '0755'
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Copy Conky toggle desktop file to applications menu."
+  copy:
+    src: "files/toggle-conky.desktop"
+    dest: "/usr/share/applications/toggle-conky.desktop"
+    owner: "root"
+    group: "root"
+    mode: '0644'
+  when: ansible_virtualization_type == "docker"
+
 # Note: /config is a volume mount, so we cannot create files there during build
 # All /config configuration is handled by the post-install script at runtime
 
