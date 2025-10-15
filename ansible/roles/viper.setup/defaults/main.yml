@@ -1,7 +1,24 @@
 ---
 # viper.setup default values
-viper_env_apt_defaults:
-  # Source control a
+# Default packages for Docker containers (minimal set, for Debian Bookworm)
+viper_env_apt_docker_defaults:
+  - "git"
+  - "apt-transport-https"
+  - "psmisc"
+  - "net-tools"
+  - "python3-psutil"
+  - "zip"
+  - "unzip"
+  - "keyboard-configuration"
+  - "console-setup"
+  - "openjdk-17-jre"
+  - "evince"
+  - "locales"
+  - "firefox-esr"
+  - "conky-all"
+
+# Default packages for VMs (includes desktop environment)
+viper_env_apt_vm_defaults:
   - "git"
   # Debian lacks the ability to download apt over HTTPS
   - "apt-transport-https"
@@ -23,8 +40,27 @@ viper_env_apt_defaults:
   # GNOME desktop and Nemo add on for icon display
   - "task-gnome-desktop"
   - "nemo"
+  - "locales"
 
-viper_env_apt_remove:
+# Use Docker defaults if running in Docker, otherwise use VM defaults
+viper_env_apt_defaults: "{{ (ansible_virtualization_type == 'docker') | ternary(viper_env_apt_docker_defaults, viper_env_apt_vm_defaults) }}"
+
+# Packages to remove from Docker containers (XFCE cruft - save space)
+# Note: aspell, aspell-en, dictionaries-common, emacsen-common cannot be removed as they are XFCE dependencies
+# Note: locales-all kept (227MB) to avoid locale generation issues
+# Note: Removing Chrome/Chromium because sandbox doesn't work in Docker
+viper_env_apt_docker_remove:
+  - "nano"
+  - "vim-tiny"
+  - "vim-common"
+  - "w3m"
+  - "xterm"
+  - "chromium"
+  - "chromium-common"
+  - "chromium-sandbox"
+
+# Packages to remove from VMs (Debian 12 cruft)
+viper_env_apt_vm_remove:
   - "acpi"
   - "apcid"
   - "aptitude"
@@ -98,6 +134,9 @@ viper_env_apt_remove:
   - "w3m"
   - "whois"
   - "zeroinstall-injector"
+
+# Use Docker removal list if running in Docker, otherwise use VM removal list
+viper_env_apt_remove: "{{ (ansible_virtualization_type == 'docker') | ternary(viper_env_apt_docker_remove, viper_env_apt_vm_remove) }}"
 
 
 viper:

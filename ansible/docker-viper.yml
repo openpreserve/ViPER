@@ -1,0 +1,32 @@
+- name: Run ViPER Ansible job against Docker container
+  hosts: localhost
+  tasks:
+    - name: Create a Docker container
+      community.docker.docker_container:
+        name: docker-viper
+        # image: locked in a version to Debian 12 Bookworkm due to libqt5webkit5 removal in Debian 13 Trixie breaking mediaconch-gui
+        image: linuxserver/webtop:amd64-debian-xfce-9a3339d4-ls122
+        state: started
+        command: sleep infinity
+        published_ports:
+          - "3100:3000"
+          - "3101:3001"
+        volumes:
+          # - "../volumes/data-xfce:/config"  # Mount host directory to container directory
+          # - "../ansible:/ansible"  # Mount the ansible dir
+        env:
+          PUID: "1000"  # Set PUID environment variable
+          PGID: "1000"  # Set PGID environment variable
+          TZ: "Europe/London"  # Set timezone environment variable
+
+    - name: Add container to inventory
+      add_host:
+        name: docker-viper
+        ansible_connection: docker
+        ansible_user: root
+
+- hosts: docker-viper
+  become: true
+  roles:
+    - { role: viper.setup }
+    - { role: viper.tools }

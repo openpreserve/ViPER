@@ -12,6 +12,7 @@
 
 - name: "ViPER SETUP | Secure server."
   import_tasks: security/main.yml
+  when: ansible_virtualization_type != "docker"
 
 - name: "ViPER SETUP | Setup desktop environment."
   import_tasks: desktop.yml

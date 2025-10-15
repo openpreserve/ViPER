@@ -1,5 +1,6 @@
 ---
 # desktop Environment setup for ViPER tools
+# These tasks are for GNOME desktop (VMs) - Docker containers use XFCE which is pre-configured
 
 - name: "Desktop | Create Nemo config directory."
   file:
@@ -8,21 +9,25 @@
     mode: '0755'
     owner: "{{ viper.setup.limited_account.name }}"
     group: "{{ viper.setup.limited_account.name }}"
+  when: ansible_virtualization_type != "docker"
 
 - name: "Desktop | Add hidden desktop file for Nemo and icons"
   copy:
     src: "files/home/.config/autostart/nemo-autostart-with-gnome.desktop"
     dest: "/home/{{ viper.setup.limited_account.name }}/.config/autostart/nemo-autostart-with-gnome.desktop"
+  when: ansible_virtualization_type != "docker"
 
 - name: "Desktop | Create user shared backgrounds directory."
   file:
     path: "/usr/local/share/backgrounds"
     state: directory
+  when: ansible_virtualization_type != "docker"
 
 - name: "Desktop | Copy ViPER wallpaper to shared backgrounds directory."
   copy:
     src: "files/usr/local/share/backgrounds/viper-desktop.jpg"
     dest: "/usr/local/share/backgrounds/viper-desktop.jpg"
+  when: ansible_virtualization_type != "docker"
 
 - name: "Desktop | Set wallpaper for user."
   become: true
@@ -31,6 +36,7 @@
     key: "/org/gnome/desktop/background/picture-uri"
     value: "'file:///usr/local/share/backgrounds/viper-desktop.jpg'"
     state: present
+  when: ansible_virtualization_type != "docker"
 
 - name: "Desktop | Set dark theme wallpaper for user."
   become: true
@@ -39,6 +45,7 @@
     key: "/org/gnome/desktop/background/picture-uri-dark"
     value: "'file:///usr/local/share/backgrounds/viper-desktop.jpg'"
     state: present
+  when: ansible_virtualization_type != "docker"
 
 - name: "Desktop | Set screensaver wallpaper for user."
   become: true
@@ -47,6 +54,7 @@
     key: "/org/gnome/desktop/screensaver/picture-uri"
     value: "'file:///usr/local/share/backgrounds/viper-desktop.jpg'"
     state: present
+  when: ansible_virtualization_type != "docker"
 
 - name: "Desktop | Set dark theme screensaver wallpaper for user."
   become: true
@@ -55,6 +63,7 @@
     key: "/org/gnome/desktop/screensaver/picture-uri-dark"
     value: "'file:///usr/local/share/backgrounds/viper-desktop.jpg'"
     state: present
+  when: ansible_virtualization_type != "docker"
 
 - name: "Desktop | Tell Nemo to show mounted volumes on desktop."
   become: true
@@ -63,3 +72,95 @@
     key: "/org/nemo/desktop/volumes-visible"
     value: "true"
     state: present
+  when: ansible_virtualization_type != "docker"
+
+# Docker/XFCE Desktop Configuration
+- name: "DOCKER | Create shared backgrounds directory."
+  file:
+    path: "/usr/local/share/backgrounds"
+    state: directory
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Copy ViPER wallpaper to shared backgrounds directory."
+  copy:
+    src: "files/usr/local/share/backgrounds/viper-desktop.jpg"
+    dest: "/usr/local/share/backgrounds/viper-desktop.jpg"
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Create Conky config directory."
+  file:
+    path: "/usr/local/share/conky"
+    state: directory
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Copy Conky system monitor config to system location."
+  copy:
+    src: "files/conky.conf"
+    dest: "/usr/local/share/conky/conky.conf"
+    mode: '0644'
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Copy Conky toggle script to system bin."
+  copy:
+    src: "files/toggle-conky.sh"
+    dest: "/usr/local/bin/toggle-conky.sh"
+    owner: "root"
+    group: "root"
+    mode: '0755'
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Copy Conky toggle desktop file to applications menu."
+  copy:
+    src: "files/toggle-conky.desktop"
+    dest: "/usr/share/applications/toggle-conky.desktop"
+    owner: "root"
+    group: "root"
+    mode: '0644'
+  when: ansible_virtualization_type == "docker"
+
+# Note: /config is a volume mount, so we cannot create files there during build
+# All /config configuration is handled by the post-install script at runtime
+
+- name: "DOCKER | Install XFCE system monitor plugins."
+  apt:
+    name:
+      - xfce4-systemload-plugin
+      - xfce4-cpugraph-plugin
+      - xfce4-netload-plugin
+    state: present
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Configure Firefox as default browser in XFCE."
+  file:
+    src: "/usr/share/applications/firefox-esr.desktop"
+    dest: "/usr/share/applications/chromium.desktop"
+    state: link
+    force: yes
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Copy post-install script for desktop icon configuration."
+  copy:
+    src: "{{ playbook_dir }}/../docker-files/post-install.sh"
+    dest: "/usr/local/bin/viper-post-install.sh"
+    owner: "root"
+    group: "root"
+    mode: '0755'
+  when: ansible_virtualization_type == "docker"
+
+- name: "DOCKER | Create system-wide autostart desktop file for post-install script."
+  copy:
+    dest: "/etc/xdg/autostart/viper-post-install.desktop"
+    owner: "root"
+    group: "root"
+    mode: '0644'
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Name=ViPER Desktop Setup
+      Exec=/usr/local/bin/viper-post-install.sh
+      Hidden=false
+      NoDisplay=true
+      X-GNOME-Autostart-enabled=true
+      X-GNOME-Autostart-Delay=10
+      StartupNotify=false
+  when: ansible_virtualization_type == "docker"

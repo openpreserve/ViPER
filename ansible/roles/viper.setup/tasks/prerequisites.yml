@@ -1,6 +1,13 @@
 ---
 # Prerequisites for viper.setup
 
+# openjdk-17 setup requires this path exist before we continue inside a container.
+- name: " APT | Ensure /usr/share/man/man1/ directory exists"
+  file:
+    path: /usr/share/man/man1/
+    state: directory
+    mode: '0755'
+
 - name: "APT | Install apt package pre-requisites."
   apt:
     name: "{{ viper.setup.prereqs.apt }}"
@@ -27,3 +34,10 @@
   copy:
     src: "files/etc/default/keyboard"
     dest: "/etc/default/keyboard"
+
+- name: "APT | Remove unnecessary packages."
+  apt:
+    name: "{{ viper.setup.remove.apt }}"
+    state: "absent"
+    purge: yes
+    autoremove: yes

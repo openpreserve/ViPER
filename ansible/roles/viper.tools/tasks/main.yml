@@ -17,3 +17,9 @@
 
 - name: "ViPER TOOLS | Install veraPDF."
   import_tasks: verapdf.yml
+
+- name: "ViPER TOOLS | Install FIDO."
+  import_tasks: fido.yml
+
+- name: "ViPER TOOLS | Install jpylyzer."
+  import_tasks: jpylyzer.yml

@@ -22,14 +22,26 @@ viper_debian_tools:
   # Debian GIMP installation
   - "gimp"
 
-# Desktop icon files for the about to be copied to remote desktop
-viper_debian_icons:
+# Desktop icon files for Docker (includes Evince PDF viewer)
+viper_debian_icons_docker:
   - "org.gnome.Evince"
   - "gimp"
   - "org.inkscape.Inkscape"
   - "mediainfo-gui"
   - "mediaconch-gui"
   - "fr.handbrake.ghb"
+
+# Desktop icon files for VMs (includes all applications)
+viper_debian_icons_vm:
+  - "org.gnome.Evince"
+  - "gimp"
+  - "org.inkscape.Inkscape"
+  - "mediainfo-gui"
+  - "mediaconch-gui"
+  - "fr.handbrake.ghb"
+
+# Desktop icon files - use Docker list if running in Docker, otherwise use VM list
+viper_debian_icons: "{{ (ansible_virtualization_type == 'docker') | ternary(viper_debian_icons_docker, viper_debian_icons_vm) }}"
 
 # JHOVE version details, to override set jhove_major_minor and jhove_patch
 jhove_major: "1"
@@ -53,6 +65,12 @@ tika_major: "2"
 tika_minor: "9"
 tika_patch: "2"
 tika_version: "{{ tika_major }}.{{ tika_minor }}.{{ tika_patch }}"
+
+# FIDO version details
+fido_version: "1.6.1"
+
+# jpylyzer version details
+jpylyzer_version: "2.2.1"
 
 viper:
   tools:
@@ -126,6 +144,20 @@ viper:
         bin: "{{ viper_bin }}"
         lib: "{{ viper_lib }}/veraPDF/{{ verapdf_version }}"
         src: "{{ viper_src }}/veraPDF/{{ verapdf_version }}"
+    fido:
+      name: "fido"
+      version: "{{ fido_version }}"
+      package: "opf-fido"
+      source:
+        git: "https://github.com/openpreserve/fido.git"
+        tag: "v{{ fido_version }}"
+    jpylyzer:
+      name: "jpylyzer"
+      version: "{{ jpylyzer_version }}"
+      package: "jpylyzer"
+      source:
+        git: "https://github.com/openpreserve/jpylyzer.git"
+        tag: "{{ jpylyzer_version }}"
     mediaarea:
       - name: "libzen0"
         download_url: "https://mediaarea.net/download/binary/libzen0/0.4.41/libzen0v5_0.4.41-1_amd64.Debian_12.deb"
