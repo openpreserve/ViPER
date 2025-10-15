@@ -8,15 +8,8 @@ MARKER_FILE="/config/.viper-desktop-configured"
 
 echo "$(date): Starting ViPER desktop configuration" >> "$LOG_FILE"
 
-# Exit if already configured
-if [[ -f "$MARKER_FILE" ]]; then
-  echo "$(date): Desktop already configured, skipping" >> "$LOG_FILE"
-  exit 0
-fi
-
-# Detect if running as root or abc user
+# Detect if running as root or abc user (define function early for Conky startup)
 CURRENT_USER=$(whoami)
-echo "$(date): Script running as user: $CURRENT_USER" >> "$LOG_FILE"
 
 # Function to run command as abc user
 run_as_abc() {
@@ -26,6 +19,20 @@ run_as_abc() {
     bash -c "$1"
   fi
 }
+
+# Always start Conky if config exists (even if already configured)
+if [[ -f /config/.conkyrc ]]; then
+  echo "$(date): Starting Conky system monitor" >> "$LOG_FILE"
+  run_as_abc 'export DISPLAY=:1 && pkill conky; sleep 1; conky -c /config/.conkyrc > /dev/null 2>&1 &' >> "$LOG_FILE" 2>&1
+fi
+
+# Exit if already configured
+if [[ -f "$MARKER_FILE" ]]; then
+  echo "$(date): Desktop already configured, skipping" >> "$LOG_FILE"
+  exit 0
+fi
+
+echo "$(date): Script running as user: $CURRENT_USER" >> "$LOG_FILE"
 
 # Wait for desktop to be fully loaded
 echo "$(date): Waiting for desktop environment to be ready" >> "$LOG_FILE"
@@ -100,12 +107,6 @@ echo "$(date): Configuring XFCE panel plugins" >> "$LOG_FILE"
 run_as_abc 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop x-scheme-handler/http' >> "$LOG_FILE" 2>&1
 run_as_abc 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop x-scheme-handler/https' >> "$LOG_FILE" 2>&1
 run_as_abc 'export DISPLAY=:1 && xdg-mime default firefox-esr.desktop text/html' >> "$LOG_FILE" 2>&1
-
-# Start Conky system monitor if config exists
-if [[ -f /config/.conkyrc ]]; then
-  echo "$(date): Starting Conky system monitor" >> "$LOG_FILE"
-  run_as_abc 'export DISPLAY=:1 && pkill conky; sleep 1; conky -c /config/.conkyrc > /dev/null 2>&1 &' >> "$LOG_FILE" 2>&1
-fi
 
 # Reload desktop settings by restarting desktop manager and window manager
 echo "$(date): Reloading desktop settings" >> "$LOG_FILE"
