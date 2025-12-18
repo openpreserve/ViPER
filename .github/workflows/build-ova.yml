@@ -68,6 +68,14 @@ jobs:
       - name: Convert to OVA
         run: ./scripts/convert-to-ova.sh
       
+      - name: Create split zip archive
+        run: |
+          cd output
+          echo "Creating split zip archive (1.9GB parts to stay under GitHub's 2GB limit)..."
+          zip -s 1900m viper-v1.2-alpha.zip viper-v1.2-alpha.ova
+          echo "Split archive created:"
+          ls -lh viper-v1.2-alpha.z* viper-v1.2-alpha.zip
+      
       - name: Get version from tag
         id: version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
@@ -76,16 +84,35 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: output/viper-v1.2-alpha.ova
+          files: output/viper-v1.2-alpha.*
           draft: false
           prerelease: false
           body: |
             ViPER VM Build ${{ steps.version.outputs.VERSION }}
             
             ## Installation
-            1. Download the OVA file
-            2. Import into VirtualBox, VMware, or other OVF-compatible virtualization platform
-            3. Start the VM
+            
+            **Important:** This release contains a split zip archive due to GitHub's 2GB file size limit.
+            
+            1. Download **ALL** files from this release:
+               - `viper-v1.2-alpha.z01`
+               - `viper-v1.2-alpha.z02`
+               - `viper-v1.2-alpha.z03`
+               - `viper-v1.2-alpha.zip`
+            
+            2. Extract the OVA file:
+               ```bash
+               # Linux/macOS with zip utilities
+               zip -F viper-v1.2-alpha.zip --out complete.zip
+               unzip complete.zip
+               
+               # Or use 7-Zip (Windows/Linux/macOS)
+               7z x viper-v1.2-alpha.zip
+               ```
+            
+            3. Import `viper-v1.2-alpha.ova` into VirtualBox, VMware, or other OVF-compatible virtualization platform
+            
+            4. Start the VM
             
             ## Default Credentials
             - Username: vagrant
@@ -103,5 +130,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: viper-ova-${{ steps.version.outputs.VERSION }}
-          path: output/viper-v1.2-alpha.ova
+          path: output/viper-v1.2-alpha.*
           retention-days: 30
