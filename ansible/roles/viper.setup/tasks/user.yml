@@ -18,11 +18,18 @@
     update_password: always
     append: yes
 
+- name: "USER | Check if SSH public key exists"
+  stat:
+    path: "{{ lookup('env','HOME') }}/.ssh/id_rsa.pub"
+  register: ssh_key_file
+  delegate_to: localhost
+
 - name: "USER | Set authorized key for user: {{ viper.setup.limited_account.name }}, copied from current user."
   authorized_key:
     user: "{{ viper.setup.limited_account.name }}"
     state: present
     key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+  when: ssh_key_file.stat.exists
 
 - name: "USER | Create user desktop dir."
   file:
