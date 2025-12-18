@@ -36,9 +36,13 @@ jobs:
         run: |
           sudo apt-get install -y cpu-checker
           sudo kvm-ok || echo "KVM not available, will use software emulation"
-          # Add user to kvm group and set permissions
-          sudo usermod -aG kvm $USER
-          sudo chmod 666 /dev/kvm || echo "KVM device not available"
+          # Set KVM permissions for current user without requiring group membership
+          if [ -c /dev/kvm ]; then
+            sudo chmod 666 /dev/kvm
+            echo "KVM permissions set"
+          else
+            echo "KVM device not available"
+          fi
       
       - name: Validate Packer template
         run: packer validate viper.pkr.hcl
@@ -54,8 +58,8 @@ jobs:
             ACCELERATOR="tcg"
           fi
           
-          # Run packer build
-          sudo -E packer build \
+          # Run packer build (without sudo to avoid Ansible file transfer issues)
+          packer build \
             -var 'headless=true' \
             -var "accelerator=${ACCELERATOR}" \
             viper.pkr.hcl
