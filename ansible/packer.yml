@@ -1,0 +1,9 @@
+---
+# Playbook for Packer builds - simplified without SSH key scanning
+# File: ansible/packer.yml
+
+- hosts: all
+  become: true
+  roles:
+    - { role: viper.setup }
+    - { role: viper.tools }

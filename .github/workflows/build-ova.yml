@@ -1,0 +1,76 @@
+name: Build ViPER OVA
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'release-*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y packer qemu-system-x86 qemu-utils ansible python3-pip
+          pip3 install jmespath
+      
+      - name: Enable KVM
+        run: |
+          sudo apt-get install -y cpu-checker
+          sudo kvm-ok || echo "KVM not available, build may be slower"
+          sudo usermod -aG kvm $USER
+      
+      - name: Validate Packer template
+        run: packer validate viper.json
+      
+      - name: Build VM with Packer
+        run: packer build -var 'headless=true' viper.json
+        timeout-minutes: 60
+      
+      - name: Convert to OVA
+        run: ./scripts/convert-to-ova.sh
+      
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: output/viper-v1.2-alpha.ova
+          draft: false
+          prerelease: false
+          body: |
+            ViPER VM Build ${{ steps.version.outputs.VERSION }}
+            
+            ## Installation
+            1. Download the OVA file
+            2. Import into VirtualBox, VMware, or other OVF-compatible virtualization platform
+            3. Start the VM
+            
+            ## Default Credentials
+            - Username: vagrant
+            - Password: vagrant
+            
+            ## VM Specifications
+            - OS: Debian 12 (Bookworm)
+            - CPUs: 2
+            - Memory: 4GB
+            - Disk: 50GB
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: viper-ova-${{ steps.version.outputs.VERSION }}
+          path: output/viper-v1.2-alpha.ova
+          retention-days: 30

@@ -1,2 +1,17 @@
 .vagrant
 
+# Packer
+packer_cache/
+output-qemu/
+*.box
+crash.log
+
+# Build outputs
+output/
+*.ova
+*.vmdk
+*.qcow2
+*.iso
+
+# Logs
+/tmp/*.log
