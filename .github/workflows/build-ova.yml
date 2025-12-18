@@ -68,6 +68,18 @@ jobs:
       - name: Convert to OVA
         run: ./scripts/convert-to-ova.sh
       
+      - name: Clean up intermediate files
+        run: |
+          echo "Cleaning up to free disk space..."
+          # TODO: Consider keeping QCOW2 for direct upload to file server in future
+          # For now, remove it to free space for split zip creation
+          rm -f output-qemu/viper-v1.2-alpha
+          echo "Removed QCOW2 file"
+          # Remove intermediate VMDK (already packaged in OVA)
+          rm -f output/viper-v1.2-alpha.vmdk
+          echo "Removed intermediate VMDK"
+          df -h
+      
       - name: Create split zip archive
         run: |
           cd output
@@ -75,6 +87,9 @@ jobs:
           zip -s 1900m viper-v1.2-alpha.zip viper-v1.2-alpha.ova
           echo "Split archive created:"
           ls -lh viper-v1.2-alpha.z* viper-v1.2-alpha.zip
+          # Clean up original OVA after zipping to save more space
+          rm -f viper-v1.2-alpha.ova
+          echo "Removed original OVA (kept in zip)"
       
       - name: Get version from tag
         id: version
