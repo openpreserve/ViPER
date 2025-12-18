@@ -7,22 +7,33 @@ Packer configuration to build the ViPER VM using QEMU/KVM and export to OVA form
 ```bash
 # Install required tools
 sudo apt-get update
-sudo apt-get install -y packer qemu-system-x86 qemu-utils
+sudo apt-get install -y qemu-system-x86 qemu-utils ansible python3-pip wget unzip
+pip3 install jmespath
+
+# Install Packer
+PACKER_VERSION="1.11.2"
+wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
+unzip packer_${PACKER_VERSION}_linux_amd64.zip
+sudo mv packer /usr/local/bin/
+rm packer_${PACKER_VERSION}_linux_amd64.zip
+
+# Initialize Packer plugins
+packer init viper.pkr.hcl
 
 # Validate the template
-packer validate viper.json
+packer validate viper.pkr.hcl
 ```
 
 ## Building the VM
 
 ### Basic build (with GUI)
 ```bash
-packer build viper.json
+packer build viper.pkr.hcl
 ```
 
 ### Headless build (no GUI - for CI/CD)
 ```bash
-packer build -var 'headless=true' viper.json
+packer build -var 'headless=true' viper.pkr.hcl
 ```
 
 ### Custom configuration
@@ -32,7 +43,7 @@ packer build \
   -var 'cpus=4' \
   -var 'memory=8192' \
   -var 'headless=true' \
-  viper.json
+  viper.pkr.hcl
 ```
 
 ## Post-Build: Convert to OVA
@@ -47,10 +58,9 @@ The OVA file will be created at: `output/viper-v1.2-alpha.ova`
 
 ## Files Created
 
-- `viper.json` - Main Packer configuration (JSON format for Packer 1.6.x)
-- `viper.pkr.hcl` - HCL2 format (for Packer 1.7+, optional)
+- `viper.pkr.hcl` - Main Packer configuration (HCL2 format)
 - `http/preseed.cfg` - Debian preseed for automated installation
-- `ansible/packer-inventory.yml` - Ansible inventory for Packer
+- `ansible/packer.yml` - Ansible playbook for Packer builds
 - `scripts/convert-to-ova.sh` - Script to convert QCOW2 to OVA
 
 ## Workflow

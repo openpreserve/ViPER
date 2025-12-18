@@ -18,8 +18,19 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y packer qemu-system-x86 qemu-utils ansible python3-pip
+          sudo apt-get install -y qemu-system-x86 qemu-utils ansible python3-pip wget unzip
           pip3 install jmespath
+      
+      - name: Install Packer
+        run: |
+          PACKER_VERSION="1.11.2"
+          wget -q https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
+          unzip packer_${PACKER_VERSION}_linux_amd64.zip
+          sudo mv packer /usr/local/bin/
+          packer version
+      
+      - name: Initialize Packer plugins
+        run: packer init viper.pkr.hcl
       
       - name: Enable KVM
         run: |
@@ -28,10 +39,10 @@ jobs:
           sudo usermod -aG kvm $USER
       
       - name: Validate Packer template
-        run: packer validate viper.json
+        run: packer validate viper.pkr.hcl
       
       - name: Build VM with Packer
-        run: packer build -var 'headless=true' viper.json
+        run: packer build -var 'headless=true' viper.pkr.hcl
         timeout-minutes: 60
       
       - name: Convert to OVA

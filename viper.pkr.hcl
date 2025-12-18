@@ -123,22 +123,14 @@ build {
   # Run Ansible provisioning
   provisioner "ansible" {
     playbook_file = "ansible/packer.yml"
-    inventory_file = "ansible/packer-inventory.yml"
     user = "vagrant"
-    extra_arguments = [
-      "-vv",
-      "--extra-vars", "ansible_ssh_host=default ansible_ssh_port={{ .Port }} ansible_ssh_user={{ .User }}"
-    ]
+    extra_arguments = ["-vv"]
   }
   
   # Post-processor to convert to VMDK and create OVA
   post-processor "shell-local" {
     inline = [
-      "echo 'Converting QCOW2 to VMDK...'",
-      "qemu-img convert -O vmdk ${var.output_directory}/${var.vm_name} output/${var.vm_name}.vmdk",
-      "echo 'Creating OVF descriptor...'",
-      "# Note: You'll need ovftool or custom script to create proper OVA",
-      "echo 'Build complete. VMDK available at: output/${var.vm_name}.vmdk'"
+      "echo 'Build complete. Run ./scripts/convert-to-ova.sh to create OVA file.'"
     ]
   }
 }
