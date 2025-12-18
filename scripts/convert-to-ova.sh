@@ -103,13 +103,6 @@ cat > "${FINAL_DIR}/${VM_NAME}.ovf" << EOF
         <rasd:ResourceSubType>E1000</rasd:ResourceSubType>
         <rasd:ResourceType>10</rasd:ResourceType>
       </Item>
-      <Item>
-        <rasd:Address>0</rasd:Address>
-        <rasd:Description>Video card</rasd:Description>
-        <rasd:ElementName>Video card</rasd:ElementName>
-        <rasd:InstanceID>6</rasd:InstanceID>
-        <rasd:ResourceType>24</rasd:ResourceType>
-      </Item>
     </VirtualHardwareSection>
   </VirtualSystem>
 </Envelope>

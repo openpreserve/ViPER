@@ -1,6 +1,11 @@
 ---
 # Main task entry point for viper.setup
 
+- name: "APT | Install iptables."
+  apt:
+    name: iptables
+    state: present
+
 - name: "IMPORT | IPTABLES rules for IPV4."
   import_tasks: ipv4-rules.yml
   when: viper.setup.ip.v4 is defined and viper.setup.ip.v4 != ""
