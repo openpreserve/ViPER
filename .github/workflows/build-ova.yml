@@ -35,14 +35,30 @@ jobs:
       - name: Enable KVM
         run: |
           sudo apt-get install -y cpu-checker
-          sudo kvm-ok || echo "KVM not available, build may be slower"
+          sudo kvm-ok || echo "KVM not available, will use software emulation"
+          # Add user to kvm group and set permissions
           sudo usermod -aG kvm $USER
+          sudo chmod 666 /dev/kvm || echo "KVM device not available"
       
       - name: Validate Packer template
         run: packer validate viper.pkr.hcl
       
       - name: Build VM with Packer
-        run: packer build -var 'headless=true' viper.pkr.hcl
+        run: |
+          # Check if KVM is available
+          if [ -c /dev/kvm ] && [ -r /dev/kvm ] && [ -w /dev/kvm ]; then
+            echo "KVM is available, using hardware acceleration"
+            ACCELERATOR="kvm"
+          else
+            echo "KVM not available, using software emulation (TCG)"
+            ACCELERATOR="tcg"
+          fi
+          
+          # Run packer build
+          sudo -E packer build \
+            -var 'headless=true' \
+            -var "accelerator=${ACCELERATOR}" \
+            viper.pkr.hcl
         timeout-minutes: 60
       
       - name: Convert to OVA

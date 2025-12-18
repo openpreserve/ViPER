@@ -36,6 +36,12 @@ variable "headless" {
   default = false
 }
 
+variable "accelerator" {
+  type    = string
+  default = "kvm"
+  description = "QEMU accelerator (kvm, tcg, none)"
+}
+
 variable "output_directory" {
   type    = string
   default = "output-qemu"
@@ -66,7 +72,7 @@ source "qemu" "debian-bookworm" {
   memory           = var.memory
   
   headless         = var.headless
-  accelerator      = "kvm"
+  accelerator      = var.accelerator
   
   # Use VNC for display
   vnc_bind_address = "127.0.0.1"
