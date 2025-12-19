@@ -82,10 +82,11 @@ jobs:
             curl -X POST https://artifacts.opf-labs.org/upload \
               -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
               -F "tag=${{ steps.version.outputs.VERSION }}" \
-              -F "file=@${QCOW2_FILE}" \
+              -F "file=@${QCOW2_FILE};type=application/octet-stream" \
               -F "repository=${{ github.repository }}" \
               -F "checksum=sha256:${CHECKSUM}" \
-              --max-time 3600
+              --max-time 3600 \
+              --fail-with-body
             
             echo "QCOW2 uploaded successfully"
           else
@@ -102,10 +103,11 @@ jobs:
             curl -X POST https://artifacts.opf-labs.org/upload \
               -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
               -F "tag=${{ steps.version.outputs.VERSION }}" \
-              -F "file=@${VMDK_FILE}" \
+              -F "file=@${VMDK_FILE};type=application/octet-stream" \
               -F "repository=${{ github.repository }}" \
               -F "checksum=sha256:${CHECKSUM}" \
-              --max-time 3600
+              --max-time 3600 \
+              --fail-with-body
             
             echo "VMDK uploaded successfully"
           else
@@ -122,10 +124,11 @@ jobs:
             curl -X POST https://artifacts.opf-labs.org/upload \
               -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
               -F "tag=${{ steps.version.outputs.VERSION }}" \
-              -F "file=@${OVA_FILE}" \
+              -F "file=@${OVA_FILE};type=application/octet-stream" \
               -F "repository=${{ github.repository }}" \
               -F "checksum=sha256:${CHECKSUM}" \
-              --max-time 3600
+              --max-time 3600 \
+              --fail-with-body
             
             echo "OVA uploaded successfully"
             echo "Download URL: https://artifacts.opf-labs.org/browse/${{ steps.version.outputs.VERSION }}"
