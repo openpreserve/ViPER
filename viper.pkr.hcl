@@ -28,7 +28,7 @@ variable "memory" {
 
 variable "disk_size" {
   type    = string
-  default = "50G"
+  default = "25G"
 }
 
 variable "headless" {
@@ -65,7 +65,7 @@ source "qemu" "debian-bookworm" {
   
   disk_size        = var.disk_size
   disk_interface   = "virtio"
-  disk_compression = false
+  disk_compression = true
   format           = "qcow2"
   
   cpus             = var.cpus
