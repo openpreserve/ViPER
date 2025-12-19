@@ -71,7 +71,7 @@
       [Desktop Entry]
       Type=Application
       Name=Disable Session Restore
-      Exec=dconf write /org/gnome/desktop/session/save-last-session false
+      Exec=sh -c "dconf write /org/gnome/desktop/session/save-last-session false && dconf write /org/gnome/desktop/wm/preferences/num-workspaces 1 && dconf write /org/gnome/mutter/dynamic-workspaces false"
       NoDisplay=true
       X-GNOME-Autostart-enabled=true
     mode: '0644'
