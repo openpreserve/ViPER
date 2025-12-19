@@ -72,19 +72,54 @@ jobs:
         id: version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
       
+      - name: Get commit info
+        id: commit
+        run: |
+          echo "HASH=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+          echo "SHORT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "MESSAGE<<EOF" >> $GITHUB_OUTPUT
+          git log -1 --pretty=%B >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Upload tag metadata
+        run: |
+          WORKFLOW_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          
+          cat > tag-metadata.json <<EOF
+          {
+            "repo_url": "https://github.com/${{ github.repository }}",
+            "tag": "${{ steps.version.outputs.VERSION }}",
+            "tag_message": ${{ toJSON(steps.commit.outputs.MESSAGE) }},
+            "commit_hash": "${{ steps.commit.outputs.HASH }}",
+            "commit_url": "https://github.com/${{ github.repository }}/commit/${{ steps.commit.outputs.HASH }}",
+            "build_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "description": "ViPER VM images built from GitHub Actions",
+            "workflow_url": "${WORKFLOW_URL}"
+          }
+          EOF
+          
+          curl -X POST https://artifacts.opf-labs.org/upload/${{ github.repository }}/${{ steps.version.outputs.VERSION }}/metadata \
+            -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d @tag-metadata.json \
+            --fail-with-body
+          
+          echo "Tag metadata uploaded successfully"
+      
       - name: Upload QCOW2 to artifact server
         run: |
           QCOW2_FILE="output-qemu/viper-v1.2-alpha"
           if [ -f "$QCOW2_FILE" ]; then
             echo "Uploading QCOW2 image..."
-            CHECKSUM=$(sha256sum "$QCOW2_FILE" | awk '{print $1}')
+            MD5_HASH=$(md5sum "$QCOW2_FILE" | awk '{print $1}')
+            SHA256_HASH=$(sha256sum "$QCOW2_FILE" | awk '{print $1}')
             
-            curl -X POST https://artifacts.opf-labs.org/upload \
+            curl -X POST https://artifacts.opf-labs.org/upload/${{ github.repository }}/${{ steps.version.outputs.VERSION }} \
               -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
-              -F "tag=${{ steps.version.outputs.VERSION }}" \
-              -F "file=@${QCOW2_FILE};type=application/octet-stream" \
-              -F "repository=${{ github.repository }}" \
-              -F "checksum=sha256:${CHECKSUM}" \
+              -F "file=@${QCOW2_FILE}" \
+              -F "md5=${MD5_HASH}" \
+              -F "sha256=${SHA256_HASH}" \
+              -F "file_type=QCOW2 Disk Image" \
               --max-time 3600 \
               --fail-with-body
             
@@ -98,14 +133,15 @@ jobs:
           VMDK_FILE="output/viper-v1.2-alpha.vmdk"
           if [ -f "$VMDK_FILE" ]; then
             echo "Uploading VMDK image..."
-            CHECKSUM=$(sha256sum "$VMDK_FILE" | awk '{print $1}')
+            MD5_HASH=$(md5sum "$VMDK_FILE" | awk '{print $1}')
+            SHA256_HASH=$(sha256sum "$VMDK_FILE" | awk '{print $1}')
             
-            curl -X POST https://artifacts.opf-labs.org/upload \
+            curl -X POST https://artifacts.opf-labs.org/upload/${{ github.repository }}/${{ steps.version.outputs.VERSION }} \
               -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
-              -F "tag=${{ steps.version.outputs.VERSION }}" \
-              -F "file=@${VMDK_FILE};type=application/octet-stream" \
-              -F "repository=${{ github.repository }}" \
-              -F "checksum=sha256:${CHECKSUM}" \
+              -F "file=@${VMDK_FILE}" \
+              -F "md5=${MD5_HASH}" \
+              -F "sha256=${SHA256_HASH}" \
+              -F "file_type=VMDK Virtual Disk" \
               --max-time 3600 \
               --fail-with-body
             
@@ -119,19 +155,20 @@ jobs:
           OVA_FILE="output/viper-v1.2-alpha.ova"
           if [ -f "$OVA_FILE" ]; then
             echo "Uploading OVA package..."
-            CHECKSUM=$(sha256sum "$OVA_FILE" | awk '{print $1}')
+            MD5_HASH=$(md5sum "$OVA_FILE" | awk '{print $1}')
+            SHA256_HASH=$(sha256sum "$OVA_FILE" | awk '{print $1}')
             
-            curl -X POST https://artifacts.opf-labs.org/upload \
+            curl -X POST https://artifacts.opf-labs.org/upload/${{ github.repository }}/${{ steps.version.outputs.VERSION }} \
               -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
-              -F "tag=${{ steps.version.outputs.VERSION }}" \
-              -F "file=@${OVA_FILE};type=application/octet-stream" \
-              -F "repository=${{ github.repository }}" \
-              -F "checksum=sha256:${CHECKSUM}" \
+              -F "file=@${OVA_FILE}" \
+              -F "md5=${MD5_HASH}" \
+              -F "sha256=${SHA256_HASH}" \
+              -F "file_type=OVA Package" \
               --max-time 3600 \
               --fail-with-body
             
             echo "OVA uploaded successfully"
-            echo "Download URL: https://artifacts.opf-labs.org/browse/${{ steps.version.outputs.VERSION }}"
+            echo "Download URL: https://artifacts.opf-labs.org/browse/${{ github.repository }}/${{ steps.version.outputs.VERSION }}"
           else
             echo "OVA file not found, skipping upload"
           fi
@@ -149,12 +186,12 @@ jobs:
             
             Large build artifacts are hosted on our artifact server:
             
-            **Browse all files:** https://artifacts.opf-labs.org/browse/${{ steps.version.outputs.VERSION }}
+            **Browse all files:** https://artifacts.opf-labs.org/browse/${{ github.repository }}/${{ steps.version.outputs.VERSION }}
             
             **Direct downloads:**
-            - QCOW2: https://artifacts.opf-labs.org/download/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha
-            - VMDK: https://artifacts.opf-labs.org/download/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.vmdk
-            - OVA: https://artifacts.opf-labs.org/download/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.ova
+            - QCOW2: https://artifacts.opf-labs.org/download/${{ github.repository }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha
+            - VMDK: https://artifacts.opf-labs.org/download/${{ github.repository }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.vmdk
+            - OVA: https://artifacts.opf-labs.org/download/${{ github.repository }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.ova
             
             ## Installation
             
@@ -180,7 +217,7 @@ jobs:
             
             ## Checksums
             
-            SHA256 checksums are stored with each artifact. View metadata at:
-            https://artifacts.opf-labs.org/browse/${{ steps.version.outputs.VERSION }}
+            MD5 and SHA256 checksums are displayed on the browse page:
+            https://artifacts.opf-labs.org/browse/${{ github.repository }}/${{ steps.version.outputs.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
