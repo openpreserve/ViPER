@@ -19,10 +19,11 @@
     append: yes
 
 - name: "USER | Check if SSH public key exists"
-  stat:
+  local_action:
+    module: stat
     path: "{{ lookup('env','HOME') }}/.ssh/id_rsa.pub"
   register: ssh_key_file
-  delegate_to: localhost
+  become: false
 
 - name: "USER | Set authorized key for user: {{ viper.setup.limited_account.name }}, copied from current user."
   authorized_key:
@@ -36,6 +37,22 @@
     path: "{{ viper.setup.limited_account.home }}/Desktop"
     state: directory
     mode: '0775'
+    owner: "{{ viper.setup.limited_account.name }}"
+    group: "{{ viper.setup.limited_account.name }}"
+
+- name: "USER | Create .config directory for user."
+  file:
+    path: "{{ viper.setup.limited_account.home }}/.config"
+    state: directory
+    mode: '0755'
+    owner: "{{ viper.setup.limited_account.name }}"
+    group: "{{ viper.setup.limited_account.name }}"
+
+- name: "USER | Mark GNOME initial setup as completed."
+  file:
+    path: "{{ viper.setup.limited_account.home }}/.config/gnome-initial-setup-done"
+    state: touch
+    mode: '0644'
     owner: "{{ viper.setup.limited_account.name }}"
     group: "{{ viper.setup.limited_account.name }}"
 
