@@ -68,66 +68,102 @@ jobs:
       - name: Convert to OVA
         run: ./scripts/convert-to-ova.sh
       
-      - name: Clean up intermediate files
-        run: |
-          echo "Cleaning up to free disk space..."
-          # TODO: Consider keeping QCOW2 for direct upload to file server in future
-          # For now, remove it to free space for split zip creation
-          rm -f output-qemu/viper-v1.2-alpha
-          echo "Removed QCOW2 file"
-          # Remove intermediate VMDK (already packaged in OVA)
-          rm -f output/viper-v1.2-alpha.vmdk
-          echo "Removed intermediate VMDK"
-          df -h
-      
-      - name: Create split zip archive
-        run: |
-          cd output
-          echo "Creating split zip archive (1.9GB parts to stay under GitHub's 2GB limit)..."
-          zip -s 1900m viper-v1.2-alpha.zip viper-v1.2-alpha.ova
-          echo "Split archive created:"
-          ls -lh viper-v1.2-alpha.z* viper-v1.2-alpha.zip
-          # Clean up original OVA after zipping to save more space
-          rm -f viper-v1.2-alpha.ova
-          echo "Removed original OVA (kept in zip)"
-      
       - name: Get version from tag
         id: version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
       
-      - name: Create release
+      - name: Upload QCOW2 to artifact server
+        run: |
+          QCOW2_FILE="output-qemu/viper-v1.2-alpha"
+          if [ -f "$QCOW2_FILE" ]; then
+            echo "Uploading QCOW2 image..."
+            CHECKSUM=$(sha256sum "$QCOW2_FILE" | awk '{print $1}')
+            
+            curl -X POST https://artifacts.opf-labs.org/upload \
+              -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
+              -F "tag=${{ steps.version.outputs.VERSION }}" \
+              -F "file=@${QCOW2_FILE}" \
+              -F "repository=${{ github.repository }}" \
+              -F "checksum=sha256:${CHECKSUM}" \
+              --max-time 3600
+            
+            echo "QCOW2 uploaded successfully"
+          else
+            echo "QCOW2 file not found, skipping upload"
+          fi
+      
+      - name: Upload VMDK to artifact server
+        run: |
+          VMDK_FILE="output/viper-v1.2-alpha.vmdk"
+          if [ -f "$VMDK_FILE" ]; then
+            echo "Uploading VMDK image..."
+            CHECKSUM=$(sha256sum "$VMDK_FILE" | awk '{print $1}')
+            
+            curl -X POST https://artifacts.opf-labs.org/upload \
+              -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
+              -F "tag=${{ steps.version.outputs.VERSION }}" \
+              -F "file=@${VMDK_FILE}" \
+              -F "repository=${{ github.repository }}" \
+              -F "checksum=sha256:${CHECKSUM}" \
+              --max-time 3600
+            
+            echo "VMDK uploaded successfully"
+          else
+            echo "VMDK file not found, skipping upload"
+          fi
+      
+      - name: Upload OVA to artifact server
+        run: |
+          OVA_FILE="output/viper-v1.2-alpha.ova"
+          if [ -f "$OVA_FILE" ]; then
+            echo "Uploading OVA package..."
+            CHECKSUM=$(sha256sum "$OVA_FILE" | awk '{print $1}')
+            
+            curl -X POST https://artifacts.opf-labs.org/upload \
+              -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
+              -F "tag=${{ steps.version.outputs.VERSION }}" \
+              -F "file=@${OVA_FILE}" \
+              -F "repository=${{ github.repository }}" \
+              -F "checksum=sha256:${CHECKSUM}" \
+              --max-time 3600
+            
+            echo "OVA uploaded successfully"
+            echo "Download URL: https://artifacts.opf-labs.org/browse/${{ steps.version.outputs.VERSION }}"
+          else
+            echo "OVA file not found, skipping upload"
+          fi
+      
+      - name: Create release with download links
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: output/viper-v1.2-alpha.*
           draft: false
           prerelease: false
           body: |
             ViPER VM Build ${{ steps.version.outputs.VERSION }}
             
+            ## Download Artifacts
+            
+            Large build artifacts are hosted on our artifact server:
+            
+            **Browse all files:** https://artifacts.opf-labs.org/browse/${{ steps.version.outputs.VERSION }}
+            
+            **Direct downloads:**
+            - QCOW2: https://artifacts.opf-labs.org/download/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha
+            - VMDK: https://artifacts.opf-labs.org/download/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.vmdk
+            - OVA: https://artifacts.opf-labs.org/download/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.ova
+            
             ## Installation
             
-            **Important:** This release contains a split zip archive due to GitHub's 2GB file size limit.
+            1. Download the OVA file from the link above
+            2. Import into VirtualBox, VMware, or other OVF-compatible virtualization platform
+            3. Start the VM
             
-            1. Download **ALL** files from this release:
-               - `viper-v1.2-alpha.z01`
-               - `viper-v1.2-alpha.z02`
-               - `viper-v1.2-alpha.z03`
-               - `viper-v1.2-alpha.zip`
+            ## Alternative Formats
             
-            2. Extract the OVA file:
-               ```bash
-               # Linux/macOS with zip utilities
-               zip -F viper-v1.2-alpha.zip --out complete.zip
-               unzip complete.zip
-               
-               # Or use 7-Zip (Windows/Linux/macOS)
-               7z x viper-v1.2-alpha.zip
-               ```
-            
-            3. Import `viper-v1.2-alpha.ova` into VirtualBox, VMware, or other OVF-compatible virtualization platform
-            
-            4. Start the VM
+            - **QCOW2**: For QEMU/KVM environments
+            - **VMDK**: For VMware without OVA wrapper
+            - **OVA**: Universal OVF package (recommended)
             
             ## Default Credentials
             - Username: vagrant
@@ -138,12 +174,10 @@ jobs:
             - CPUs: 2
             - Memory: 4GB
             - Disk: 50GB
+            
+            ## Checksums
+            
+            SHA256 checksums are stored with each artifact. View metadata at:
+            https://artifacts.opf-labs.org/browse/${{ steps.version.outputs.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: viper-ova-${{ steps.version.outputs.VERSION }}
-          path: output/viper-v1.2-alpha.*
-          retention-days: 30
