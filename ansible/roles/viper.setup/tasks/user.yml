@@ -56,6 +56,20 @@
     owner: "{{ viper.setup.limited_account.name }}"
     group: "{{ viper.setup.limited_account.name }}"
 
+- name: "USER | Disable GNOME session save/restore to prevent Activities view on login."
+  copy:
+    dest: "{{ viper.setup.limited_account.home }}/.config/autostart/gnome-session-restore-disable.desktop"
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Name=Disable Session Restore
+      Exec=dconf write /org/gnome/desktop/session/save-last-session false
+      NoDisplay=true
+      X-GNOME-Autostart-enabled=true
+    mode: '0644'
+    owner: "{{ viper.setup.limited_account.name }}"
+    group: "{{ viper.setup.limited_account.name }}"
+
 - name: "USER | Add execute privileges to the desktop dir."
   file:
     path: "{{ viper.setup.limited_account.home }}/Desktop"
