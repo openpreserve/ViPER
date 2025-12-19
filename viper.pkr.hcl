@@ -65,7 +65,7 @@ source "qemu" "debian-bookworm" {
   
   disk_size        = var.disk_size
   disk_interface   = "virtio"
-  disk_compression = true
+  disk_compression = false
   format           = "qcow2"
   
   cpus             = var.cpus

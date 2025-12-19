@@ -47,6 +47,19 @@ jobs:
       - name: Validate Packer template
         run: packer validate viper.pkr.hcl
       
+      - name: Free up disk space before build
+        run: |
+          echo "Disk space before cleanup:"
+          df -h
+          # Remove unnecessary packages
+          sudo apt-get clean
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          echo "Disk space after cleanup:"
+          df -h
+      
       - name: Build VM with Packer
         run: |
           # Check if KVM is available
@@ -123,7 +136,9 @@ jobs:
               --max-time 3600 \
               --fail-with-body
             
-            echo "QCOW2 uploaded successfully"
+            echo "QCOW2 uploaded successfully, removing to free space..."
+            rm -f "$QCOW2_FILE"
+            df -h
           else
             echo "QCOW2 file not found, skipping upload"
           fi
@@ -146,6 +161,9 @@ jobs:
               --fail-with-body
             
             echo "VMDK uploaded successfully"
+            echo "Removing VMDK to free space..."
+            rm -f "$VMDK_FILE"
+            df -h
           else
             echo "VMDK file not found, skipping upload"
           fi
