@@ -56,6 +56,14 @@
     owner: "{{ viper.setup.limited_account.name }}"
     group: "{{ viper.setup.limited_account.name }}"
 
+- name: "USER | Create autostart directory for user."
+  file:
+    path: "{{ viper.setup.limited_account.home }}/.config/autostart"
+    state: directory
+    mode: '0755'
+    owner: "{{ viper.setup.limited_account.name }}"
+    group: "{{ viper.setup.limited_account.name }}"
+
 - name: "USER | Disable GNOME session save/restore to prevent Activities view on login."
   copy:
     dest: "{{ viper.setup.limited_account.home }}/.config/autostart/gnome-session-restore-disable.desktop"
