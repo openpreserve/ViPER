@@ -151,7 +151,7 @@ jobs:
               -F "md5=${MD5_HASH}" \
               -F "sha256=${SHA256_HASH}" \
               -F "file_type=QCOW2 Disk Image" \
-              --max-time 3600 \
+              --max-time 18000 \
               --fail-with-body
             
             echo "QCOW2 uploaded successfully, removing to free space..."
@@ -175,7 +175,7 @@ jobs:
               -F "md5=${MD5_HASH}" \
               -F "sha256=${SHA256_HASH}" \
               -F "file_type=OVA Package" \
-              --max-time 3600 \
+              --max-time 18000 \
               --fail-with-body
             
             echo "OVA uploaded successfully"
