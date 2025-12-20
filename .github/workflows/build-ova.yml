@@ -88,12 +88,12 @@ jobs:
       - name: Parse repository info
         id: repo
         run: |
-          # URL-encode the repository for API paths (openpreserve/ViPER -> openpreserve%2FViPER)
-          REPO_ENCODED=$(echo "${{ github.repository }}" | jq -sRr @uri)
-          echo "REPO_ENCODED=${REPO_ENCODED}" >> $GITHUB_OUTPUT
+          # Sanitize repo name for filesystem-safe paths (openpreserve/ViPER -> openpreserve-ViPER)
+          REPO_SAFE=$(echo "${{ github.repository }}" | tr '/' '-')
+          echo "REPO_SAFE=${REPO_SAFE}" >> $GITHUB_OUTPUT
           echo "REPO_FULL=${{ github.repository }}" >> $GITHUB_OUTPUT
           echo "Repository: ${{ github.repository }}"
-          echo "Encoded: ${REPO_ENCODED}"
+          echo "Safe name: ${REPO_SAFE}"
       
       - name: Get commit info
         id: commit
@@ -122,7 +122,7 @@ jobs:
           EOF
           
           # Try to upload metadata, but don't fail build if endpoint doesn't exist yet
-          curl -X POST "https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_ENCODED }}/${{ steps.version.outputs.VERSION }}/metadata" \
+          curl -X POST "https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}/metadata" \
             -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d @tag-metadata.json \
@@ -138,7 +138,7 @@ jobs:
             MD5_HASH=$(md5sum "$QCOW2_FILE" | awk '{print $1}')
             SHA256_HASH=$(sha256sum "$QCOW2_FILE" | awk '{print $1}')
             
-            curl -X POST "https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_ENCODED }}/${{ steps.version.outputs.VERSION }}" \
+            curl -X POST "https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}" \
               -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
               -F "file=@${QCOW2_FILE}" \
               -F "md5=${MD5_HASH}" \
@@ -162,7 +162,7 @@ jobs:
             MD5_HASH=$(md5sum "$VMDK_FILE" | awk '{print $1}')
             SHA256_HASH=$(sha256sum "$VMDK_FILE" | awk '{print $1}')
             
-            curl -X POST "https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_ENCODED }}/${{ steps.version.outputs.VERSION }}" \
+            curl -X POST "https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}" \
               -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
               -F "file=@${VMDK_FILE}" \
               -F "md5=${MD5_HASH}" \
@@ -187,7 +187,7 @@ jobs:
             MD5_HASH=$(md5sum "$OVA_FILE" | awk '{print $1}')
             SHA256_HASH=$(sha256sum "$OVA_FILE" | awk '{print $1}')
             
-            curl -X POST "https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_ENCODED }}/${{ steps.version.outputs.VERSION }}" \
+            curl -X POST "https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}" \
               -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
               -F "file=@${OVA_FILE}" \
               -F "md5=${MD5_HASH}" \
@@ -197,7 +197,7 @@ jobs:
               --fail-with-body
             
             echo "OVA uploaded successfully"
-            echo "Download URL: https://artifacts.opf-labs.org/browse/${{ steps.repo.outputs.REPO_FULL }}/${{ steps.version.outputs.VERSION }}"
+            echo "Download URL: https://artifacts.opf-labs.org/browse/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}"
           else
             echo "OVA file not found, skipping upload"
           fi
@@ -215,12 +215,12 @@ jobs:
             
             Large build artifacts are hosted on our artifact server:
             
-            **Browse all files:** https://artifacts.opf-labs.org/browse/${{ steps.repo.outputs.REPO_FULL }}/${{ steps.version.outputs.VERSION }}
+            **Browse all files:** https://artifacts.opf-labs.org/browse/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}
             
             **Direct downloads:**
-            - QCOW2: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_FULL }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha
-            - VMDK: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_FULL }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.vmdk
-            - OVA: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_FULL }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.ova
+            - QCOW2: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha
+            - VMDK: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.vmdk
+            - OVA: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.ova
             
             ## Installation
             
@@ -247,6 +247,6 @@ jobs:
             ## Checksums
             
             MD5 and SHA256 checksums are displayed on the browse page:
-            https://artifacts.opf-labs.org/browse/${{ steps.repo.outputs.REPO_FULL }}/${{ steps.version.outputs.VERSION }}
+            https://artifacts.opf-labs.org/browse/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
