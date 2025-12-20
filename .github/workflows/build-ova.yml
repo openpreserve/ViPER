@@ -1,13 +1,10 @@
 name: Build ViPER OVA
 
-# Temporarily disabled for testing
-# on:
-#   push:
-#     tags:
-#       - 'v*.*.*'
-#       - 'release-*'
-#   workflow_dispatch:
 on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'release-*'
   workflow_dispatch:
 
 jobs:
