@@ -113,8 +113,10 @@ echo "Step 3: Creating OVA package..."
 cd "${FINAL_DIR}"
 tar -cvf "${VM_NAME}.ova" "${VM_NAME}.ovf" "${VM_NAME}.vmdk"
 
-# Cleanup intermediate files
+# Cleanup intermediate files (OVF and standalone VMDK)
 rm -f "${VM_NAME}.ovf"
+rm -f "${VM_NAME}.vmdk"
 
 echo "OVA created successfully: ${FINAL_DIR}/${VM_NAME}.ova"
 echo "Size: $(du -h ${VM_NAME}.ova | cut -f1)"
+echo "Cleaned up intermediate VMDK and OVF files"

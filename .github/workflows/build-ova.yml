@@ -154,31 +154,6 @@ jobs:
             echo "QCOW2 file not found, skipping upload"
           fi
       
-      - name: Upload VMDK to artifact server
-        run: |
-          VMDK_FILE="output/viper-v1.2-alpha.vmdk"
-          if [ -f "$VMDK_FILE" ]; then
-            echo "Uploading VMDK image..."
-            MD5_HASH=$(md5sum "$VMDK_FILE" | awk '{print $1}')
-            SHA256_HASH=$(sha256sum "$VMDK_FILE" | awk '{print $1}')
-            
-            curl -X POST "https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}" \
-              -H "Authorization: Bearer ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}" \
-              -F "file=@${VMDK_FILE}" \
-              -F "md5=${MD5_HASH}" \
-              -F "sha256=${SHA256_HASH}" \
-              -F "file_type=VMDK Virtual Disk" \
-              --max-time 3600 \
-              --fail-with-body
-            
-            echo "VMDK uploaded successfully"
-            echo "Removing VMDK to free space..."
-            rm -f "$VMDK_FILE"
-            df -h
-          else
-            echo "VMDK file not found, skipping upload"
-          fi
-      
       - name: Upload OVA to artifact server
         run: |
           OVA_FILE="output/viper-v1.2-alpha.ova"
@@ -219,7 +194,6 @@ jobs:
             
             **Direct downloads:**
             - QCOW2: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha
-            - VMDK: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.vmdk
             - OVA: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION }}/viper-v1.2-alpha.ova
             
             ## Installation
@@ -228,11 +202,10 @@ jobs:
             2. Import into VirtualBox, VMware, or other OVF-compatible virtualization platform
             3. Start the VM
             
-            ## Alternative Formats
+            ## Available Formats
             
-            - **QCOW2**: For QEMU/KVM environments
-            - **VMDK**: For VMware without OVA wrapper
-            - **OVA**: Universal OVF package (recommended)
+            - **QCOW2**: For QEMU/KVM environments (native format, best performance)
+            - **OVA**: Universal OVF package for VirtualBox/VMware (recommended for most users)
             
             ## Default Credentials
             - Username: vagrant
