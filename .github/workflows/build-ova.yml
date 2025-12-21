@@ -139,7 +139,7 @@ jobs:
       
       - name: Upload QCOW2 to artifact server
         run: |
-          QCOW2_FILE="output-qemu/viper-v1.2-alpha"
+          QCOW2_FILE="output-qemu/viper-v1.2-alpha.qcow2"
           if [ -f "$QCOW2_FILE" ]; then
             echo "Uploading QCOW2 image..."
             MD5_HASH=$(md5sum "$QCOW2_FILE" | awk '{print $1}')
@@ -200,7 +200,7 @@ jobs:
             **Browse all files:** https://artifacts.opf-labs.org/browse/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION_SAFE }}
             
             **Direct downloads:**
-            - QCOW2: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION_SAFE }}/viper-v1.2-alpha
+            - QCOW2: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION_SAFE }}/viper-v1.2-alpha.qcow2
             - OVA: https://artifacts.opf-labs.org/download/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.version.outputs.VERSION_SAFE }}/viper-v1.2-alpha.ova
             
             ## Installation

@@ -15,7 +15,7 @@ mkdir -p "${FINAL_DIR}"
 # Convert QCOW2 to VMDK (VirtualBox/VMware compatible format)
 echo "Step 1: Converting QCOW2 to VMDK..."
 qemu-img convert -O vmdk -o subformat=streamOptimized \
-    "${OUTPUT_DIR}/${VM_NAME}" \
+    "${OUTPUT_DIR}/${VM_NAME}.qcow2" \
     "${FINAL_DIR}/${VM_NAME}.vmdk"
 
 # Get VMDK file size

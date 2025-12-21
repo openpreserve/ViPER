@@ -133,6 +133,14 @@ build {
     extra_arguments = ["-vv"]
   }
   
+  # Rename QCOW2 file to include .qcow2 extension
+  post-processor "shell-local" {
+    inline = [
+      "mv ${var.output_directory}/${var.vm_name} ${var.output_directory}/${var.vm_name}.qcow2 || true",
+      "echo 'QCOW2 file: ${var.output_directory}/${var.vm_name}.qcow2'"
+    ]
+  }
+  
   # Post-processor to convert to VMDK and create OVA
   post-processor "shell-local" {
     inline = [
