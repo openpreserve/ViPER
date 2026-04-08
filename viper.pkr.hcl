@@ -126,6 +126,11 @@ build {
     ]
   }
   
+  # Install VirtualBox Guest Additions
+  provisioner "shell" {
+    script = "scripts/install-guest-additions.sh"
+  }
+  
   # Run Ansible provisioning
   provisioner "ansible" {
     playbook_file = "ansible/packer.yml"

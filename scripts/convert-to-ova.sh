@@ -112,7 +112,7 @@ cat > "${FINAL_DIR}/${VM_NAME}.ovf" << EOF
           <PAE enabled="true"/>
         </CPU>
         <Memory RAMSize="4096"/>
-        <Display controller="VMSVGA" VRAMSize="128" accelerate3D="true"/>
+        <Display controller="VMSVGA" VRAMSize="128"/>
         <VideoCapture/>
         <RemoteDisplay enabled="false"/>
         <BIOS>
