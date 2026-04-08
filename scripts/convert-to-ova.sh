@@ -32,7 +32,8 @@ cat > "${FINAL_DIR}/${VM_NAME}.ovf" << EOF
   xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" 
   xmlns:vmw="http://www.vmware.com/schema/ovf" 
   xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:vbox="http://www.virtualbox.org/ovf/machine">
   <References>
     <File ovf:href="${VM_NAME}.vmdk" ovf:id="file1" ovf:size="${VMDK_SIZE}"/>
   </References>
@@ -104,6 +105,24 @@ cat > "${FINAL_DIR}/${VM_NAME}.ovf" << EOF
         <rasd:ResourceType>10</rasd:ResourceType>
       </Item>
     </VirtualHardwareSection>
+    <vbox:Machine ovf:required="false" version="1.19-linux" name="${VM_NAME}" OSType="Debian_64">
+      <ovf:Info>VirtualBox machine configuration</ovf:Info>
+      <Hardware>
+        <CPU count="2">
+          <PAE enabled="true"/>
+        </CPU>
+        <Memory RAMSize="4096"/>
+        <Display controller="VMSVGA" VRAMSize="128"/>
+        <BIOS>
+          <IOAPIC enabled="true"/>
+        </BIOS>
+        <Network>
+          <Adapter slot="0" enabled="true" type="82540EM">
+            <NAT localhost-reachable="true"/>
+          </Adapter>
+        </Network>
+      </Hardware>
+    </vbox:Machine>
   </VirtualSystem>
 </Envelope>
 EOF
