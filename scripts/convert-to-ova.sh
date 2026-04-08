@@ -112,7 +112,9 @@ cat > "${FINAL_DIR}/${VM_NAME}.ovf" << EOF
           <PAE enabled="true"/>
         </CPU>
         <Memory RAMSize="4096"/>
-        <Display controller="VMSVGA" VRAMSize="128"/>
+        <Display controller="VMSVGA" VRAMSize="128" accelerate3D="true"/>
+        <VideoCapture/>
+        <RemoteDisplay enabled="false"/>
         <BIOS>
           <IOAPIC enabled="true"/>
         </BIOS>
@@ -121,6 +123,16 @@ cat > "${FINAL_DIR}/${VM_NAME}.ovf" << EOF
             <NAT localhost-reachable="true"/>
           </Adapter>
         </Network>
+        <StorageControllers>
+          <StorageController name="SATA" type="AHCI" PortCount="2" useHostIOCache="false" Bootable="true">
+            <AttachedDevice type="HardDisk" hotpluggable="false" port="0" device="0">
+              <Image uuid="{00000000-0000-0000-0000-000000000000}"/>
+            </AttachedDevice>
+          </StorageController>
+          <StorageController name="IDE" type="PIIX4" PortCount="2" useHostIOCache="true" Bootable="false">
+            <AttachedDevice passthrough="false" type="DVD" hotpluggable="false" port="1" device="0"/>
+          </StorageController>
+        </StorageControllers>
       </Hardware>
     </vbox:Machine>
   </VirtualSystem>
