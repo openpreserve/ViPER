@@ -18,17 +18,63 @@
     update_password: always
     append: yes
 
+- name: "USER | Check if SSH public key exists"
+  local_action:
+    module: stat
+    path: "{{ lookup('env','HOME') }}/.ssh/id_rsa.pub"
+  register: ssh_key_file
+  become: false
+
 - name: "USER | Set authorized key for user: {{ viper.setup.limited_account.name }}, copied from current user."
   authorized_key:
     user: "{{ viper.setup.limited_account.name }}"
     state: present
     key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+  when: ssh_key_file.stat.exists
 
 - name: "USER | Create user desktop dir."
   file:
     path: "{{ viper.setup.limited_account.home }}/Desktop"
     state: directory
     mode: '0775'
+    owner: "{{ viper.setup.limited_account.name }}"
+    group: "{{ viper.setup.limited_account.name }}"
+
+- name: "USER | Create .config directory for user."
+  file:
+    path: "{{ viper.setup.limited_account.home }}/.config"
+    state: directory
+    mode: '0755'
+    owner: "{{ viper.setup.limited_account.name }}"
+    group: "{{ viper.setup.limited_account.name }}"
+
+- name: "USER | Mark GNOME initial setup as completed."
+  file:
+    path: "{{ viper.setup.limited_account.home }}/.config/gnome-initial-setup-done"
+    state: touch
+    mode: '0644'
+    owner: "{{ viper.setup.limited_account.name }}"
+    group: "{{ viper.setup.limited_account.name }}"
+
+- name: "USER | Create autostart directory for user."
+  file:
+    path: "{{ viper.setup.limited_account.home }}/.config/autostart"
+    state: directory
+    mode: '0755'
+    owner: "{{ viper.setup.limited_account.name }}"
+    group: "{{ viper.setup.limited_account.name }}"
+
+- name: "USER | Disable GNOME session save/restore to prevent Activities view on login."
+  copy:
+    dest: "{{ viper.setup.limited_account.home }}/.config/autostart/gnome-session-restore-disable.desktop"
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Name=Disable Session Restore
+      Exec=sh -c "dconf write /org/gnome/desktop/session/save-last-session false && dconf write /org/gnome/desktop/wm/preferences/num-workspaces 1 && dconf write /org/gnome/mutter/dynamic-workspaces false"
+      NoDisplay=true
+      X-GNOME-Autostart-enabled=true
+    mode: '0644'
     owner: "{{ viper.setup.limited_account.name }}"
     group: "{{ viper.setup.limited_account.name }}"
 
