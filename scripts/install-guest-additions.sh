@@ -6,6 +6,9 @@ set -e
 
 echo "Installing VirtualBox Guest Additions..."
 
+# Enable contrib repository for VirtualBox packages
+sudo sed -i 's/main$/main contrib/' /etc/apt/sources.list
+
 # Update package lists
 sudo apt-get update
 
