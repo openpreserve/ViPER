@@ -21,6 +21,10 @@ qemu-img convert -O vmdk -o subformat=streamOptimized \
 # Get VMDK file size
 VMDK_SIZE=$(stat -c%s "${FINAL_DIR}/${VM_NAME}.vmdk")
 
+# Generate unique UUIDs for VirtualBox machine and disk
+VM_UUID=$(cat /proc/sys/kernel/random/uuid)
+DISK_UUID=$(cat /proc/sys/kernel/random/uuid)
+
 # Create OVF descriptor
 echo "Step 2: Creating OVF descriptor..."
 cat > "${FINAL_DIR}/${VM_NAME}.ovf" << EOF
@@ -105,7 +109,7 @@ cat > "${FINAL_DIR}/${VM_NAME}.ovf" << EOF
         <rasd:ResourceType>10</rasd:ResourceType>
       </Item>
     </VirtualHardwareSection>
-    <vbox:Machine ovf:required="false" version="1.19-linux" name="${VM_NAME}" OSType="Debian_64">
+    <vbox:Machine ovf:required="false" version="1.19-linux" uuid="{${VM_UUID}}" name="${VM_NAME}" OSType="Debian_64">
       <ovf:Info>VirtualBox machine configuration</ovf:Info>
       <Hardware>
         <CPU count="2">
@@ -126,7 +130,7 @@ cat > "${FINAL_DIR}/${VM_NAME}.ovf" << EOF
         <StorageControllers>
           <StorageController name="SATA" type="AHCI" PortCount="2" useHostIOCache="false" Bootable="true">
             <AttachedDevice type="HardDisk" hotpluggable="false" port="0" device="0">
-              <Image uuid="{00000000-0000-0000-0000-000000000000}"/>
+              <Image uuid="{${DISK_UUID}}"/>
             </AttachedDevice>
           </StorageController>
           <StorageController name="IDE" type="PIIX4" PortCount="2" useHostIOCache="true" Bootable="false">
