@@ -30,6 +30,8 @@ jobs:
           packer version
       
       - name: Initialize Packer plugins
+        env:
+          PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: packer init viper.pkr.hcl
       
       - name: Enable KVM
