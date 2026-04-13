@@ -34,6 +34,7 @@
     regexp: '^GRUB_TIMEOUT='
     line: 'GRUB_TIMEOUT=0'
     backup: yes
+  notify: update grub configuration
 
 - name: "GRUB | Hide GRUB menu for faster boot."
   lineinfile:
@@ -41,3 +42,4 @@
     regexp: '^GRUB_TIMEOUT_STYLE='
     line: 'GRUB_TIMEOUT_STYLE=hidden'
     insertafter: '^GRUB_TIMEOUT='
+  notify: update grub configuration

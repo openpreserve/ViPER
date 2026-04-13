@@ -23,6 +23,8 @@ viper_env_apt_defaults:
   # GNOME desktop and Nemo add on for icon display
   - "task-gnome-desktop"
   - "nemo"
+  # GRUB tools for boot configuration
+  - "grub-common"
 
 viper_env_apt_remove:
   - "acpi"
