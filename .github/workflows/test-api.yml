@@ -1,0 +1,111 @@
+name: Test Artifact Upload
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-upload:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Parse repository info
+        id: repo
+        run: |
+          REPO_SAFE=$(echo "${{ github.repository }}" | tr '/' '-')
+          echo "REPO_SAFE=${REPO_SAFE}" >> $GITHUB_OUTPUT
+          echo "Repository: ${{ github.repository }}"
+          echo "Safe name: ${REPO_SAFE}"
+      
+      - name: Get commit info
+        id: commit
+        run: |
+          echo "HASH=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+          echo "SHORT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "MESSAGE<<EOF" >> $GITHUB_OUTPUT
+          git log -1 --pretty=%B >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Set test tag
+        id: test
+        run: |
+          TEST_TAG="test-$(date +%s)"
+          echo "TEST_TAG=${TEST_TAG}" >> $GITHUB_OUTPUT
+          echo "Test tag: ${TEST_TAG}"
+      
+      - name: Test metadata upload
+        env:
+          ARTIFACT_UPLOAD_TOKEN: ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}
+        run: |
+          WORKFLOW_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          
+          echo "Testing metadata upload..."
+          echo "Repo: ${{ steps.repo.outputs.REPO_SAFE }}"
+          echo "Tag: ${{ steps.test.outputs.TEST_TAG }}"
+          echo "Token present: $([ -n "$ARTIFACT_UPLOAD_TOKEN" ] && echo 'YES' || echo 'NO')"
+          echo "Token length: ${#ARTIFACT_UPLOAD_TOKEN}"
+          # echo "Full token (INSECURE - FOR TESTING ONLY): ${ARTIFACT_UPLOAD_TOKEN}"
+          
+          cat > tag-metadata.json <<EOF
+          {
+            "repo_url": "https://github.com/${{ github.repository }}",
+            "tag": "${{ steps.test.outputs.TEST_TAG }}",
+            "tag_message": ${{ toJSON(steps.commit.outputs.MESSAGE) }},
+            "commit_hash": "${{ steps.commit.outputs.HASH }}",
+            "commit_url": "https://github.com/${{ github.repository }}/commit/${{ steps.commit.outputs.HASH }}",
+            "build_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "description": "Test upload from GitHub Actions",
+            "workflow_url": "${WORKFLOW_URL}"
+          }
+          EOF
+          
+          echo "Metadata JSON:"
+          cat tag-metadata.json | jq '.' || cat tag-metadata.json
+          
+          echo ""
+          echo "Sending request..."
+          echo "URL: https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.test.outputs.TEST_TAG }}/metadata"
+          # echo "Full Authorization header: Bearer ${ARTIFACT_UPLOAD_TOKEN}"
+          
+          curl -v -X POST "https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.test.outputs.TEST_TAG }}/metadata" \
+            -H "Authorization: Bearer ${ARTIFACT_UPLOAD_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d @tag-metadata.json \
+            --fail-with-body
+      
+      - name: Create test file
+        run: |
+          echo "This is a test file from GitHub Actions" > test-file.txt
+          echo "Timestamp: $(date)" >> test-file.txt
+          ls -lh test-file.txt
+          md5sum test-file.txt
+      
+      - name: Test file upload
+        env:
+          ARTIFACT_UPLOAD_TOKEN: ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}
+        run: |
+          MD5_HASH=$(md5sum test-file.txt | awk '{print $1}')
+          SHA256_HASH=$(sha256sum test-file.txt | awk '{print $1}')
+          
+          echo "Testing file upload..."
+          echo "Tag: ${{ steps.test.outputs.TEST_TAG }}"
+          echo "MD5: ${MD5_HASH}"
+          echo "SHA256: ${SHA256_HASH}"
+          echo "URL: https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.test.outputs.TEST_TAG }}"
+          
+          curl -v -X POST "https://artifacts.opf-labs.org/upload/${{ steps.repo.outputs.REPO_SAFE }}/${{ steps.test.outputs.TEST_TAG }}" \
+            -H "Authorization: Bearer ${ARTIFACT_UPLOAD_TOKEN}" \
+            -F "file=@test-file.txt" \
+            -F "md5=${MD5_HASH}" \
+            -F "sha256=${SHA256_HASH}" \
+            -F "file_type=Test File" \
+            --fail-with-body
+      
+      - name: Show results
+        if: always()
+        run: |
+          echo ""
+          echo "Test completed!"
+          echo "Check: https://artifacts.opf-labs.org/browse/${{ steps.repo.outputs.REPO_SAFE }}"

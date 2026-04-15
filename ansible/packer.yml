@@ -1,0 +1,15 @@
+---
+# Playbook for Packer builds - simplified without SSH key scanning
+# File: ansible/packer.yml
+
+- hosts: default
+  become: true
+  gather_facts: yes
+  vars:
+    viper_env_timezone: "Europe/Berlin"
+    opf_server_hostname: "viper"
+    opf_server_hostdomain: "viper.test"
+    opf_server_fqdn: "{{ opf_server_hostname }}.{{ opf_server_hostdomain }}"
+  roles:
+    - { role: viper.setup }
+    - { role: viper.tools }

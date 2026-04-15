@@ -2,15 +2,15 @@
 layout: page
 title: User Guide
 ---
-# User's Guide
+# User Guide
 
 Here we provide help for users who are new to VirtualBox and using virtual machines.
 
 ## Starting ViPER
 
-Following [installation](/setup) the normal start up procedure is to open the Virtualbox Manager window, the left side of which will contain the ViPER virtual machine icon which will be in the powered off state.
+Following [installation](/setup) the normal start up procedure is to open the VirtualBox Manager window, the left side of which will contain the ViPER virtual machine icon which will be in the powered off state.
 To start, select the ViPER icon and then the green start arrow on the top menu selecting ‘Normal Start’ - this will open the virtual machine and the ViPER display window.
-Note the Virtualbox Manager is also used for managing / configuring Virtualbox settings  - further details can be found on the Oracle Virtualbox user guide.
+Note the VirtualBox Manager is also used for managing/configuring VirtualBox settings  - further details can be found on the Oracle VirtualBox user guide.
 
 ## Using ViPER
 
@@ -30,12 +30,12 @@ Further details can be found in the GNOME guide.
 
 ### File Sharing
 
-To make best use of the DP tools you will need access to the files located on your normal operational computer (the host). These files will need to be accessed or shared with the  virtual machine (often referred to as the guest). This is a straightforward, Virtualbox control function. The detail covering set up can be found [online here](https://www.virtualbox.org/manual/ch04.html#sharedfolders).
+To make best use of the DP tools you will need access to the files located on your normal operational computer (the host). These files will need to be accessed or shared with the  virtual machine (often referred to as the guest). This is a straightforward, VirtualBox control function. The detail covering set up can be found [online here](https://www.virtualbox.org/manual/ch04.html#sharedfolders).
 
-From the Virtualbox Manager:
+From the VirtualBox Manager:
 
 1. Ensure that the relevant virtual machine is selected - ViPER. The machine should be powered off
-2. Select Settings - This is selected via the Settings icon that is by the Start icon or via the pull down selection menu entitled Machine on the left side of the Virtualbox window immediately above the ViPER virtual machine icon
+2. Select Settings - This is selected via the Settings icon that is by the Start icon or via the pull down selection menu entitled Machine on the left side of the VirtualBox window immediately above the ViPER virtual machine icon
 3. Select the Shared Folders menu. A window will appear. The top right will display the Settings icon with the label ViPER Settings. Above the main body of the window the heading ‘Shared Folders’. To the right side of the main window note a + symbol; select the + symbol this will open a further window
 4. This new smaller window is entitled ‘Select Share’ - this will be displayed alongside the Settings icon at the top of the window. The window contains 3 main boxes entitled ‘Folder path’, ‘Folder name’ and ‘Mount point’. Two smaller tick boxes entitled ‘Read only’ and ‘Auto mount’ will also be visible
 5. Select Folder path that will allow you to select one of two options. Select ‘Other’

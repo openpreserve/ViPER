@@ -5,6 +5,8 @@
       subhref: "setup/"
     - subtitle: "Users"
       subhref: "guide/"
+    - subtitle: "ViPER 101"
+      subhref: "101/"
     - subtitle: "Maintainers"
       subhref: "maintainer/"
 

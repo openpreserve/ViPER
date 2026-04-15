@@ -1,0 +1,45 @@
+---
+# Prerequisites for viper.setup
+
+- name: "APT | Install apt package pre-requisites."
+  apt:
+    name: "{{ viper.setup.prereqs.apt }}"
+    state: "latest"
+
+- name: "LOCALE | Set up common locale packages."
+  community.general.locale_gen:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ viper.setup.locales }}"
+  notify:
+    - rebuild locales database
+
+- name: "LOCALE | Set default locale."
+  debconf:
+    name: locales
+    question: locales/default_environment_locale
+    value: "{{ viper.setup.default_locale }}"
+    vtype: select
+  notify:
+    - rebuild locales database
+
+- name: "LOCALE | Setup keyboard defaults."
+  copy:
+    src: "files/etc/default/keyboard"
+    dest: "/etc/default/keyboard"
+
+- name: "GRUB | Configure GRUB to skip boot menu."
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_TIMEOUT='
+    line: 'GRUB_TIMEOUT=0'
+    backup: yes
+  notify: update grub configuration
+
+- name: "GRUB | Hide GRUB menu for faster boot."
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_TIMEOUT_STYLE='
+    line: 'GRUB_TIMEOUT_STYLE=hidden'
+    insertafter: '^GRUB_TIMEOUT='
+  notify: update grub configuration

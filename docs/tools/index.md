@@ -2,11 +2,11 @@
 layout: page
 title: ViPER Tools
 ---
-# Tools Included in the ViPER
+# Tools Guide
 
-Here you can find a full list of the bundled tools and some references to online resources.
+A list of the bundled tools with references to online resources.
 
-## ![DROID icon](../assets/img/icons/droid.png "DROID icon") DROID (Digital Record Object Identification)
+## ![DROID icon](../assets/img/icons/droid.png "DROID icon") DROID (Digital Record Object Identification) v{{ site.data.vars.droid_version }}
 
 A file format identification tool developed and maintained by The National Archives of the UK.
 DROID performs automated batch identification of file format. DROID uses internal signatures
@@ -17,7 +17,7 @@ to identify and report the specific format versions of digital files. These sign
 - GitHub: <https://github.com/digital-preservation/droid>
 - PRONOM Homepage: <http://www.nationalarchives.gov.uk/PRONOM/Default.aspx>
 
-## ![JHOVE icon](../assets/img/icons/jhove.png "JHOVE icon") JHOVE
+## ![JHOVE icon](../assets/img/icons/jhove.png "JHOVE icon") JHOVE v{{ site.data.vars.jhove_version }}
 
 A tool developed by Harvard University Library and the Open Preservation Foundation.
 JHOVE provides functions to perform format-specific identification, validation, and characterization of digital objects.
@@ -25,7 +25,7 @@ JHOVE provides functions to perform format-specific identification, validation, 
 - Homepage: <https://jhove.openpreservation.org>
 - GitHub: <https://github.com/openpreserve/jhove>
 
-## ![Tika icon](../assets/img/icons/tika.jpg "Tika icon") Apache Tika
+## ![Tika icon](../assets/img/icons/tika.jpg "Tika icon") Apache Tika v{{ site.data.vars.tika_version }}
 
 A characterisation and text extraction tool developed and maintained by the Apache Software Foundation.
 detects and extracts metadata and text from over a thousand different file types (such as PPT, XLS, and PDF). All of these file types can be parsed through a single interface, making Tika useful for search engine indexing, content analysis, translation, and much more.
@@ -33,9 +33,9 @@ detects and extracts metadata and text from over a thousand different file types
 - Homepage: <https://tika.apache.org/>
 - GitHub: <https://github.com/apache/tika>
 - Wiki: <https://cwiki.apache.org/confluence/display/tika>
-- Supported Formats: <https://tika.apache.org/1.25/formats.html>
+- Supported Formats: <https://tika.apache.org/2.9.2/formats.html>
 
-## ![veraPDF icon](../assets/img/icons/verapdf.png "veraPDF icon") veraPDF
+## ![veraPDF icon](../assets/img/icons/verapdf.png "veraPDF icon") veraPDF v{{ site.data.vars.verapdf_version }}
 
 A validation and characterisation tool for the PDF/A format, developed by The PDF Association and The Open Preservation Foundation.
 
@@ -44,7 +44,7 @@ A validation and characterisation tool for the PDF/A format, developed by The PD
 - GUI User Guide: <https://github.com/veraPDF/veraPDF-apps/raw/master/veraPDFPDFAConformanceCheckerGUI.pdf>
 - GitHub: <https://github.com/veraPDF/veraPDF-library/>
 
-## ![HandBrake icon](../assets/img/icons/handbrake.png "HandBrake icon") HandBrake
+## ![HandBrake icon](../assets/img/icons/handbrake.png "HandBrake icon") HandBrake v{{ site.data.vars.handbrake_version }}
 
 A tool for converting video from nearly any format to a selection of modern, widely supported codecs.
 
@@ -53,26 +53,26 @@ A tool for converting video from nearly any format to a selection of modern, wid
 - The Forum: <https://forum.handbrake.fr/>
 - GitHub: <https://github.com/HandBrake/HandBrake>
 
-## ![Mediainfo icon](../assets/img/icons/mediainfo.png "Mediainfo icon") Mediainfo
+## ![Mediainfo icon](../assets/img/icons/mediainfo.png "Mediainfo icon") Mediainfo v{{ site.data.vars.mediainfo_version }}
 
 A convenient unified display of the most relevant technical and tag data for video and audio files.
 
 - Homepage: <https://mediaarea.net/en/MediaInfo>
 - Supported Formats: <https://mediaarea.net/en/MediaInfo/Support/Formats>
 
-## ![MediaConch icon](../assets/img/icons/mediainfo.png "Mediaconch icon") MediaConch
+## ![MediaConch icon](../assets/img/icons/mediainfo.png "Mediaconch icon") MediaConch v{{ site.data.vars.mediaconch_version }}
 
 An extensible, open source software project consisting of an implementation checker, policy checker, reporter, and fixer that targets preservation-level audiovisual files.
 
 - Homepage: <https://mediaarea.net/MediaConch>
 
-## ![Inkscape icon](../assets/img/icons/inkscape.png "Inkscape icon") Inkscape
+## ![Inkscape icon](../assets/img/icons/inkscape.png "Inkscape icon") Inkscape v{{ site.data.vars.inkscape_version }}
 
 Open source image manipulation software bundled with Debian.
 
 - Homepage: <https://inkscape.org/>
 
-## ![GIMP icon](../assets/img/icons/gimp.png "Inkscape icon") GIMP (GNU Image Manipulation Program)
+## ![GIMP icon](../assets/img/icons/gimp.png "Inkscape icon") GIMP (GNU Image Manipulation Program) v{{ site.data.vars.gimp_version }}
 
 Open source image manipulation software bundled with Debian.
 

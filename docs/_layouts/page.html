@@ -3,6 +3,9 @@
 {% include header.html %}
 <body role="document">
   {% include navbar.html nav=site.data.navbar %}
+  {% if page.banner %}
+    <img src="{{ page.banner }}" class="img-fluid" alt="ViPER logo and banner" title="ViPER Logo">
+  {% endif %}
   <div class="container theme-showcase" role="main">
     {{ content }}
   </div>

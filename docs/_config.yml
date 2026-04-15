@@ -1,0 +1,12 @@
+github: [metadata]
+encoding: UTF-8
+kramdown:
+  input: GFM
+  hard_wrap: false
+future: true
+jailed: false
+repository: openpreserve/ViPER
+plugins:
+- jekyll-github-metadata
+- jekyll-sitemap
+- jemoji
