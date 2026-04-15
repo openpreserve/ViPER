@@ -2,7 +2,7 @@
 # Prerequisites for viper.setup
 
 # openjdk-17 setup requires this path exist before we continue inside a container.
-- name: " APT | Ensure /usr/share/man/man1/ directory exists"
+- name: "APT | Ensure /usr/share/man/man1/ directory exists"
   file:
     path: /usr/share/man/man1/
     state: directory
@@ -34,6 +34,24 @@
   copy:
     src: "files/etc/default/keyboard"
     dest: "/etc/default/keyboard"
+
+- name: "GRUB | Configure GRUB to skip boot menu."
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_TIMEOUT='
+    line: 'GRUB_TIMEOUT=0'
+    backup: yes
+  notify: update grub configuration
+  when: ansible_virtualization_type != "docker"
+
+- name: "GRUB | Hide GRUB menu for faster boot."
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_TIMEOUT_STYLE='
+    line: 'GRUB_TIMEOUT_STYLE=hidden'
+    insertafter: '^GRUB_TIMEOUT='
+  notify: update grub configuration
+  when: ansible_virtualization_type != "docker"
 
 - name: "APT | Remove unnecessary packages."
   apt:

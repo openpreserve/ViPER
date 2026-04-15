@@ -22,26 +22,14 @@ viper_debian_tools:
   # Debian GIMP installation
   - "gimp"
 
-# Desktop icon files for Docker (includes Evince PDF viewer)
-viper_debian_icons_docker:
+# Desktop icon files
+viper_debian_icons:
   - "org.gnome.Evince"
   - "gimp"
   - "org.inkscape.Inkscape"
   - "mediainfo-gui"
   - "mediaconch-gui"
   - "fr.handbrake.ghb"
-
-# Desktop icon files for VMs (includes all applications)
-viper_debian_icons_vm:
-  - "org.gnome.Evince"
-  - "gimp"
-  - "org.inkscape.Inkscape"
-  - "mediainfo-gui"
-  - "mediaconch-gui"
-  - "fr.handbrake.ghb"
-
-# Desktop icon files - use Docker list if running in Docker, otherwise use VM list
-viper_debian_icons: "{{ (ansible_virtualization_type == 'docker') | ternary(viper_debian_icons_docker, viper_debian_icons_vm) }}"
 
 # JHOVE version details, to override set jhove_major_minor and jhove_patch
 jhove_major: "1"

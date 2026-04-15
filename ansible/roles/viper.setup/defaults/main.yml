@@ -1,5 +1,6 @@
 ---
 # viper.setup default values
+
 # Default packages for Docker containers (minimal set, for Debian Bookworm)
 viper_env_apt_docker_defaults:
   - "git"
@@ -19,6 +20,7 @@ viper_env_apt_docker_defaults:
 
 # Default packages for VMs (includes desktop environment)
 viper_env_apt_vm_defaults:
+  # Source control
   - "git"
   # Debian lacks the ability to download apt over HTTPS
   - "apt-transport-https"
@@ -41,6 +43,8 @@ viper_env_apt_vm_defaults:
   - "task-gnome-desktop"
   - "nemo"
   - "locales"
+  # GRUB tools for boot configuration
+  - "grub-common"
 
 # Use Docker defaults if running in Docker, otherwise use VM defaults
 viper_env_apt_defaults: "{{ (ansible_virtualization_type == 'docker') | ternary(viper_env_apt_docker_defaults, viper_env_apt_vm_defaults) }}"
@@ -137,7 +141,6 @@ viper_env_apt_vm_remove:
 
 # Use Docker removal list if running in Docker, otherwise use VM removal list
 viper_env_apt_remove: "{{ (ansible_virtualization_type == 'docker') | ternary(viper_env_apt_docker_remove, viper_env_apt_vm_remove) }}"
-
 
 viper:
   setup:

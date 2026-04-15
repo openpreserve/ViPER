@@ -1,3 +1,21 @@
 .vagrant
 
+# Docker
 volumes/
+
+# Packer
+packer_cache/
+output-qemu/
+*.box
+crash.log
+
+# Build outputs
+output/
+seed-ovf/
+*.ova
+*.vmdk
+*.qcow2
+*.iso
+
+# Logs
+/tmp/*.log
