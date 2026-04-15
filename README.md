@@ -26,11 +26,20 @@ You'll need [Virtual Box](https://www.virtualbox.org/) on your machine to act as
 - Check that you have hardware [virtualisation enabled in your BIOS](https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html).
 - Please install the [Extension Pack](https://www.virtualbox.org/manual/ch01.html#intro-installing).
 
-### Downloading the virtual Machine
+### Downloading the Virtual Machine
 
-Download the latest version of ViPER at <https://ddhn.openpreservation.org/viper-v{{ site.data.vars.version }}.ova>. ViPER is distributed as a [prebuilt OVF file](https://www.virtualbox.org/manual/ch01.html#ovf-about). The download takes some time as the file is about 5GB.
+ViPER VM images (OVA and QCOW2) are available for download from the [OPF artifact server](https://artifacts.opf-labs.org/browse).
+
+- **OVA**: Universal OVF package for VirtualBox/VMware (recommended for most users).
+- **QCOW2**: For QEMU/KVM environments (native format, best performance).
+
+The download takes some time as the files are about 5GB.
 
 [These instructions](https://www.virtualbox.org/manual/ch01.html#ovf) tell you how to import the OVA file into VirtualBox so you can start it.
+
+### Docker
+
+ViPER is also available as a Docker image. See the [Docker Hub page](https://hub.docker.com/) for pull instructions and usage details.
 
 ### Logging onto the machine
 

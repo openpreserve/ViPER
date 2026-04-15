@@ -3,7 +3,9 @@ name: Build and Push ViPER Docker Image
 on:
   push:
     tags:
-      - 'docker-v*.*.*'
+      - 'v*.*.*'
+      - 'release-*'
+  workflow_dispatch:
 
 env:
   REGISTRY_DOCKERHUB: docker.io
@@ -94,19 +96,13 @@ jobs:
           docker push ${{ env.REGISTRY_GHCR }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
           
           # If this is a tagged release, also push the version tag
-          if [[ "${{ github.ref }}" == refs/tags/docker-v* ]]; then
-            # Extract version from docker-v1.2.0 -> 1.2.0
-            VERSION=${GITHUB_REF#refs/tags/docker-v}
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            # Extract version from v1.2.0 -> 1.2.0
+            VERSION=${GITHUB_REF#refs/tags/v}
             docker tag viper-build:latest ${{ env.REGISTRY_DOCKERHUB }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${VERSION}
             docker push ${{ env.REGISTRY_DOCKERHUB }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${VERSION}
             docker tag viper-build:latest ${{ env.REGISTRY_GHCR }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${VERSION}
             docker push ${{ env.REGISTRY_GHCR }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${VERSION}
-            
-            # Also tag with the full docker-v prefix for clarity
-            docker tag viper-build:latest ${{ env.REGISTRY_DOCKERHUB }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:docker-${VERSION}
-            docker push ${{ env.REGISTRY_DOCKERHUB }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:docker-${VERSION}
-            docker tag viper-build:latest ${{ env.REGISTRY_GHCR }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:docker-${VERSION}
-            docker push ${{ env.REGISTRY_GHCR }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:docker-${VERSION}
           fi
 
       - name: Clean up
