@@ -8,6 +8,7 @@ crash.log
 
 # Build outputs
 output/
+seed-ovf/
 *.ova
 *.vmdk
 *.qcow2

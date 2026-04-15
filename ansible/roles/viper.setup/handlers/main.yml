@@ -16,3 +16,15 @@
   with_items:
     - dpkg-reconfigure locales -f noninteractive
     - /usr/sbin/locale-gen
+
+- name: update grub configuration
+  ansible.builtin.shell: |
+    if [ -x /usr/sbin/update-grub ]; then
+      /usr/sbin/update-grub
+    elif [ -x /usr/sbin/grub-mkconfig ]; then
+      /usr/sbin/grub-mkconfig -o /boot/grub/grub.cfg
+    else
+      echo "ERROR: No grub update tool found" >&2
+      exit 1
+    fi
+
