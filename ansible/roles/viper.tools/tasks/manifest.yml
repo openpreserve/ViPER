@@ -1,0 +1,17 @@
+---
+# Records the installed tool versions and their upstream tags.
+#
+# The appliance no longer ships the tool source trees, so this manifest is how a
+# user (or a future maintainer) works out exactly what a given image contains.
+
+- name: "MANIFEST | Create ViPER share directory."
+  file:
+    path: "/usr/local/share/viper"
+    state: directory
+    mode: '0755'
+
+- name: "MANIFEST | Record installed tool versions."
+  template:
+    src: "usr/local/share/viper/manifest.json.j2"
+    dest: "/usr/local/share/viper/manifest.json"
+    mode: '0644'

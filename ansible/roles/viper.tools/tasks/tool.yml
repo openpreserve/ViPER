@@ -1,11 +1,10 @@
 ---
 # General tool installation tasks, repeatable per tool
-
-- name: "TOOL {{ item.name }} | Download source from GitHub."
-  git:
-    repo: "{{ item.source.git }}"
-    dest: "{{ item.dests.src }}"
-    version: "{{ item.source.tag }}"
+#
+# Tool sources are deliberately not cloned onto the appliance. Full histories of
+# JHOVE, DROID, Tika and veraPDF added gigabytes to every image and to every user
+# download, for trees nobody opens. The repository and tag for each tool are
+# recorded in /usr/local/share/viper/manifest.json instead, see manifest.yml.
 
 - name: "TOOL {{ item.name }} | Create target directory for install"
   file:

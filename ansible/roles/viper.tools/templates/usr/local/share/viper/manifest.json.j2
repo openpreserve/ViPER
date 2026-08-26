@@ -1,0 +1,27 @@
+{#
+  Records what this appliance actually contains.
+
+  This replaces the tool source trees that used to be cloned into /usr/local/src.
+  The provenance that mattered was which upstream tag each tool was built from,
+  and that is a few hundred bytes rather than a few gigabytes.
+#}
+{% set tool_names = ["jhove", "droid", "tika", "verapdf"] %}
+{% set tools = {} %}
+{% for name in tool_names %}
+{% set _ = tools.update({
+     name: {
+       "version": viper.tools[name].version,
+       "repository": viper.tools[name].source.git,
+       "tag": viper.tools[name].source.tag,
+       "installer": viper.tools[name].installer.loc
+     }
+   }) %}
+{% endfor %}
+{{ {
+  "viper_version": viper_version | default("0.0.0-dev"),
+  "built": ansible_date_time.iso8601,
+  "os": ansible_distribution ~ " " ~ ansible_distribution_version ~ " (" ~ ansible_distribution_release ~ ")",
+  "tools": tools,
+  "mediaarea": viper.tools.mediaarea | map(attribute="package_name") | list,
+  "debian_packages": viper_debian_tools
+} | to_nice_json }}
