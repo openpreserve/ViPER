@@ -1,0 +1,8 @@
+---
+# Collections the ViPER roles depend on.
+#
+# viper.setup uses community.general.locale_gen and community.general.dconf. The
+# Debian ansible package happens to bundle these, but nothing declared it, so a
+# pip-installed ansible-core would fail part way through a build.
+collections:
+  - name: community.general

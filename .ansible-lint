@@ -1,0 +1,14 @@
+---
+# Starting at the "min" profile deliberately: it catches genuine errors such as
+# syntax problems and removed modules without failing the build over the naming
+# and formatting conventions of a codebase that predates this config. Tighten to
+# "basic" and upwards once the existing findings have been worked through.
+profile: min
+
+exclude_paths:
+  - docs/
+  - .github/
+
+skip_list:
+  # yamllint runs as its own step with the config in .yamllint.
+  - yaml
