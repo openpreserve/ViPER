@@ -1,0 +1,316 @@
+name: Release ViPER
+
+# Builds the ViPER appliance once and publishes it in two formats.
+#
+# The image is built in a single job so that the QCOW2 and the OVA are genuinely
+# the same machine, then handed to two independent publish jobs. Uploading both
+# formats from one job needed roughly 8 hours against the artifact server, and
+# GitHub kills any job at 6, so the OVA never finished. Each format now gets its
+# own job and its own budget, and they run concurrently.
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'release-*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version string to build under (manual runs only)
+        required: false
+        default: '0.0.0-dev'
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  PACKER_VERSION: '1.11.2'
+  VM_CPUS: '2'
+  VM_MEMORY: '4096'
+
+jobs:
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      version_safe: ${{ steps.meta.outputs.version_safe }}
+      repo_safe: ${{ steps.meta.outputs.repo_safe }}
+      qcow2_name: ${{ steps.package.outputs.qcow2_name }}
+      qcow2_sha256: ${{ steps.package.outputs.qcow2_sha256 }}
+      qcow2_md5: ${{ steps.package.outputs.qcow2_md5 }}
+      ova_name: ${{ steps.package.outputs.ova_name }}
+      ova_sha256: ${{ steps.package.outputs.ova_sha256 }}
+      ova_md5: ${{ steps.package.outputs.ova_md5 }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Resolve release metadata
+        id: meta
+        env:
+          # Through the environment rather than interpolated into the script: a tag
+          # name or dispatch input is user supplied text and has no business being
+          # pasted into a shell.
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            VERSION="${GITHUB_REF_NAME}"
+          else
+            VERSION="${INPUT_VERSION}"
+          fi
+          VERSION_SAFE=$(printf '%s' "${VERSION}" | tr '/:' '--')
+          REPO_SAFE=$(printf '%s' "${GITHUB_REPOSITORY}" | tr '/' '-')
+
+          {
+            echo "version=${VERSION}"
+            echo "version_safe=${VERSION_SAFE}"
+            echo "repo_safe=${REPO_SAFE}"
+            echo "vm_name=viper-${VERSION_SAFE}"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Building viper-${VERSION_SAFE} for ${REPO_SAFE}"
+
+      # A TCG build cannot complete a full Debian install plus provisioning inside
+      # the job budget, so failing here beats discovering it an hour later.
+      - name: Require hardware virtualisation
+        run: |
+          if [ ! -e /dev/kvm ]; then
+            echo "::error::No /dev/kvm on this runner. Software emulation cannot finish in time."
+            exit 1
+          fi
+          sudo chmod 666 /dev/kvm
+          ls -l /dev/kvm
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            qemu-system-x86 qemu-utils ansible python3-jmespath jq wget unzip
+
+      - name: Install Packer
+        run: |
+          set -euo pipefail
+          wget -q "https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip"
+          unzip -q "packer_${PACKER_VERSION}_linux_amd64.zip"
+          sudo mv packer /usr/local/bin/
+          rm -f "packer_${PACKER_VERSION}_linux_amd64.zip"
+          packer version
+
+      - name: Initialise Packer plugins
+        env:
+          PACKER_GITHUB_API_TOKEN: ${{ github.token }}
+        run: packer init viper.pkr.hcl
+
+      - name: Validate Packer template
+        run: |
+          packer fmt -check -diff viper.pkr.hcl
+          packer validate viper.pkr.hcl
+
+      # Free space on the root volume dropped to roughly 17 GB in early 2026, which
+      # will not hold the image plus the conversion intermediates. /mnt is far larger.
+      - name: Prepare build space
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost "${AGENT_TOOLSDIRECTORY:-}"
+          sudo apt-get clean
+          sudo mkdir -p /mnt/packer
+          sudo chown "$(id -u):$(id -g)" /mnt/packer
+          df -h / /mnt
+
+      - name: Build image
+        env:
+          VERSION_SAFE: ${{ steps.meta.outputs.version_safe }}
+        run: |
+          packer build \
+            -var 'headless=true' \
+            -var "version=${VERSION_SAFE}" \
+            -var 'output_directory=/mnt/packer/output-qemu' \
+            -var "cpus=${VM_CPUS}" \
+            -var "memory=${VM_MEMORY}" \
+            viper.pkr.hcl
+          df -h /mnt
+
+      - name: Convert to OVA
+        env:
+          CPUS: ${{ env.VM_CPUS }}
+          MEMORY: ${{ env.VM_MEMORY }}
+          PRODUCT_VERSION: ${{ steps.meta.outputs.version }}
+          VM_NAME: ${{ steps.meta.outputs.vm_name }}
+        run: |
+          ./scripts/convert-to-ova.sh \
+            "${VM_NAME}" \
+            /mnt/packer/output-qemu \
+            /mnt/packer/output
+          df -h /mnt
+
+      - name: Package images for transfer
+        id: package
+        env:
+          REPO_SAFE: ${{ steps.meta.outputs.repo_safe }}
+          VERSION_SAFE: ${{ steps.meta.outputs.version_safe }}
+          VM_NAME: ${{ steps.meta.outputs.vm_name }}
+        run: |
+          set -euo pipefail
+
+          # Splits the image so the hand-off between jobs never meets the per-artifact
+          # size ceiling, which sits right about where these images land. Everything
+          # the publish job needs travels with the parts, so republish.yml can drive
+          # the same publish workflow against this artifact later.
+          package() {
+            local src="$1" file_type="$2" out="$3" key="$4"
+            local name sha md5
+            name=$(basename "${src}")
+            mkdir -p "${out}"
+
+            sha=$(sha256sum "${src}" | awk '{print $1}')
+            md5=$(md5sum "${src}" | awk '{print $1}')
+
+            split -b 1900M -d -a 3 --additional-suffix=.part "${src}" "${out}/${name}."
+
+            printf 'FILENAME=%s\nFILE_TYPE=%s\nSHA256=%s\nMD5=%s\nREPO_SAFE=%s\nVERSION_SAFE=%s\n' \
+              "${name}" "${file_type}" "${sha}" "${md5}" "${REPO_SAFE}" "${VERSION_SAFE}" \
+              > "${out}/manifest.env"
+
+            {
+              echo "${key}_name=${name}"
+              echo "${key}_sha256=${sha}"
+              echo "${key}_md5=${md5}"
+            } >> "$GITHUB_OUTPUT"
+
+            echo "${name}: $(stat -c%s "${src}") bytes in $(find "${out}" -name '*.part' | wc -l) part(s)"
+            rm -f "${src}"
+          }
+
+          package "/mnt/packer/output-qemu/${VM_NAME}.qcow2" \
+                  'QCOW2 Disk Image' /mnt/packer/parts/qcow2 qcow2
+          package "/mnt/packer/output/${VM_NAME}.ova" \
+                  'OVA Package' /mnt/packer/parts/ova ova
+          df -h /mnt
+
+      - name: Upload QCOW2 for publishing
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: qcow2-image
+          path: /mnt/packer/parts/qcow2
+          # Already a compressed format, so zipping it again only burns time.
+          compression-level: 0
+          # Long enough that a failed publish can be re-run without rebuilding.
+          retention-days: 7
+
+      - name: Upload OVA for publishing
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: ova-image
+          path: /mnt/packer/parts/ova
+          compression-level: 0
+          retention-days: 7
+
+      - name: Upload tag metadata
+        if: github.ref_type == 'tag'
+        env:
+          ARTIFACT_UPLOAD_TOKEN: ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}
+        run: |
+          cat > tag-metadata.json <<'JSON'
+          {
+            "repo_url": "https://github.com/${{ github.repository }}",
+            "tag": "${{ steps.meta.outputs.version }}",
+            "tag_message": ${{ toJSON(github.event.head_commit.message) }},
+            "commit_hash": "${{ github.sha }}",
+            "commit_url": "https://github.com/${{ github.repository }}/commit/${{ github.sha }}",
+            "description": "ViPER VM images built from GitHub Actions",
+            "workflow_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }
+          JSON
+
+          curl -X POST "https://artifacts.opf-labs.org/upload/${{ steps.meta.outputs.repo_safe }}/${{ steps.meta.outputs.version_safe }}/metadata" \
+            -H "Authorization: Bearer ${ARTIFACT_UPLOAD_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d @tag-metadata.json \
+            --fail-with-body || echo "::warning::Metadata upload failed, continuing."
+
+  publish-qcow2:
+    name: Publish QCOW2
+    needs: build
+    uses: ./.github/workflows/publish-artifact.yml
+    with:
+      artifact-name: qcow2-image
+    secrets:
+      artifact_upload_token: ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}
+
+  publish-ova:
+    name: Publish OVA
+    needs: build
+    uses: ./.github/workflows/publish-artifact.yml
+    with:
+      artifact-name: ova-image
+    secrets:
+      artifact_upload_token: ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}
+
+  release:
+    name: Create GitHub release
+    needs: [build, publish-qcow2, publish-ova]
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Create release with download links
+        uses: softprops/action-gh-release@e7a8f85e1c67a31e6ed99a94b41bd0b71bbee6b8 # v2.0.9
+        with:
+          draft: false
+          prerelease: false
+          body: |
+            ViPER ${{ needs.build.outputs.version }}
+
+            ## Downloads
+
+            Images are hosted on the OPF artifact server.
+
+            **Browse all files:** https://artifacts.opf-labs.org/browse/${{ needs.build.outputs.repo_safe }}/${{ needs.build.outputs.version_safe }}
+
+            - **OVA** (VirtualBox, VMware, any OVF platform, recommended):
+              https://artifacts.opf-labs.org/download/${{ needs.build.outputs.repo_safe }}/${{ needs.build.outputs.version_safe }}/${{ needs.build.outputs.ova_name }}
+            - **QCOW2** (QEMU/KVM, native format):
+              https://artifacts.opf-labs.org/download/${{ needs.build.outputs.repo_safe }}/${{ needs.build.outputs.version_safe }}/${{ needs.build.outputs.qcow2_name }}
+
+            ## Installation
+
+            1. Download the OVA.
+            2. Import it into VirtualBox, VMware or another OVF compatible platform.
+            3. Start the machine.
+
+            ## Signing in
+
+            The machine logs in automatically. The account is `viper` with a blank
+            password. There is no remote access account: SSH is installed but
+            disabled, and the image ships with no SSH host keys, so enabling it
+            generates a set unique to your installation.
+
+            ## Specification
+
+            - OS: Debian 12 (Bookworm)
+            - CPUs: ${{ env.VM_CPUS }}
+            - Memory: ${{ env.VM_MEMORY }} MB
+            - Disk: 50 GB (sparse, grows as used)
+
+            Installed tool versions are recorded on the machine in
+            `/usr/local/share/viper/manifest.json`.
+
+            ## Checksums
+
+            ```
+            SHA256  ${{ needs.build.outputs.ova_sha256 }}  ${{ needs.build.outputs.ova_name }}
+            MD5     ${{ needs.build.outputs.ova_md5 }}  ${{ needs.build.outputs.ova_name }}
+
+            SHA256  ${{ needs.build.outputs.qcow2_sha256 }}  ${{ needs.build.outputs.qcow2_name }}
+            MD5     ${{ needs.build.outputs.qcow2_md5 }}  ${{ needs.build.outputs.qcow2_name }}
+            ```
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

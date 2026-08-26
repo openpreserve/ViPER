@@ -1,0 +1,41 @@
+name: Republish artifact
+
+# Re-runs the upload for an image that was already built, taking it from the
+# artifact of an earlier release run.
+#
+# The artifact server has no resumable upload, so a transfer that fails near the
+# end has to start over. Without this, that meant rebuilding the whole appliance
+# just to get another attempt at the upload. Artifacts are retained for 7 days,
+# so within that window a republish costs only the upload.
+#
+# For a run whose publish job simply failed, GitHub's own "Re-run failed jobs"
+# does the same thing with no inputs. This workflow is for the cases that button
+# does not cover, such as republishing after the run has otherwise succeeded.
+
+on:
+  workflow_dispatch:
+    inputs:
+      run-id:
+        description: Run ID of the release build that produced the image
+        required: true
+        type: string
+      artifact-name:
+        description: Which image to republish
+        required: true
+        type: choice
+        options:
+          - qcow2-image
+          - ova-image
+
+permissions:
+  contents: read
+
+jobs:
+  republish:
+    name: Republish ${{ inputs.artifact-name }}
+    uses: ./.github/workflows/publish-artifact.yml
+    with:
+      artifact-name: ${{ inputs.artifact-name }}
+      run-id: ${{ inputs.run-id }}
+    secrets:
+      artifact_upload_token: ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}

@@ -1,0 +1,191 @@
+name: Publish artifact
+
+# Uploads one built image to the OPF artifact server.
+#
+# This exists as a reusable workflow so that each image gets its own job, and so
+# its own 6 hour GitHub Actions budget. Publishing both images from a single job
+# needed roughly 8 hours at the throughput we see to the artifact server, so the
+# second upload was killed part way through every time.
+#
+# Everything needed to publish is carried inside the artifact itself (see
+# manifest.env), which keeps the inputs to a minimum and lets republish.yml drive
+# this same workflow against an artifact from an earlier run.
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: Name of the artifact holding the split image and its manifest.
+        required: true
+        type: string
+      run-id:
+        description: Run to take the artifact from. Defaults to the current run.
+        required: false
+        type: string
+        default: ''
+    secrets:
+      artifact_upload_token:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish ${{ inputs.artifact-name }}
+    runs-on: ubuntu-latest
+    # Comfortably inside the 6 hour job ceiling, with room for the upload script to
+    # give up cleanly and report rather than being killed mid-transfer.
+    timeout-minutes: 350
+    permissions:
+      contents: read
+      actions: read
+
+    steps:
+      - name: Make room for the image
+        run: |
+          sudo mkdir -p /mnt/publish
+          sudo chown "$(id -u):$(id -g)" /mnt/publish
+          df -h / /mnt
+
+      - name: Download artifact from this run
+        if: inputs.run-id == ''
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: /mnt/publish/parts
+
+      - name: Download artifact from run ${{ inputs.run-id }}
+        if: inputs.run-id != ''
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: /mnt/publish/parts
+          run-id: ${{ inputs.run-id }}
+          github-token: ${{ github.token }}
+
+      - name: Read manifest
+        id: manifest
+        run: |
+          set -euo pipefail
+          MANIFEST=/mnt/publish/parts/manifest.env
+          test -f "${MANIFEST}" || { echo "::error::manifest.env missing from artifact"; exit 1; }
+
+          # Parsed key by key rather than sourced, so the artifact cannot introduce
+          # anything the build did not put there.
+          for key in FILENAME FILE_TYPE SHA256 MD5 REPO_SAFE VERSION_SAFE; do
+            value=$(grep -E "^${key}=" "${MANIFEST}" | head -1 | cut -d= -f2-)
+            if [ -z "${value}" ]; then
+              echo "::error::${key} missing from manifest.env"
+              exit 1
+            fi
+            printf '%s=%s\n' "$(printf '%s' "${key}" | tr '[:upper:]' '[:lower:]')" "${value}" >> "$GITHUB_OUTPUT"
+          done
+          cat "${MANIFEST}"
+
+      - name: Reassemble image
+        id: reassemble
+        env:
+          FILENAME: ${{ steps.manifest.outputs.filename }}
+          SHA256: ${{ steps.manifest.outputs.sha256 }}
+        run: |
+          set -euo pipefail
+          cd /mnt/publish
+
+          # Parts are zero padded, so the shell glob restores the original order.
+          cat parts/"${FILENAME}".*.part > "${FILENAME}"
+          rm -rf parts
+
+          echo "Reassembled $(stat -c%s "${FILENAME}") bytes"
+          echo "${SHA256}  ${FILENAME}" | sha256sum -c -
+          echo "size=$(stat -c%s "${FILENAME}")" >> "$GITHUB_OUTPUT"
+          df -h /mnt
+
+      - name: Upload to artifact server
+        env:
+          ARTIFACT_UPLOAD_TOKEN: ${{ secrets.artifact_upload_token }}
+          FILENAME: ${{ steps.manifest.outputs.filename }}
+          FILE_TYPE: ${{ steps.manifest.outputs.file_type }}
+          REPO_SAFE: ${{ steps.manifest.outputs.repo_safe }}
+          VERSION_SAFE: ${{ steps.manifest.outputs.version_safe }}
+          SHA256: ${{ steps.manifest.outputs.sha256 }}
+          MD5: ${{ steps.manifest.outputs.md5 }}
+          SIZE: ${{ steps.reassemble.outputs.size }}
+        run: |
+          set -uo pipefail
+          cd /mnt/publish
+          URL="https://artifacts.opf-labs.org/upload/${REPO_SAFE}/${VERSION_SAFE}"
+
+          # The artifact server offers no resumable or chunked upload, so a failed
+          # transfer has to start again from zero. Budget the remaining job time so
+          # we never begin an attempt we cannot finish, and report clearly instead
+          # of being killed at the job ceiling.
+          DEADLINE=$(( $(date +%s) + 350 * 60 - 300 ))
+
+          attempt=1
+          max_attempts=3
+          while [ "${attempt}" -le "${max_attempts}" ]; do
+            remaining=$(( DEADLINE - $(date +%s) ))
+            if [ "${remaining}" -lt 600 ]; then
+              echo "::error::Only ${remaining}s of job budget left, not starting attempt ${attempt}."
+              exit 1
+            fi
+
+            echo "Attempt ${attempt}/${max_attempts}: uploading ${FILENAME} (${SIZE} bytes), ${remaining}s of budget left"
+            started=$(date +%s)
+
+            if curl -X POST "${URL}" \
+                 -H "Authorization: Bearer ${ARTIFACT_UPLOAD_TOKEN}" \
+                 -F "file=@${FILENAME}" \
+                 -F "md5=${MD5}" \
+                 -F "sha256=${SHA256}" \
+                 -F "file_type=${FILE_TYPE}" \
+                 --connect-timeout 30 \
+                 --max-time "${remaining}" \
+                 --no-progress-meter \
+                 --fail-with-body; then
+              elapsed=$(( $(date +%s) - started ))
+              echo "Uploaded in ${elapsed}s ($(( SIZE / (elapsed > 0 ? elapsed : 1) / 1024 )) KiB/s)"
+              exit 0
+            fi
+
+            elapsed=$(( $(date +%s) - started ))
+            echo "::warning::Attempt ${attempt} failed after ${elapsed}s"
+            attempt=$(( attempt + 1 ))
+            [ "${attempt}" -le "${max_attempts}" ] && sleep $(( attempt * 30 ))
+          done
+
+          echo "::error::Upload of ${FILENAME} failed after ${max_attempts} attempts."
+          exit 1
+
+      - name: Verify published file
+        env:
+          FILENAME: ${{ steps.manifest.outputs.filename }}
+          REPO_SAFE: ${{ steps.manifest.outputs.repo_safe }}
+          VERSION_SAFE: ${{ steps.manifest.outputs.version_safe }}
+          SIZE: ${{ steps.reassemble.outputs.size }}
+        run: |
+          set -uo pipefail
+          URL="https://artifacts.opf-labs.org/download/${REPO_SAFE}/${VERSION_SAFE}/${FILENAME}"
+
+          # A HEAD rather than a GET: re-downloading multiple gigabytes to prove the
+          # upload worked would cost as much as the upload did. Content-Length is
+          # enough to catch the truncation this pipeline used to ship silently.
+          remote_size=$(curl -sSLI "${URL}" 2>/dev/null \
+            | tr -d '\r' \
+            | awk 'tolower($1) == "content-length:" { print $2 }' \
+            | tail -1)
+
+          if [ -z "${remote_size}" ]; then
+            echo "::warning::Could not read Content-Length from ${URL}; skipping size check."
+            echo "Verify by hand at https://artifacts.opf-labs.org/browse/${REPO_SAFE}/${VERSION_SAFE}"
+            exit 0
+          fi
+
+          echo "local  ${SIZE} bytes"
+          echo "remote ${remote_size} bytes"
+          if [ "${remote_size}" != "${SIZE}" ]; then
+            echo "::error::Published file is ${remote_size} bytes, expected ${SIZE}. Upload was truncated."
+            exit 1
+          fi
+          echo "Published file matches: ${URL}"
