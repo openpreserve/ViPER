@@ -6,10 +6,13 @@
   become: true
   gather_facts: yes
   vars:
+    # viper.setup reads viper_env_*. These were named opf_server_*, which the role
+    # never looks at, so the hostname task fell back to its default and every built
+    # machine came out called "localhost".
     viper_env_timezone: "Europe/Berlin"
-    opf_server_hostname: "viper"
-    opf_server_hostdomain: "viper.test"
-    opf_server_fqdn: "{{ opf_server_hostname }}.{{ opf_server_hostdomain }}"
+    viper_env_hostname: "viper"
+    viper_env_hostdomain: "viper.test"
+    viper_env_fqdn: "{{ viper_env_hostname }}.{{ viper_env_hostdomain }}"
   roles:
     - { role: viper.setup }
     - { role: viper.tools }
