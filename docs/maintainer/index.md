@@ -30,6 +30,7 @@ You'll need at least familiarity with the following software and technologies to
 - [VirtualBox](https://www.virtualbox.org/) was chosen as the virtualisation platform because of its cross platform ubiquity.
 - [Vagrant](https://www.vagrantup.com/) is a tool designed for building and managing virtual machine environments. It was chosen to speed up the initial VirtualBox provisioning.
 - [Vagrant Cloud](https://app.vagrantup.com/) provides a collection of cookie-cut virtual machines. The Vagrant machine chosen as a starting point was an official Debian Bookworm build with the addition of the VirtualBox shared folder kernel module: <https://app.vagrantup.com/debian/boxes/bookworm64>.
+- [Packer](https://www.packer.io/) builds the published images. Vagrant is still the quickest way to iterate on the Ansible roles locally, but a release is built from a plain Debian ISO so that it inherits nothing from a third party base box. See [Building a release](#building-a-release).
 
 ### Provisioning
 
@@ -149,10 +150,28 @@ The [`security`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/v
 
 The [`viper.tools`](https://github.com/openpreserve/ViPER/blob/main/ansible/roles/viper.tools) role installs the digital preservation tools. It comprises a series of sub-roles, one for each tool. The general workflow for a tool is:
 
-- download the tool source to '/usr/local/src/<tool-name>';
 - download the tool installation package and install to `/usr/local/lib/<tool-name>`;
-- add any required symlinks to `/usr/local/bin` so that tool executables are effectively on the path; and
-- put an icon for the tool GUI on the desktop.
+- add any required symlinks to `/usr/local/bin` so that tool executables are effectively on the path;
+- put an icon for the tool GUI on the desktop; and
+- record the tool version and its upstream git tag in `/usr/local/share/viper/manifest.json`.
+
+Tool sources are not shipped on the appliance. Cloning the full history of JHOVE, DROID, Tika and veraPDF added gigabytes to every image and to every user's download, for trees that nobody opened. The manifest records which upstream tag each tool was built from, which is the part of that provenance that mattered.
+
+## Building a release
+
+Releases are built by [Packer](https://www.packer.io/) from a plain Debian ISO, driven by [`viper.pkr.hcl`](https://github.com/openpreserve/ViPER/blob/main/viper.pkr.hcl). The same `viper.setup` and `viper.tools` roles described above do the provisioning, so a Vagrant machine and a released image are configured identically.
+
+The full build and release instructions live in [`PACKER_BUILD.md`](https://github.com/openpreserve/ViPER/blob/main/PACKER_BUILD.md). In outline:
+
+- Packer installs Debian unattended using [`http/preseed.cfg`](https://github.com/openpreserve/ViPER/blob/main/http/preseed.cfg);
+- Ansible provisions the roles;
+- `scripts/smoke-test.sh` checks that the bundled tools actually run, and fails the build if they do not;
+- `scripts/cleanup.sh` strips build leftovers and removes the build identity, so that every download is not a clone of the same machine; and
+- `scripts/convert-to-ova.sh` packages the QCOW2 image as an OVA.
+
+Tagging a release with `v*.*.*` runs [`.github/workflows/release.yml`](https://github.com/openpreserve/ViPER/blob/main/.github/workflows/release.yml), which builds the image once and then publishes the QCOW2 and the OVA from two separate jobs. The separation is deliberate. At the throughput we see to the artifact server, uploading both images from one job needs roughly eight hours, and GitHub cancels any job at six, so the OVA upload used to be cut off part way through. Each image now has its own job and its own budget, and the two run concurrently.
+
+If an upload fails, it does not need a rebuild. Either use "Re-run failed jobs" on the run, or run the "Republish artifact" workflow with the run ID. Both take the already built image from the run's retained artifacts.
 
 ## Updating the environment
 
