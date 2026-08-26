@@ -27,9 +27,12 @@ if [ -f /etc/apt/sources.list ] && [ -s /etc/apt/sources.list ]; then
 fi
 
 # Add Debian Fasttrack repository (required for VirtualBox packages on Bookworm)
-# First install the keyring from the main repos before adding the fasttrack source
+# Pull the keyring and the CA bundle from the main HTTP repos first: the fasttrack
+# source added below is the first HTTPS apt source on the machine, and apt cannot
+# verify it without ca-certificates. The standard task normally supplies it, but
+# this is the one step that would break if a future preseed change dropped it.
 sudo apt-get update
-sudo apt-get install -y fasttrack-archive-keyring
+sudo apt-get install -y ca-certificates fasttrack-archive-keyring
 
 sudo tee /etc/apt/sources.list.d/fasttrack.sources > /dev/null << 'EOF'
 Types: deb

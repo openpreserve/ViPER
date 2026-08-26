@@ -1,0 +1,17 @@
+[Unit]
+Description=Generate SSH host keys if this installation has none
+Documentation=https://viper.openpreservation.org/maintainer/
+# The published image ships with no host keys, so that every download is not the
+# same machine presenting the same fingerprint. sshd is disabled by default; this
+# unit makes sure that a user who enables it gets keys unique to their install
+# rather than an sshd that fails to start.
+ConditionPathExists=!/etc/ssh/ssh_host_rsa_key
+Before=ssh.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/ssh-keygen -A
+
+[Install]
+WantedBy=multi-user.target

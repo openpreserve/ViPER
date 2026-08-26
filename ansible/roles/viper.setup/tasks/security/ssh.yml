@@ -22,3 +22,17 @@
     regexp: '^#AddressFamily any$'
     replace: 'AddressFamily inet'
   notify: restart ssh
+
+- name: "SSH | Install first boot host key generation unit."
+  copy:
+    src: "files/etc/systemd/system/viper-regenerate-host-keys.service"
+    dest: "/etc/systemd/system/viper-regenerate-host-keys.service"
+    owner: "root"
+    group: "root"
+    mode: '0644'
+
+- name: "SSH | Enable first boot host key generation."
+  systemd:
+    name: "viper-regenerate-host-keys.service"
+    enabled: yes
+    daemon_reload: yes
