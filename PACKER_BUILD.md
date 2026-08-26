@@ -75,9 +75,12 @@ descriptor. The disk capacity is read from the image itself rather than assumed.
 
 ## What ships
 
-- The account is `viper` with a blank password, logged in automatically.
+- The account is `viper` with a blank password, logged in automatically. It is in
+  the `sudo` group, so users can install their own tools. `sudo` prompts and the
+  blank password satisfies the prompt. This is the only administrative path on the
+  appliance, and `scripts/smoke-test.sh` checks it works before publishing.
 - The `vagrant` build account is locked, has no shell, no authorised keys and no
-  sudo rule.
+  sudo rule. Root has no password.
 - SSH is installed but disabled, and the image carries no SSH host keys. Enabling
   `ssh.service` triggers `viper-regenerate-host-keys.service`, so each installation
   generates its own.

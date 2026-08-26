@@ -83,6 +83,18 @@ done
 echo "==> Tool manifest"
 check_exists "manifest" /usr/local/share/viper/manifest.json
 
+# The viper account is the only way to root on the shipped appliance: the build
+# account is locked during cleanup and root has no password. That rests on Debian
+# shipping nullok in common-auth, so prove it here rather than discover it after
+# the image is published. -k clears any cached credentials so the password path is
+# genuinely exercised.
+echo "==> Administrative access"
+if sudo -u viper -- sh -c 'echo "" | sudo -S -k true' >/dev/null 2>&1; then
+  pass "viper can obtain root via sudo"
+else
+  fail "viper cannot obtain root: the appliance would ship with no admin path"
+fi
+
 echo
 if [ "${failures}" -gt 0 ]; then
   echo "Smoke test FAILED with ${failures} problem(s). Not publishing this image."

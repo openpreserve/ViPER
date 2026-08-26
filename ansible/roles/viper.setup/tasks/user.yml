@@ -13,7 +13,12 @@
     createhome: yes
     home: "{{ viper.setup.limited_account.home }}"
     shell: "/bin/bash"
-    groups: "vboxsf"
+    # ViPER is a research environment, so users have to be able to install their own
+    # tools. This is the only administrative path on the appliance: the build account
+    # is locked during cleanup and root has no password. sudo prompts, and the blank
+    # password satisfies it via the nullok that Debian's common-auth ships by
+    # default. smoke-test.sh proves that works rather than trusting it.
+    groups: "vboxsf,sudo"
     password: "{{ viper.setup.limited_account.password }}"
     update_password: always
     append: yes

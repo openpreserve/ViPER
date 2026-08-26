@@ -41,6 +41,8 @@ The download takes some time as the files are several gigabytes.
 
 Account login should be automatic. Regardless the account name is `viper` with a blank password.
 
+The `viper` account can administer the machine, so you can install your own tools and packages. `sudo` asks for a password; press Enter, as the account has none.
+
 There is no remote access account. SSH is installed but disabled, and the image ships with no SSH host keys, so enabling it generates a set unique to your installation.
 
 To see exactly which tool versions your image contains, look at `/usr/local/share/viper/manifest.json` on the machine.

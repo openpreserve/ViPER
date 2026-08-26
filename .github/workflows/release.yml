@@ -289,9 +289,12 @@ jobs:
             ## Signing in
 
             The machine logs in automatically. The account is `viper` with a blank
-            password. There is no remote access account: SSH is installed but
-            disabled, and the image ships with no SSH host keys, so enabling it
-            generates a set unique to your installation.
+            password, and it can administer the machine so you can install your own
+            tools: `sudo` prompts for a password, press Enter.
+
+            There is no remote access account. SSH is installed but disabled, and
+            the image ships with no SSH host keys, so enabling it generates a set
+            unique to your installation.
 
             ## Specification
 
