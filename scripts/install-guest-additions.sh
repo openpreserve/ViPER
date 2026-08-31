@@ -43,13 +43,15 @@ EOF
 
 sudo apt-get update
 
-# Install kernel headers and build tools required for guest additions
-sudo apt-get install -y \
-    build-essential \
-    linux-headers-$(uname -r) \
-    dkms
-
-# Install VirtualBox Guest Additions from Debian repos
+# No dkms, headers or toolchain here. The vboxguest and vboxsf modules ship in
+# Debian's stock kernel, and neither guest additions package depends on dkms:
+#
+#   virtualbox-guest-utils  Depends: adduser, pciutils, libc6, libpam0g, zlib1g
+#   virtualbox-guest-x11    Depends: libnotify-bin, x11-xserver-utils, ...
+#
+# Installing linux-headers-$(uname -r) also tied the build to a kernel version that
+# only exists in the archive for as long as the pinned ISO is current, so it broke
+# on its own once that point release aged out.
 sudo apt-get install -y virtualbox-guest-utils virtualbox-guest-x11
 
 # Enable and start the VirtualBox guest services
