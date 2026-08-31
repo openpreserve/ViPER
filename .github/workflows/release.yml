@@ -33,7 +33,10 @@ jobs:
   build:
     name: Build image
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # The local reference build takes 1h42m on a ~225 KB/s link. Runners fetch far
+    # faster so this should not be approached, but a slow Debian mirror costs the
+    # whole cycle if the job is killed, and an unused margin costs nothing.
+    timeout-minutes: 120
     permissions:
       contents: read
     outputs:
