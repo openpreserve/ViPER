@@ -115,6 +115,7 @@ jobs:
           set -uo pipefail
           cd /mnt/publish
           URL="https://artifacts.opf-labs.org/upload/${REPO_SAFE}/${VERSION_SAFE}"
+          RESPONSE=/tmp/upload-response.json
 
           # The artifact server offers no resumable or chunked upload, so a failed
           # transfer has to start again from zero. Budget the remaining job time so
@@ -143,13 +144,16 @@ jobs:
                  --connect-timeout 30 \
                  --max-time "${remaining}" \
                  --no-progress-meter \
-                 --fail-with-body; then
+                 --fail-with-body \
+                 -o "${RESPONSE}"; then
               elapsed=$(( $(date +%s) - started ))
+              cat "${RESPONSE}"; echo
               echo "Uploaded in ${elapsed}s ($(( SIZE / (elapsed > 0 ? elapsed : 1) / 1024 )) KiB/s)"
               exit 0
             fi
 
             elapsed=$(( $(date +%s) - started ))
+            cat "${RESPONSE}" 2>/dev/null; echo
             echo "::warning::Attempt ${attempt} failed after ${elapsed}s"
             attempt=$(( attempt + 1 ))
             [ "${attempt}" -le "${max_attempts}" ] && sleep $(( attempt * 30 ))
@@ -164,28 +168,36 @@ jobs:
           REPO_SAFE: ${{ steps.manifest.outputs.repo_safe }}
           VERSION_SAFE: ${{ steps.manifest.outputs.version_safe }}
           SIZE: ${{ steps.reassemble.outputs.size }}
+          SHA256: ${{ steps.manifest.outputs.sha256 }}
         run: |
-          set -uo pipefail
-          URL="https://artifacts.opf-labs.org/download/${REPO_SAFE}/${VERSION_SAFE}/${FILENAME}"
+          set -euo pipefail
+          RESPONSE=/tmp/upload-response.json
 
-          # A HEAD rather than a GET: re-downloading multiple gigabytes to prove the
-          # upload worked would cost as much as the upload did. Content-Length is
-          # enough to catch the truncation this pipeline used to ship silently.
-          remote_size=$(curl -sSLI "${URL}" 2>/dev/null \
-            | tr -d '\r' \
-            | awk 'tolower($1) == "content-length:" { print $2 }' \
-            | tail -1)
+          # Checked against the server's own upload response rather than by reading
+          # the stored file back. The artifact server answers HEAD with 405 and a 31
+          # byte JSON body, and ignores Range, so there is no way to size the object
+          # from outside short of downloading the whole thing, which costs as much as
+          # the upload did. This confirms what the server recorded; it cannot detect
+          # corruption the server is itself unaware of.
+          test -s "${RESPONSE}" || { echo "::error::No upload response to verify."; exit 1; }
+          cat "${RESPONSE}"; echo
 
-          if [ -z "${remote_size}" ]; then
-            echo "::warning::Could not read Content-Length from ${URL}; skipping size check."
-            echo "Verify by hand at https://artifacts.opf-labs.org/browse/${REPO_SAFE}/${VERSION_SAFE}"
-            exit 0
-          fi
+          status=$(jq -r '.status // empty' "${RESPONSE}")
+          remote_size=$(jq -r '.size // empty' "${RESPONSE}")
+          remote_sha=$(jq -r '.checksums.sha256 // empty' "${RESPONSE}")
 
-          echo "local  ${SIZE} bytes"
-          echo "remote ${remote_size} bytes"
-          if [ "${remote_size}" != "${SIZE}" ]; then
-            echo "::error::Published file is ${remote_size} bytes, expected ${SIZE}. Upload was truncated."
+          if [ "${status}" != "success" ]; then
+            echo "::error::Server reported status '${status}' for ${FILENAME}."
             exit 1
           fi
-          echo "Published file matches: ${URL}"
+          if [ "${remote_size}" != "${SIZE}" ]; then
+            echo "::error::Server stored ${remote_size} bytes, expected ${SIZE}."
+            exit 1
+          fi
+          if [ "${remote_sha}" != "${SHA256}" ]; then
+            echo "::error::Server recorded sha256 ${remote_sha}, expected ${SHA256}."
+            exit 1
+          fi
+
+          echo "Verified ${FILENAME}: ${SIZE} bytes, sha256 ${SHA256}"
+          echo "Browse https://artifacts.opf-labs.org/browse/${REPO_SAFE}/${VERSION_SAFE}"
