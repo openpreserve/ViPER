@@ -1,0 +1,16 @@
+---
+extends: relaxed
+
+ignore: |
+  docs/
+  .git/
+
+rules:
+  # Ansible variable blocks and package lists run long by nature.
+  line-length: disable
+  comments-indentation: disable
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no']
+    # GitHub Actions requires a top-level `on:` key, which yamllint reads as the
+    # boolean true unless key checking is disabled.
+    check-keys: false

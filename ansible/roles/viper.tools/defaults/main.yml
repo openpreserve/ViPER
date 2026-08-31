@@ -1,11 +1,10 @@
 ---
 # viper.tools default values
 
-# Set values for binary links, library files (e.g. jars) and source code
+# Set values for binary links and library files (e.g. jars)
 viper_root: "/usr/local"
 viper_bin: "{{ viper_root }}/bin"
 viper_lib: "{{ viper_root }}/lib"
-viper_src: "{{ viper_root }}/src"
 viper_usr_share: "/usr/share"
 viper_apps_share: "{{ viper_usr_share }}/applications"
 viper_icons_share: "{{ viper_usr_share }}/icons"
@@ -72,7 +71,6 @@ viper:
       dests:
         bin: "{{ viper_bin }}"
         lib: "{{ viper_lib }}/jhove/{{ jhove_version }}"
-        src: "{{ viper_src }}/jhove/{{ jhove_version }}"
     droid:
       name: "droid"
       desktop_name: "DROID GUI"
@@ -89,7 +87,6 @@ viper:
       dests:
         bin: "{{ viper_bin }}"
         lib: "{{ viper_lib }}/droid/{{ droid_version }}"
-        src: "{{ viper_src }}/droid/{{ droid_version }}"
     tika:
       name: "tika"
       desktop_name: "Apache Tika GUI"
@@ -106,7 +103,6 @@ viper:
       dests:
         bin: "{{ viper_bin }}"
         lib: "{{ viper_lib }}/tika/{{ tika_version }}"
-        src: "{{ viper_src }}/tika/{{ tika_version }}"
     verapdf:
       name: "verapdf"
       desktop_name: "verapdf GUI"
@@ -125,7 +121,6 @@ viper:
       dests:
         bin: "{{ viper_bin }}"
         lib: "{{ viper_lib }}/veraPDF/{{ verapdf_version }}"
-        src: "{{ viper_src }}/veraPDF/{{ verapdf_version }}"
     mediaarea:
       - name: "libzen0"
         download_url: "https://mediaarea.net/download/binary/libzen0/0.4.41/libzen0v5_0.4.41-1_amd64.Debian_12.deb"

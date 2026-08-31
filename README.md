@@ -28,13 +28,24 @@ You'll need [Virtual Box](https://www.virtualbox.org/) on your machine to act as
 
 ### Downloading the virtual Machine
 
-Download the latest version of ViPER at <https://ddhn.openpreservation.org/viper-v1.2.ova>. ViPER is distributed as a [prebuilt OVF file](https://www.virtualbox.org/manual/ch01.html#ovf-about). The download takes some time as the file is about 5GB.
+ViPER images are published to the [OPF artifact server](https://artifacts.opf-labs.org/browse), and every release links directly to its own files.
+
+- **OVA**, a [prebuilt OVF package](https://www.virtualbox.org/manual/ch01.html#ovf-about) for VirtualBox, VMware and other OVF platforms. Pick this one if you are unsure.
+- **QCOW2**, for QEMU/KVM, which is that platform's native format.
+
+The download takes some time as the files are several gigabytes.
 
 [These instructions](https://www.virtualbox.org/manual/ch01.html#ovf) tell you how to import the OVA file into VirtualBox so you can start it.
 
 ### Logging onto the machine
 
 Account login should be automatic. Regardless the account name is `viper` with a blank password.
+
+The `viper` account can administer the machine, so you can install your own tools and packages. `sudo` asks for a password; press Enter, as the account has none.
+
+There is no remote access account. SSH is installed but disabled, and the image ships with no SSH host keys, so enabling it generates a set unique to your installation.
+
+To see exactly which tool versions your image contains, look at `/usr/local/share/viper/manifest.json` on the machine.
 
 ## Tweaking the VirtualBox Machine
 

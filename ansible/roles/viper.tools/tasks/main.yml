@@ -17,3 +17,6 @@
 
 - name: "ViPER TOOLS | Install veraPDF."
   import_tasks: verapdf.yml
+
+- name: "ViPER TOOLS | Record installed tool versions."
+  import_tasks: manifest.yml

@@ -9,12 +9,14 @@
     jump: ACCEPT
     comment: "Allow all loopback (lo0) traffic"
 
+# See the matching IPv4 rule: the negation belongs on the interface. The previous
+# "! ::1/128" also carried a space after the bang, which ip6tables rejects.
 - name: "IPTABLES V6 | Reject localhost that doesn't originate from lo0."
   iptables:
     ip_version: ipv6
     chain: INPUT
-    in_interface: "lo"
-    source: "! ::1/128"
+    in_interface: "!lo"
+    source: "::1/128"
     jump: REJECT
     comment: "Reject localhost that doesn't originate from lo0"
 
@@ -53,7 +55,7 @@
 - name: "IPTABLES V6 | Log Traffic sent for forwarding."
   iptables:
     ip_version: ipv6
-    chain: INPUT
+    chain: FORWARD
     limit: "5/min"
     jump: LOG
     log_prefix: "iptables_FORWARD_denied: "

@@ -8,11 +8,15 @@
     jump: ACCEPT
     comment: "Allow all loopback (lo0) traffic"
 
+# The negation belongs on the interface, not the address: this drops packets that
+# claim a loopback source but arrived on a real interface. Written the other way
+# round it matched loopback traffic not sourced from 127/8, which the unconditional
+# accept above already swallowed, so there was no anti-spoofing rule at all.
 - name: "IPTABLES V4 | Reject localhost that doesn't originate from lo0."
   iptables:
     chain: INPUT
-    in_interface: "lo"
-    source: "!127.0.0.0/8"
+    in_interface: "!lo"
+    source: "127.0.0.0/8"
     jump: REJECT
     comment: "Reject localhost that doesn't originate from lo0"
 
@@ -96,7 +100,7 @@
 
 - name: "IPTABLES V4 | Log Traffic sent for forwarding."
   iptables:
-    chain: INPUT
+    chain: FORWARD
     limit: "5/min"
     jump: LOG
     log_prefix: "iptables_FORWARD_denied: "

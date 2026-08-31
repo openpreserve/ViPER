@@ -27,9 +27,12 @@ if [ -f /etc/apt/sources.list ] && [ -s /etc/apt/sources.list ]; then
 fi
 
 # Add Debian Fasttrack repository (required for VirtualBox packages on Bookworm)
-# First install the keyring from the main repos before adding the fasttrack source
+# Pull the keyring and the CA bundle from the main HTTP repos first: the fasttrack
+# source added below is the first HTTPS apt source on the machine, and apt cannot
+# verify it without ca-certificates. The standard task normally supplies it, but
+# this is the one step that would break if a future preseed change dropped it.
 sudo apt-get update
-sudo apt-get install -y fasttrack-archive-keyring
+sudo apt-get install -y ca-certificates fasttrack-archive-keyring
 
 sudo tee /etc/apt/sources.list.d/fasttrack.sources > /dev/null << 'EOF'
 Types: deb
@@ -40,13 +43,15 @@ EOF
 
 sudo apt-get update
 
-# Install kernel headers and build tools required for guest additions
-sudo apt-get install -y \
-    build-essential \
-    linux-headers-$(uname -r) \
-    dkms
-
-# Install VirtualBox Guest Additions from Debian repos
+# No dkms, headers or toolchain here. The vboxguest and vboxsf modules ship in
+# Debian's stock kernel, and neither guest additions package depends on dkms:
+#
+#   virtualbox-guest-utils  Depends: adduser, pciutils, libc6, libpam0g, zlib1g
+#   virtualbox-guest-x11    Depends: libnotify-bin, x11-xserver-utils, ...
+#
+# Installing linux-headers-$(uname -r) also tied the build to a kernel version that
+# only exists in the archive for as long as the pinned ISO is current, so it broke
+# on its own once that point release aged out.
 sudo apt-get install -y virtualbox-guest-utils virtualbox-guest-x11
 
 # Enable and start the VirtualBox guest services

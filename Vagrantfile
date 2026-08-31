@@ -24,8 +24,9 @@ Vagrant.configure("2") do |config|
   # Provider-specific configuration so you can fine-tune VirtualBox
   # provider for Vagrant. These expose provider-specific options.
   config.vm.provider "virtualbox" do |vb|
-    # Name the prototype machine
-    vb.name = "viper-v1.2-alpha"
+    # Name the prototype machine. This is the local development box, not a release:
+    # published images are built by Packer and named from the git tag.
+    vb.name = "viper-dev"
     # Display the VirtualBox GUI when booting the machine
     vb.gui = true
     # Customize the CPUs (2x) and memory (4GB) on the VM:

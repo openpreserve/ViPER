@@ -11,9 +11,16 @@ packer {
   }
 }
 
+variable "version" {
+  type        = string
+  default     = "0.0.0-dev"
+  description = "ViPER release version. CI derives this from the git tag."
+}
+
 variable "vm_name" {
-  type    = string
-  default = "viper-v1.2-alpha"
+  type        = string
+  default     = ""
+  description = "Image name. Defaults to viper-<version> when left empty."
 }
 
 variable "cpus" {
@@ -28,7 +35,7 @@ variable "memory" {
 
 variable "disk_size" {
   type    = string
-  default = "25G"
+  default = "50G"
 }
 
 variable "headless" {
@@ -37,9 +44,9 @@ variable "headless" {
 }
 
 variable "accelerator" {
-  type    = string
-  default = "kvm"
-  description = "QEMU accelerator (kvm, tcg, none)"
+  type        = string
+  default     = "kvm"
+  description = "QEMU accelerator (kvm, tcg, none)."
 }
 
 variable "output_directory" {
@@ -47,6 +54,26 @@ variable "output_directory" {
   default = "output-qemu"
 }
 
+variable "ssh_timeout" {
+  type        = string
+  default     = "45m"
+  description = "How long to wait for the unattended install to finish and SSH to come up."
+}
+
+# Staying on Debian 12 is deliberate: Trixie dropped libqt5webkit5, which
+# mediaconch-gui needs. Debian 12 is oldstable, so its point releases live under
+# cdimage/archive rather than cdimage/release.
+#
+# Bumping to the current point release (12.15.0) was tried and reverted. It made
+# the unattended install roughly ten times slower, reproducibly:
+#
+#   12.8.0   SSH available after 14m36s
+#   12.15.0  ~330 MB installed after 9 min, ~174 KB/s sustained, timed out at 45m
+#   12.15.0  ~520 MB installed after 9 min, same crawl, abandoned
+#
+# The cause was not identified and is probably mirror side rather than anything in
+# this repository. Worth retrying later, but measure the install rate before
+# trusting it, and keep this note so the next person does not rediscover it.
 variable "iso_url" {
   type    = string
   default = "https://cdimage.debian.org/cdimage/archive/12.8.0/amd64/iso-cd/debian-12.8.0-amd64-netinst.iso"
@@ -57,40 +84,54 @@ variable "iso_checksum" {
   default = "sha256:04396d12b0f377958a070c38a923c227832fa3b3e18ddc013936ecf492e9fbb3"
 }
 
+locals {
+  vm_name = var.vm_name != "" ? var.vm_name : "viper-${var.version}"
+}
+
 source "qemu" "debian-bookworm" {
-  vm_name          = var.vm_name
+  vm_name          = local.vm_name
   iso_url          = var.iso_url
   iso_checksum     = var.iso_checksum
   output_directory = var.output_directory
-  
-  disk_size        = var.disk_size
-  disk_interface   = "virtio"
-  disk_compression = true
-  format           = "qcow2"
-  
-  cpus             = var.cpus
-  memory           = var.memory
-  
-  headless         = var.headless
-  accelerator      = var.accelerator
-  
+
+  disk_size      = var.disk_size
+  disk_interface = "virtio"
+  format         = "qcow2"
+
+  # Let the guest hand freed blocks back to the image. cleanup.sh runs fstrim as its
+  # last act, and without unmap those blocks stay allocated and ride along in the
+  # final artifact. Zeroing free space with dd would also work, but on a 50G disk it
+  # inflates the qcow2 to 50G along the way, which will not fit on a CI runner.
+  disk_discard       = "unmap"
+  disk_detect_zeroes = "unmap"
+  disk_compression   = true
+
+  cpus   = var.cpus
+  memory = var.memory
+
+  headless    = var.headless
+  accelerator = var.accelerator
+
   # Use VNC for display
   vnc_bind_address = "127.0.0.1"
   vnc_port_min     = 5900
   vnc_port_max     = 5900
-  
+
   # Networking
-  net_device       = "virtio-net"
-  
-  # SSH settings for provisioning
-  ssh_username     = "vagrant"
-  ssh_password     = "vagrant"
-  ssh_timeout      = "30m"
-  ssh_port         = 22
-  
-  # Shutdown command
-  shutdown_command = "echo 'vagrant' | sudo -S shutdown -P now"
-  
+  net_device = "virtio-net"
+
+  # Packer authenticates with the password rather than the Vagrant key, so cleanup.sh
+  # is free to delete /home/vagrant/.ssh before shutdown without cutting us off.
+  ssh_username = "vagrant"
+  ssh_password = "vagrant"
+  ssh_timeout  = var.ssh_timeout
+  ssh_port     = 22
+
+  # Everything that would cut off our own access happens here, at the last possible
+  # moment: cleanup.sh still needs sudo, and Packer still needs to authenticate as
+  # vagrant to issue this very command. Order within the line matters.
+  shutdown_command = "echo 'vagrant' | sudo -S sh -c 'rm -f /etc/ssh/sshd_config.d/99-packer-build.conf; usermod -L -s /usr/sbin/nologin vagrant; rm -f /etc/sudoers.d/vagrant; sync; shutdown -P now'"
+
   # Boot command for Debian preseed
   boot_wait = "5s"
   boot_command = [
@@ -105,51 +146,58 @@ source "qemu" "debian-bookworm" {
     "kbd-chooser/method=us <wait>",
     "keyboard-configuration/xkb-keymap=us <wait>",
     "locale=en_US.UTF-8 <wait>",
-    "netcfg/get_hostname=${var.vm_name} <wait>",
+    "netcfg/get_hostname=viper <wait>",
     "netcfg/get_domain=viper.test <wait>",
     "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
     "<enter>"
   ]
-  
+
   # Serve preseed file via HTTP
   http_directory = "http"
 }
 
 build {
   sources = ["source.qemu.debian-bookworm"]
-  
-  # Wait for system to be ready
+
+  # The security role turns off password authentication, which is what Packer
+  # authenticates with. A drop-in keeps the build's own connections working
+  # regardless; cleanup.sh removes it before the image is sealed.
   provisioner "shell" {
     inline = [
       "echo 'Waiting for system to be ready...'",
+      "sudo mkdir -p /etc/ssh/sshd_config.d",
+      "printf 'PasswordAuthentication yes\\nKbdInteractiveAuthentication yes\\n' | sudo tee /etc/ssh/sshd_config.d/99-packer-build.conf",
       "sudo apt-get update"
     ]
   }
-  
-  # Install VirtualBox Guest Additions
+
   provisioner "shell" {
     script = "scripts/install-guest-additions.sh"
   }
-  
-  # Run Ansible provisioning
+
   provisioner "ansible" {
     playbook_file = "ansible/packer.yml"
-    user = "vagrant"
-    extra_arguments = ["-vv"]
-  }
-  
-  # Rename QCOW2 file to include .qcow2 extension
-  post-processor "shell-local" {
-    inline = [
-      "mv ${var.output_directory}/${var.vm_name} ${var.output_directory}/${var.vm_name}.qcow2 || true",
-      "echo 'QCOW2 file: ${var.output_directory}/${var.vm_name}.qcow2'"
+    user          = "vagrant"
+    extra_arguments = [
+      "-vv",
+      "--extra-vars", "viper_version=${var.version}"
     ]
   }
-  
-  # Post-processor to convert to VMDK and create OVA
+
+  # Prove the tools actually run before we spend hours uploading the image.
+  provisioner "shell" {
+    script = "scripts/smoke-test.sh"
+  }
+
+  provisioner "shell" {
+    script = "scripts/cleanup.sh"
+  }
+
   post-processor "shell-local" {
     inline = [
-      "echo 'Build complete. Run ./scripts/convert-to-ova.sh to create OVA file.'"
+      "mv '${var.output_directory}/${local.vm_name}' '${var.output_directory}/${local.vm_name}.qcow2' || true",
+      "echo 'QCOW2 image: ${var.output_directory}/${local.vm_name}.qcow2'",
+      "qemu-img info '${var.output_directory}/${local.vm_name}.qcow2'"
     ]
   }
 }

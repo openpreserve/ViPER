@@ -7,7 +7,7 @@
   changed_when: mediaarea_check_deb.rc == 1
 
 - name: "MediaArea Tools | Download Debian package for {{ item.name }}."
-  get_url: 
+  get_url:
     url="{{ item.download_url }}"
     dest="/tmp/{{ item.package_name }}"
   when: mediaarea_check_deb.rc == 1

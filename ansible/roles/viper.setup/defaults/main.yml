@@ -1,7 +1,7 @@
 ---
 # viper.setup default values
 viper_env_apt_defaults:
-  # Source control a
+  # Source control
   - "git"
   # Debian lacks the ability to download apt over HTTPS
   - "apt-transport-https"
@@ -18,8 +18,6 @@ viper_env_apt_defaults:
   - "console-setup"
   # Open JDK 17 for Java
   - "openjdk-17-jre"
-  - "openjdk-17-doc"
-  - "openjdk-17-source"
   # GNOME desktop and Nemo add on for icon display
   - "task-gnome-desktop"
   - "nemo"
