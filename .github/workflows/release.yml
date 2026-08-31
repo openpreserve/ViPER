@@ -43,6 +43,7 @@ jobs:
       version: ${{ steps.meta.outputs.version }}
       version_safe: ${{ steps.meta.outputs.version_safe }}
       repo_safe: ${{ steps.meta.outputs.repo_safe }}
+      prerelease: ${{ steps.meta.outputs.prerelease }}
       qcow2_name: ${{ steps.package.outputs.qcow2_name }}
       qcow2_sha256: ${{ steps.package.outputs.qcow2_sha256 }}
       qcow2_md5: ${{ steps.package.outputs.qcow2_md5 }}
@@ -71,11 +72,21 @@ jobs:
           VERSION_SAFE=$(printf '%s' "${VERSION}" | tr '/:' '--')
           REPO_SAFE=$(printf '%s' "${GITHUB_REPOSITORY}" | tr '/' '-')
 
+          # Only a bare semver triple is a full release. Everything else, including
+          # v0.0.1-rc1 and the release-* tags, is published as a prerelease so a
+          # candidate is never presented as the latest stable download.
+          if [[ "${VERSION}" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            PRERELEASE=false
+          else
+            PRERELEASE=true
+          fi
+
           {
             echo "version=${VERSION}"
             echo "version_safe=${VERSION_SAFE}"
             echo "repo_safe=${REPO_SAFE}"
             echo "vm_name=viper-${VERSION_SAFE}"
+            echo "prerelease=${PRERELEASE}"
           } >> "$GITHUB_OUTPUT"
 
           echo "Building viper-${VERSION_SAFE} for ${REPO_SAFE}"
@@ -268,7 +279,7 @@ jobs:
         uses: softprops/action-gh-release@e7a8f85e1c67a31e6ed99a94b41bd0b71bbee6b8 # v2.0.9
         with:
           draft: false
-          prerelease: false
+          prerelease: ${{ needs.build.outputs.prerelease }}
           body: |
             ViPER ${{ needs.build.outputs.version }}
 
