@@ -54,6 +54,26 @@ variable "output_directory" {
   default = "output-qemu"
 }
 
+variable "ssh_timeout" {
+  type        = string
+  default     = "45m"
+  description = "How long to wait for the unattended install to finish and SSH to come up."
+}
+
+# Staying on Debian 12 is deliberate: Trixie dropped libqt5webkit5, which
+# mediaconch-gui needs. Debian 12 is oldstable, so its point releases live under
+# cdimage/archive rather than cdimage/release.
+#
+# Bumping to the current point release (12.15.0) was tried and reverted. It made
+# the unattended install roughly ten times slower, reproducibly:
+#
+#   12.8.0   SSH available after 14m36s
+#   12.15.0  ~330 MB installed after 9 min, ~174 KB/s sustained, timed out at 45m
+#   12.15.0  ~520 MB installed after 9 min, same crawl, abandoned
+#
+# The cause was not identified and is probably mirror side rather than anything in
+# this repository. Worth retrying later, but measure the install rate before
+# trusting it, and keep this note so the next person does not rediscover it.
 variable "iso_url" {
   type    = string
   default = "https://cdimage.debian.org/cdimage/archive/12.8.0/amd64/iso-cd/debian-12.8.0-amd64-netinst.iso"
@@ -104,7 +124,7 @@ source "qemu" "debian-bookworm" {
   # is free to delete /home/vagrant/.ssh before shutdown without cutting us off.
   ssh_username = "vagrant"
   ssh_password = "vagrant"
-  ssh_timeout  = "30m"
+  ssh_timeout  = var.ssh_timeout
   ssh_port     = 22
 
   # Everything that would cut off our own access happens here, at the last possible
