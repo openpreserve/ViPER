@@ -251,6 +251,9 @@ jobs:
   publish-qcow2:
     name: Publish QCOW2
     needs: build
+    permissions:
+      contents: read
+      actions: read
     uses: ./.github/workflows/publish-artifact.yml
     with:
       artifact-name: qcow2-image
@@ -260,6 +263,9 @@ jobs:
   publish-ova:
     name: Publish OVA
     needs: build
+    permissions:
+      contents: read
+      actions: read
     uses: ./.github/workflows/publish-artifact.yml
     with:
       artifact-name: ova-image

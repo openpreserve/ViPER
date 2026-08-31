@@ -33,6 +33,9 @@ permissions:
 jobs:
   republish:
     name: Republish ${{ inputs.artifact-name }}
+    permissions:
+      contents: read
+      actions: read
     uses: ./.github/workflows/publish-artifact.yml
     with:
       artifact-name: ${{ inputs.artifact-name }}
