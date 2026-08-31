@@ -11,3 +11,6 @@ rules:
   comments-indentation: disable
   truthy:
     allowed-values: ['true', 'false', 'yes', 'no']
+    # GitHub Actions requires a top-level `on:` key, which yamllint reads as the
+    # boolean true unless key checking is disabled.
+    check-keys: false
