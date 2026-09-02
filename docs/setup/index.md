@@ -16,10 +16,11 @@ In order to use the ViPER you will need to:
 
 - check that your desktop has been set up to support virtualisation, this is done in your [BIOS settings](https://bce.berkeley.edu/enabling-virtualization-in-your-pc-bios.html)
 - download and install [Oracle VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-- download and install the ViPER image, either
-  [{{ site.data.vars.rc_version }}]({{ site.data.vars.rc_base_url }}/viper-v{{ site.data.vars.rc_version }}.ova)
-  (release candidate, recommended if {{ site.data.vars.version }} will not start) or
-  [{{ site.data.vars.version }}](https://ddhn.openpreservation.org/viper-v{{ site.data.vars.version }}.ova)
+- download and install the
+  [ViPER {{ site.data.vars.version }} image](https://ddhn.openpreservation.org/viper-v{{ site.data.vars.version }}.ova),
+  or the
+  [{{ site.data.vars.rc_version }} release candidate]({{ site.data.vars.rc_base_url }}/viper-v{{ site.data.vars.rc_version }}.ova)
+  if you would like to try the newest build
 
 ## Creating the VM environment
 
@@ -48,23 +49,33 @@ When both downloads are completed install by selecting each executable file. A s
 
 ### Downloading ViPER
 
-<div class="alert alert-warning" role="alert" markdown="1">
-**Problems with ViPER {{ site.data.vars.version }}?** We are aware of two problems
-affecting some users:
+<div class="alert alert-info" role="alert" markdown="1">
+**ViPER {{ site.data.vars.previous_version }} has been repaired and republished as
+{{ site.data.vars.version }}.** Please use
+{{ site.data.vars.version }} rather than {{ site.data.vars.previous_version }}.
 
-- **The appliance fails to import.** VirtualBox 7 reports
-  `VERR_VD_VMDK_INVALID_FORMAT` or `-3244 (0xfffff354)`, and VirtualBox 6 reports
-  `E_INVALIDARG (0x80070057)`, in both cases at the end of the import appliance step.
-  Re-downloading does not help.
-- **The desktop fails to start after a successful import**, showing a missing Activities
-  bar or a blank screen reading "Oh no, something has gone wrong"
-  ([#66](https://github.com/openpreserve/ViPER/issues/66)). In VirtualBox, enabling **3D
-  acceleration** before first start usually works around this: select the machine, then
-  **Settings > Display > Screen > Enable 3D Acceleration**.
+The file served for ViPER {{ site.data.vars.previous_version }} was damaged by storage
+corruption some time after it was published. About 1 MB of the 5.3 GB disk image was
+lost, which made VirtualBox reject it at the very end of the import appliance step:
 
-While we work on a fix, we encourage anyone affected to use
+- VirtualBox 7: `VERR_VD_VMDK_INVALID_FORMAT` or `-3244 (0xfffff354)`
+- VirtualBox 6: `E_INVALIDARG (0x80070057)`
+
+Re-downloading never helped, because the file on the server was itself faulty. ViPER
+{{ site.data.vars.version }} is the same appliance with that damage repaired and
+verified against the checksums published inside the original image. One file could not be
+recovered, a VirtualBox shared-folders kernel module belonging to a kernel the appliance
+does not boot; it has no effect on normal use.
+
+**A separate, unrelated issue:** if the desktop fails to start after a successful import,
+showing a missing Activities bar or a blank screen reading "Oh no, something has gone
+wrong" ([#66](https://github.com/openpreserve/ViPER/issues/66)), enable **3D
+acceleration** before first start. Select the machine, then
+**Settings > Display > Screen > Enable 3D Acceleration**.
+
+You may also like to try
 **[ViPER {{ site.data.vars.rc_version }}]({{ site.data.vars.rc_release_notes }})**, a
-fresh build produced by a new, fully automated build toolchain. It is published as an
+fresh build produced by a new, fully automated build toolchain, published as an
 [OVA]({{ site.data.vars.rc_base_url }}/viper-v{{ site.data.vars.rc_version }}.ova) and as
 a [QCOW2]({{ site.data.vars.rc_base_url }}/viper-v{{ site.data.vars.rc_version }}.qcow2)
 for QEMU/KVM. It is a release candidate rather than a final release, so please report any

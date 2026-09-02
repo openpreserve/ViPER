@@ -7,28 +7,32 @@ banner: "/assets/img/viper-header.png"
 
 <div class="buttons"><a href="{{ site.data.vars.rc_base_url }}/viper-v{{ site.data.vars.rc_version }}.ova" class="btn btn-outline-secondary"><i class="fa fa-download"></i> Download <small>ViPER {{ site.data.vars.rc_version }} (release candidate)</small></a></div>
 
-<div class="alert alert-warning" role="alert" markdown="1">
-**Having trouble downloading or importing ViPER {{ site.data.vars.version }}?**
-We are aware of two problems affecting some users:
+<div class="alert alert-info" role="alert" markdown="1">
+**ViPER {{ site.data.vars.previous_version }} has been repaired and republished as
+{{ site.data.vars.version }}.**
 
-- **The appliance fails to import.** VirtualBox 7 reports
-  `VERR_VD_VMDK_INVALID_FORMAT` or `-3244 (0xfffff354)`, and VirtualBox 6 reports
-  `E_INVALIDARG (0x80070057)`, in both cases at the end of the import appliance step.
-- **The desktop fails to start after import**, showing a missing Activities bar or a
-  blank screen reading "Oh no, something has gone wrong"
-  ([#66](https://github.com/openpreserve/ViPER/issues/66)). On VirtualBox this can
-  usually be worked around by enabling **3D acceleration** on the machine before
-  starting it.
+The {{ site.data.vars.previous_version }} download was damaged by storage corruption
+after it was published, which is why VirtualBox rejected it at the end of the import
+appliance step with `VERR_VD_VMDK_INVALID_FORMAT` or `-3244 (0xfffff354)` on VirtualBox
+7, or `E_INVALIDARG (0x80070057)` on VirtualBox 6. Re-downloading never helped, because
+the file on the server was itself faulty.
 
-While we work on a fix, we encourage anyone affected to use
-**[ViPER {{ site.data.vars.rc_version }}]({{ site.data.vars.rc_release_notes }})**
-instead. It is a fresh build produced by a new, fully automated build toolchain, and it
-is published as an
-[OVA]({{ site.data.vars.rc_base_url }}/viper-v{{ site.data.vars.rc_version }}.ova) for
-VirtualBox and other OVF platforms, or as a
+**ViPER {{ site.data.vars.version }} is that same appliance with the damage repaired and
+verified.** If you were affected, please download it above. Anyone already running ViPER
+{{ site.data.vars.previous_version }} successfully does not need to do anything.
+
+If the desktop fails to start after import, showing a missing Activities bar or a blank
+screen reading "Oh no, something has gone wrong", that is a separate known issue
+([#66](https://github.com/openpreserve/ViPER/issues/66)). Enabling **3D acceleration** on
+the machine before starting it usually works around it.
+
+You may also like to try
+**[ViPER {{ site.data.vars.rc_version }}]({{ site.data.vars.rc_release_notes }})**, a
+fresh build from a new, fully automated build toolchain, published as an
+[OVA]({{ site.data.vars.rc_base_url }}/viper-v{{ site.data.vars.rc_version }}.ova) or a
 [QCOW2]({{ site.data.vars.rc_base_url }}/viper-v{{ site.data.vars.rc_version }}.qcow2)
-for QEMU/KVM. Please note it is a **release candidate** rather than a final release. We
-would be glad to hear how you get on, and any problems can be reported on the
+for QEMU/KVM. It is a release candidate rather than a final release, so we would be glad
+to hear how you get on via the
 [issue tracker](https://github.com/openpreserve/ViPER/issues).
 </div>
 
